@@ -29,6 +29,7 @@
 		FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469F42AD3D9AA00AB3A8E /* UserManager.swift */; };
 		FAC469F72AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */; };
 		FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */; };
+		FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		FAC469F42AD3D9AA00AB3A8E /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				FAC114BC2AD1AC65001152D8 /* TextInputView.swift */,
+				FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -388,6 +391,7 @@
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
 				FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */,
+				FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */,
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,
 				FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */,
