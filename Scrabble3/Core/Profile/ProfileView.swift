@@ -9,7 +9,36 @@ import SwiftUI
 
 struct ProfileView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List {
+            Section {
+                HStack {
+                    Text("MJ")
+                        .font(.title)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .frame(width: 72, height: 72)
+                        .background(Color(.systemGray3))
+                        .clipShape(Circle())
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Alex Polonski")
+                            .fontWeight(.semibold)
+                            .font(.subheadline)
+                            .padding(.top, 4)
+                        Text("alex@example.com")
+                            .font(.footnote)
+                            .accentColor(.gray)
+                    }
+                }
+            }
+            
+            Section("General") {
+                
+            }
+            
+            Section("Account") {
+                
+            }
+        }
     }
 }
 
