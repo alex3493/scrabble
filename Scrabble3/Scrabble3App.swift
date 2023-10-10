@@ -13,9 +13,12 @@ struct Scrabble3App: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @StateObject var authEmailViewModel = AuthWithEmailViewModel()
+    
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(authEmailViewModel)
         }
     }
 }

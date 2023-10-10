@@ -9,7 +9,9 @@ import SwiftUI
 
 struct RegistrationView: View {
     
-    @StateObject private var viewModel = RegistrationWithEmailViewModel()
+    // @StateObject private var viewModel = RegistrationWithEmailViewModel()
+    
+    @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
     @Environment(\.dismiss) var dismiss
     
@@ -64,4 +66,5 @@ struct RegistrationView: View {
 
 #Preview {
     RegistrationView()
+        .environmentObject(AuthWithEmailViewModel())
 }

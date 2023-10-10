@@ -41,6 +41,20 @@ struct DBUser: Codable, Hashable {
         self.name = name
     }
     
+    var initials: String {
+        let formatter = PersonNameComponentsFormatter()
+        if let components = formatter.personNameComponents(from: name ?? "") {
+            formatter.style = .abbreviated
+            return formatter.string(from: components)
+        }
+        
+        return ""
+    }
+    
+}
+
+extension DBUser {
+    static var MOCK_USER = DBUser(userId: UUID().uuidString, email: "test@example.com", dateCreated: Date(), name: "Alex Polonski")
 }
 
 final class UserManager {

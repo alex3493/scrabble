@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var viewModel: AuthWithEmailViewModel
+    
     var body: some View {
         List {
             Section {
                 HStack {
-                    Text("MJ")
+                    Text(DBUser.MOCK_USER.initials)
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
@@ -20,13 +22,13 @@ struct ProfileView: View {
                         .background(Color(.systemGray3))
                         .clipShape(Circle())
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Alex Polonski")
+                        Text(DBUser.MOCK_USER.name!)
                             .fontWeight(.semibold)
                             .font(.subheadline)
                             .padding(.top, 4)
-                        Text("alex@example.com")
+                        Text(DBUser.MOCK_USER.email!)
                             .font(.footnote)
-                            .accentColor(.gray)
+                            .foregroundColor(.gray)
                     }
                 }
             }
@@ -62,4 +64,5 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
+        .environmentObject(AuthWithEmailViewModel())
 }

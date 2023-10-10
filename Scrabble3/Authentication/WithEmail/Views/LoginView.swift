@@ -9,10 +9,9 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @StateObject private var viewModel = LoginWithEmailViewModel()
+    // @StateObject private var viewModel = LoginWithEmailViewModel()
     
-    @State var email = ""
-    @State var password = ""
+    @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
     var body: some View {
         NavigationStack {
@@ -67,4 +66,5 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
+        .environmentObject(AuthWithEmailViewModel())
 }

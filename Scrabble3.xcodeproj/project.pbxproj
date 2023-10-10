@@ -30,6 +30,8 @@
 		FAC469F72AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */; };
 		FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */; };
 		FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */; };
+		FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */; };
+		FAC46A022AD4AB9700AB3A8E /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +73,7 @@
 		FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
+		FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWithEmailViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +82,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA4F5E1D2AD2E71C00A39306 /* FirebaseAnalyticsSwift in Frameworks */,
+				FAC46A022AD4AB9700AB3A8E /* FirebaseAuthCombine-Community in Frameworks */,
 				FAC469EA2AD34BDD00AB3A8E /* FirebaseAuth in Frameworks */,
 				FA4F5E1B2AD2E71C00A39306 /* FirebaseAnalytics in Frameworks */,
 				FAC469F02AD34C7C00AB3A8E /* FirebaseFirestore in Frameworks */,
@@ -221,6 +225,7 @@
 			children = (
 				FAC469F12AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift */,
 				FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */,
+				FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -264,6 +269,7 @@
 				FAC469E92AD34BDD00AB3A8E /* FirebaseAuth */,
 				FAC469ED2AD34BF800AB3A8E /* FirebaseFirestoreSwift */,
 				FAC469EF2AD34C7C00AB3A8E /* FirebaseFirestore */,
+				FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */,
 			);
 			productName = Scrabble3;
 			productReference = FAB8724B2AA258610015D0FA /* Scrabble3.app */;
@@ -386,6 +392,7 @@
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
 				FAC469F22AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift in Sources */,
+				FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */,
 				FAC469F72AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift in Sources */,
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
@@ -760,6 +767,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA4F5E192AD2E71C00A39306 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA4F5E192AD2E71C00A39306 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAuthCombine-Community";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
