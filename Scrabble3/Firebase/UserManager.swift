@@ -29,9 +29,13 @@ struct DBUser: Codable, Hashable {
         self.name = auth.email
     }
     
+    init(auth: AuthDataResultModel, name: String?) {
+        self.init(userId: auth.uid, email: auth.email, dateCreated: Date(), name: name)
+    }
+    
     init(
         userId: String,
-        email: String,
+        email: String?,
         dateCreated: Date?,
         name: String?
     ) {
@@ -53,10 +57,6 @@ struct DBUser: Codable, Hashable {
     
 }
 
-extension DBUser {
-    static var MOCK_USER = DBUser(userId: UUID().uuidString, email: "test@example.com", dateCreated: Date(), name: "Alex Polonski")
-}
-
 final class UserManager {
     
     static let shared = UserManager()
@@ -70,6 +70,10 @@ final class UserManager {
     
     func createNewUser(user: DBUser) async throws {
         try userDocument(userId: user.userId).setData(from: user, merge: false)
+    }
+    
+    func deleteUser(userId: String) {
+        userDocument(userId: userId).delete()
     }
     
     // TODO: add function to update db user.

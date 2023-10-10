@@ -13,7 +13,6 @@ import Firebase
 @MainActor
 final class AuthWithEmailViewModel: ObservableObject {
     
-    // TODO: check why current user has FirebaseAuth.User? type...
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: DBUser?
     
@@ -23,14 +22,25 @@ final class AuthWithEmailViewModel: ObservableObject {
     @Published var confirmPassword: String = ""
     @Published var name: String = ""
     
+    init() {
+        userSession = Auth.auth().currentUser
+        
+        Task {
+            try? await fetchUser()
+        }
+    }
+    
     func signIn() async throws {
         guard !email.isEmpty, !password.isEmpty else {
             print("No email or password found.")
             return
         }
         
-        try await AuthenticationManager.shared.signInUser(email: email, password: password)
+        let authDataResult = try await AuthenticationManager.shared.signInUser(email: email, password: password)
         
+        userSession = authDataResult.user
+        
+        try? await fetchUser()
     }
     
     func createUser() async throws {
@@ -39,27 +49,41 @@ final class AuthWithEmailViewModel: ObservableObject {
             return
         }
         
-        let authDataResult = try await AuthenticationManager.shared.createUser(email: email, password: password)
+        let authDataResult = try await AuthenticationManager.shared.createUser(withEmail: email, password: password)
         
-        // TODO: add "name" parameter to init.
-        let user = DBUser(auth: authDataResult)
+        let user = DBUser(auth: authDataResult, name: name)
         
         try await UserManager.shared.createNewUser(user: user)
+        
+        userSession = authDataResult.user
+        try? await fetchUser()
         
     }
     
     func signOut() {
-        
+        do {
+            try AuthenticationManager.shared.signOut()
+            clearUser()
+        } catch {
+            print("Error signing out user: \(error.localizedDescription)")
+        }
     }
     
     func deleteAccount() {
-        
+        guard let userSession = userSession else { return }
+        AuthenticationManager.shared.deleteAccount()
+        UserManager.shared.deleteUser(userId: userSession.uid)
+        clearUser()
     }
     
-    // TODO: check it!
-    func fetchUser() async throws -> DBUser {
-        let userId = userSession?.uid
+    func fetchUser() async throws {
+        guard let userId = userSession?.uid else { return }
         
-        return try await UserManager.shared.getUser(userId: userId!)
+        currentUser = try? await UserManager.shared.getUser(userId: userId)
+    }
+    
+    func clearUser() {
+        userSession = nil
+        currentUser = nil
     }
 }

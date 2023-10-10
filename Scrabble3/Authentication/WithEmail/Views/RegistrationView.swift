@@ -34,7 +34,9 @@ struct RegistrationView: View {
             .padding(.horizontal)
             
             Button {
-                print("Registration action here...")
+                Task {
+                    try await viewModel.createUser()
+                }
             } label: {
                 HStack {
                     Text("SIGN UP")

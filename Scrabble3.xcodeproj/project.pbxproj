@@ -25,9 +25,7 @@
 		FAC469EA2AD34BDD00AB3A8E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FAC469E92AD34BDD00AB3A8E /* FirebaseAuth */; };
 		FAC469EE2AD34BF800AB3A8E /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FAC469ED2AD34BF800AB3A8E /* FirebaseFirestoreSwift */; };
 		FAC469F02AD34C7C00AB3A8E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FAC469EF2AD34C7C00AB3A8E /* FirebaseFirestore */; };
-		FAC469F22AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469F12AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift */; };
 		FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469F42AD3D9AA00AB3A8E /* UserManager.swift */; };
-		FAC469F72AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */; };
 		FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */; };
 		FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */; };
 		FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */; };
@@ -68,9 +66,7 @@
 		FAC114B62AD1AA6C001152D8 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		FAC114B92AD1AB3D001152D8 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		FAC114BC2AD1AC65001152D8 /* TextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputView.swift; sourceTree = "<group>"; };
-		FAC469F12AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAC469F42AD3D9AA00AB3A8E /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
-		FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 		FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWithEmailViewModel.swift; sourceTree = "<group>"; };
@@ -223,8 +219,6 @@
 		FAC469F82AD3EBEC00AB3A8E /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				FAC469F12AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift */,
-				FAC469F62AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift */,
 				FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */,
 			);
 			path = ViewModels;
@@ -391,9 +385,7 @@
 			files = (
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
-				FAC469F22AD3D5CB00AB3A8E /* LoginWithEmailViewModel.swift in Sources */,
 				FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */,
-				FAC469F72AD3D9FB00AB3A8E /* RegistrationWithEmailViewModel.swift in Sources */,
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
