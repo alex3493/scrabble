@@ -17,10 +17,10 @@ final class AuthWithEmailViewModel: ObservableObject {
     @Published var currentUser: DBUser?
     
     
-    @Published var email: String = ""
-    @Published var password: String = ""
-    @Published var confirmPassword: String = ""
-    @Published var name: String = ""
+//    @Published var email: String = ""
+//    @Published var password: String = ""
+//    @Published var confirmPassword: String = ""
+//    @Published var name: String = ""
     
     init() {
         userSession = Auth.auth().currentUser
@@ -30,7 +30,7 @@ final class AuthWithEmailViewModel: ObservableObject {
         }
     }
     
-    func signIn() async throws {
+    func signIn(withEmail email: String, password: String) async throws {
         guard !email.isEmpty, !password.isEmpty else {
             print("No email or password found.")
             return
@@ -43,7 +43,7 @@ final class AuthWithEmailViewModel: ObservableObject {
         try? await fetchUser()
     }
     
-    func createUser() async throws {
+    func createUser(email: String, password: String, confirmPassword: String, name: String) async throws {
         guard !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty, !name.isEmpty else {
             print("Required data missing.")
             return

@@ -13,23 +13,25 @@ struct ProfileView: View {
     var body: some View {
         List {
             if let user = viewModel.currentUser {
-                Section {
-                    HStack {
-                        Text(user.initials)
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(width: 72, height: 72)
-                            .background(Color(.systemGray3))
-                            .clipShape(Circle())
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(user.name!)
+                if let name = user.name {
+                    Section {
+                        HStack {
+                            Text(user.initials)
+                                .font(.title)
                                 .fontWeight(.semibold)
-                                .font(.subheadline)
-                                .padding(.top, 4)
-                            Text(user.email!)
-                                .font(.footnote)
-                                .foregroundColor(.gray)
+                                .foregroundColor(.white)
+                                .frame(width: 72, height: 72)
+                                .background(Color(.systemGray3))
+                                .clipShape(Circle())
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(user.name!)
+                                    .fontWeight(.semibold)
+                                    .font(.subheadline)
+                                    .padding(.top, 4)
+                                Text(user.email!)
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
                 }
