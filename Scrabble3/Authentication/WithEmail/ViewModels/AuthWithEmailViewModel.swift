@@ -16,12 +16,6 @@ final class AuthWithEmailViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: DBUser?
     
-    
-//    @Published var email: String = ""
-//    @Published var password: String = ""
-//    @Published var confirmPassword: String = ""
-//    @Published var name: String = ""
-    
     init() {
         userSession = Auth.auth().currentUser
         
