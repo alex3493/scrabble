@@ -9,10 +9,9 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @StateObject private var viewModel = LoginWithEmailViewModel()
+    // @StateObject private var viewModel = LoginWithEmailViewModel()
     
-    @State var email = ""
-    @State var password = ""
+    @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
     var body: some View {
         NavigationStack {
@@ -33,7 +32,14 @@ struct LoginView: View {
                 .padding(.horizontal)
                 
                 Button {
-                    print("Log in action here...")
+                    Task {
+                        do {
+                            try await viewModel.signIn()
+                        } catch {
+                            // TODO: display alert here!
+                            print("DEBUG :: Error signing in: \(error.localizedDescription)")
+                        }
+                    }
                 } label: {
                     HStack {
                         Text("SIGN IN")
@@ -67,4 +73,5 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
+        .environmentObject(AuthWithEmailViewModel())
 }

@@ -29,9 +29,13 @@ struct DBUser: Codable, Hashable {
         self.name = auth.email
     }
     
+    init(auth: AuthDataResultModel, name: String?) {
+        self.init(userId: auth.uid, email: auth.email, dateCreated: Date(), name: name)
+    }
+    
     init(
         userId: String,
-        email: String,
+        email: String?,
         dateCreated: Date?,
         name: String?
     ) {
@@ -39,6 +43,16 @@ struct DBUser: Codable, Hashable {
         self.email = email
         self.dateCreated = dateCreated
         self.name = name
+    }
+    
+    var initials: String {
+        let formatter = PersonNameComponentsFormatter()
+        if let components = formatter.personNameComponents(from: name ?? "") {
+            formatter.style = .abbreviated
+            return formatter.string(from: components)
+        }
+        
+        return ""
     }
     
 }
@@ -56,6 +70,10 @@ final class UserManager {
     
     func createNewUser(user: DBUser) async throws {
         try userDocument(userId: user.userId).setData(from: user, merge: false)
+    }
+    
+    func deleteUser(userId: String) {
+        userDocument(userId: userId).delete()
     }
     
     // TODO: add function to update db user.
