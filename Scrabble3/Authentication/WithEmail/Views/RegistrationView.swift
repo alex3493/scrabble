@@ -9,7 +9,10 @@ import SwiftUI
 
 struct RegistrationView: View {
     
-    // @StateObject private var viewModel = RegistrationWithEmailViewModel()
+    @State var email: String = ""
+    @State var password: String = ""
+    @State var confirmPassword: String = ""
+    @State var name: String = ""
     
     @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
@@ -24,18 +27,18 @@ struct RegistrationView: View {
                 .padding(.vertical, 32)
                 .foregroundStyle(.cyan)
             VStack(spacing: 12) {
-                TextInputView(text: $viewModel.email, title: "Email", placeholder: "name@example.com")
+                TextInputView(text: $email, title: "Email", placeholder: "name@example.com")
                     .autocapitalization(.none)
-                TextInputView(text: $viewModel.name, title: "Name", placeholder: "Enter your name...", isSecureField: false)
-                TextInputView(text: $viewModel.password, title: "Password", placeholder: "Enter your password...", isSecureField: true)
-                TextInputView(text: $viewModel.confirmPassword, title: "Confirm Password", placeholder: "Confirm password...", isSecureField: true)
+                TextInputView(text: $name, title: "Name", placeholder: "Enter your name...", isSecureField: false)
+                TextInputView(text: $password, title: "Password", placeholder: "Enter your password...", isSecureField: true)
+                TextInputView(text: $confirmPassword, title: "Confirm Password", placeholder: "Confirm password...", isSecureField: true)
             }
             .padding(.top, 20)
             .padding(.horizontal)
             
             Button {
                 Task {
-                    try await viewModel.createUser()
+                    try await viewModel.createUser(email: email, password: password, confirmPassword: confirmPassword, name: name)
                 }
             } label: {
                 HStack {

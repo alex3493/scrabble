@@ -9,7 +9,8 @@ import SwiftUI
 
 struct LoginView: View {
     
-    // @StateObject private var viewModel = LoginWithEmailViewModel()
+    @State var email: String = ""
+    @State var password: String = ""
     
     @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
@@ -23,9 +24,9 @@ struct LoginView: View {
                     .padding(.vertical, 32)
                     .foregroundStyle(.cyan)
                 VStack(spacing: 12) {
-                    TextInputView(text: $viewModel.email, title: "Email", placeholder: "name@example.com")
+                    TextInputView(text: $email, title: "Email", placeholder: "name@example.com")
                         .autocapitalization(.none)
-                    TextInputView(text: $viewModel.password, title: "Password", placeholder: "Enter your password...", isSecureField: true)
+                    TextInputView(text: $password, title: "Password", placeholder: "Enter your password...", isSecureField: true)
                     
                 }
                 .padding(.top, 20)
@@ -34,7 +35,7 @@ struct LoginView: View {
                 Button {
                     Task {
                         do {
-                            try await viewModel.signIn()
+                            try await viewModel.signIn(withEmail: email, password: password)
                         } catch {
                             // TODO: display alert here!
                             print("DEBUG :: Error signing in: \(error.localizedDescription)")
