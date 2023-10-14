@@ -19,6 +19,7 @@ struct Scrabble3App: App {
         WindowGroup {
             RootView()
                 .environmentObject(authEmailViewModel)
+                .modifier(ErrorAlert())
         }
     }
 }

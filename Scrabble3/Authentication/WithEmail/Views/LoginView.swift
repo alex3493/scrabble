@@ -14,6 +14,8 @@ struct LoginView: View {
     
     @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
+    let errorStore = ErrorStore.shared
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -37,8 +39,8 @@ struct LoginView: View {
                         do {
                             try await viewModel.signIn(withEmail: email, password: password)
                         } catch {
-                            // TODO: display alert here!
                             print("DEBUG :: Error signing in: \(error.localizedDescription)")
+                            errorStore.showLoginAlertView(withMessage: error.localizedDescription)
                         }
                     }
                 } label: {

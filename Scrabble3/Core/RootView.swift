@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
+    // @EnvironmentObject var errorStore: ErrorStore
     
     var body: some View {
         Group {
@@ -24,4 +25,5 @@ struct RootView: View {
 #Preview {
     RootView()
         .environmentObject(AuthWithEmailViewModel())
+        // .environmentObject(ErrorStore.shared)
 }
