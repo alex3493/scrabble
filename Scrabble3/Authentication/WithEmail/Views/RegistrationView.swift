@@ -18,6 +18,8 @@ struct RegistrationView: View {
     
     @Environment(\.dismiss) var dismiss
     
+    let errorStore = ErrorStore.shared
+    
     var body: some View {
         VStack {
             Image(systemName: "swift")
@@ -38,7 +40,12 @@ struct RegistrationView: View {
             
             Button {
                 Task {
-                    try await viewModel.createUser(email: email, password: password, confirmPassword: confirmPassword, name: name)
+                    do {
+                        try await viewModel.createUser(email: email, password: password, confirmPassword: confirmPassword, name: name)
+                    } catch {
+                        print("DEBUG :: Error creating account: \(error.localizedDescription)")
+                        errorStore.showRegistrationAlertView(withMessage: error.localizedDescription)
+                    }
                 }
             } label: {
                 HStack {
