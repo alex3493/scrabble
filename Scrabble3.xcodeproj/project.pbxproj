@@ -12,6 +12,7 @@
 		FA4F5E1D2AD2E71C00A39306 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FA4F5E1C2AD2E71C00A39306 /* FirebaseAnalyticsSwift */; };
 		FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */; };
 		FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */; };
+		FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C5A2ADB144B00BAFF8F /* GameListView.swift */; };
 		FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8724E2AA258610015D0FA /* Scrabble3App.swift */; };
 		FAB872512AA258610015D0FA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872502AA258610015D0FA /* RootView.swift */; };
 		FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB872522AA2586B0015D0FA /* Assets.xcassets */; };
@@ -54,6 +55,7 @@
 		FA024E272AA392AF0099BAAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStore.swift; sourceTree = "<group>"; };
+		FA592C5A2ADB144B00BAFF8F /* GameListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListView.swift; sourceTree = "<group>"; };
 		FAB8724B2AA258610015D0FA /* Scrabble3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrabble3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB8724E2AA258610015D0FA /* Scrabble3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3App.swift; sourceTree = "<group>"; };
 		FAB872502AA258610015D0FA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			children = (
 				FAC469FA2AD3FDD300AB3A8E /* Profile */,
 				FAB872502AA258610015D0FA /* RootView.swift */,
+				FA592C5A2ADB144B00BAFF8F /* GameListView.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */,
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,
+				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
 				FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */,
 				FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */,
 			);
