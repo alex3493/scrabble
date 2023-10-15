@@ -13,6 +13,11 @@
 		FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */; };
 		FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */; };
 		FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C5A2ADB144B00BAFF8F /* GameListView.swift */; };
+		FA592C602ADB39A800BAFF8F /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C5F2ADB39A700BAFF8F /* GameManager.swift */; };
+		FA592C632ADBB15C00BAFF8F /* Query+EXT.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C622ADBB15C00BAFF8F /* Query+EXT.swift */; };
+		FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */; };
+		FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C662ADBDEA500BAFF8F /* GameStartView.swift */; };
+		FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */; };
 		FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8724E2AA258610015D0FA /* Scrabble3App.swift */; };
 		FAB872512AA258610015D0FA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872502AA258610015D0FA /* RootView.swift */; };
 		FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB872522AA2586B0015D0FA /* Assets.xcassets */; };
@@ -56,6 +61,11 @@
 		FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStore.swift; sourceTree = "<group>"; };
 		FA592C5A2ADB144B00BAFF8F /* GameListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListView.swift; sourceTree = "<group>"; };
+		FA592C5F2ADB39A700BAFF8F /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		FA592C622ADBB15C00BAFF8F /* Query+EXT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+EXT.swift"; sourceTree = "<group>"; };
+		FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListViewModel.swift; sourceTree = "<group>"; };
+		FA592C662ADBDEA500BAFF8F /* GameStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStartView.swift; sourceTree = "<group>"; };
+		FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStartViewModel.swift; sourceTree = "<group>"; };
 		FAB8724B2AA258610015D0FA /* Scrabble3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrabble3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB8724E2AA258610015D0FA /* Scrabble3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3App.swift; sourceTree = "<group>"; };
 		FAB872502AA258610015D0FA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -113,6 +123,41 @@
 				FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		FA592C5C2ADB1F7400BAFF8F /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				FA592C5E2ADB1F9000BAFF8F /* Views */,
+				FA592C5D2ADB1F8300BAFF8F /* ViewModels */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		FA592C5D2ADB1F8300BAFF8F /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */,
+				FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		FA592C5E2ADB1F9000BAFF8F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FA592C5A2ADB144B00BAFF8F /* GameListView.swift */,
+				FA592C662ADBDEA500BAFF8F /* GameStartView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA592C612ADBB13A00BAFF8F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FA592C622ADBB15C00BAFF8F /* Query+EXT.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		FAB872422AA258610015D0FA = {
@@ -224,7 +269,9 @@
 		FAC469F32AD3D98400AB3A8E /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
+				FA592C612ADBB13A00BAFF8F /* Extensions */,
 				FAC469F42AD3D9AA00AB3A8E /* UserManager.swift */,
+				FA592C5F2ADB39A700BAFF8F /* GameManager.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -240,9 +287,9 @@
 		FAC469F92AD3FD1100AB3A8E /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				FA592C5C2ADB1F7400BAFF8F /* Game */,
 				FAC469FA2AD3FDD300AB3A8E /* Profile */,
 				FAB872502AA258610015D0FA /* RootView.swift */,
-				FA592C5A2ADB144B00BAFF8F /* GameListView.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -397,9 +444,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA592C632ADBB15C00BAFF8F /* Query+EXT.swift in Sources */,
+				FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */,
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
 				FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */,
+				FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */,
+				FA592C602ADB39A800BAFF8F /* GameManager.swift in Sources */,
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
@@ -408,6 +459,7 @@
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,
 				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
+				FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */,
 				FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */,
 				FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */,
 			);

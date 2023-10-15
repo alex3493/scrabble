@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct GameListView: View {
+    
+    @StateObject private var viewModel = GameListViewModel()
+    
     var body: some View {
         NavigationStack {
             List {
@@ -15,6 +18,15 @@ struct GameListView: View {
             }
             .navigationTitle("Games")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading, content: {
+                    NavigationLink {
+                        GameStartView()
+                            .navigationBarBackButtonHidden()
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.headline)
+                    }
+                })
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         ProfileView()
