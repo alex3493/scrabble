@@ -9,11 +9,15 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct DBUser: Codable, Hashable {
+struct DBUser: Codable, Hashable, Identifiable {
     let userId: String
     let email: String?
     let dateCreated: Date?
     let name: String?
+    
+    var id: String {
+        return userId
+    }
     
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"

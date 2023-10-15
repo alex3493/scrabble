@@ -13,9 +13,18 @@ struct GameListView: View {
     
     var body: some View {
         NavigationStack {
+            
             List {
-                Text("Game list goes here...")
+                ForEach(viewModel.games, id: \.id.self) { item in
+                    NavigationLink(destination: GameStartView(gameId: item.id)) {
+                        Text(item.creatorUser.name ?? "")
+                    }
+                }
             }
+            .task {
+                viewModel.addListenerForGames()
+            }
+            
             .navigationTitle("Games")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading, content: {

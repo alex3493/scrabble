@@ -16,6 +16,8 @@ final class AuthWithEmailViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: DBUser?
     
+    static let shared = AuthWithEmailViewModel()
+    
     init() {
         userSession = Auth.auth().currentUser
         

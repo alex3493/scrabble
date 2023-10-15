@@ -16,15 +16,23 @@ struct GameModel: Identifiable, Codable {
     let createdAt: Timestamp
     let creatorUser: DBUser
     var users: [DBUser]
+    var gameStatus: GameStatus = .waiting
     
     enum CodingKeys: String, CodingKey {
         case id
         case createdAt = "created_at"
         case creatorUser = "creator_user"
         case users
+        case gameStatus = "game_status"
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, users: [DBUser]) {
+    enum GameStatus: String, Codable {
+        case waiting
+        case running
+        case finished
+    }
+    
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, users: [DBUser], gameStatus: GameStatus = .waiting) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
@@ -32,7 +40,7 @@ struct GameModel: Identifiable, Codable {
     }
     
     func updateItem(item: GameModel) -> GameModel {
-        return GameModel(id: item.id, createdAt: item.createdAt, creatorUser: item.creatorUser, users: item.users)
+        return GameModel(id: item.id, createdAt: item.createdAt, creatorUser: item.creatorUser, users: item.users, gameStatus: item.gameStatus)
     }
 }
 
@@ -41,11 +49,13 @@ final class GameManager {
     static let shared = GameManager()
     private init() { }
     
-    // TODO: check if we ever use it...
+    // Just in case we need explicit listener removal.
     private var gamesListener: ListenerRegistration? = nil
     private var gameListener: ListenerRegistration? = nil
     
     private let gameCollection = Firestore.firestore().collection("games")
+    
+    // TODO: add waiting games collection property (.whereField stuff)
     
     private func gameDocument(gameId: String) -> DocumentReference {
         return gameCollection.document(gameId)
@@ -66,10 +76,10 @@ final class GameManager {
     func createNewGame(creatorUser: DBUser) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
-        let chat = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser])
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser])
         
-        try document.setData(from: chat, merge: false, encoder: encoder)
-        return chat
+        try document.setData(from: game, merge: false, encoder: encoder)
+        return game
     }
     
     func getGame(gameId: String) async throws -> GameModel {

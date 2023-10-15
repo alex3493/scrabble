@@ -14,6 +14,33 @@ final class GameStartViewModel: ObservableObject {
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
     
+    let currentUser = AuthWithEmailViewModel.shared.currentUser
+
+    func isMeGameCreator() -> Bool {
+        guard game != nil else { return false }
+        
+        return game?.creatorUser.userId == currentUser?.userId
+    }
+    
+    func isMeGamePlayer() -> Bool {
+        guard game != nil else { return false }
+        
+        return ((game?.users.contains(where: { user in
+            return user.userId == currentUser?.userId
+        })) != nil)
+    }
+    
+//    func getPlayers() -> [DBUser] {
+//        guard let game = game else { return [] }
+//        print("Current players: \(game.users)")
+//        return game.users
+//    }
+    
+    var players: [DBUser] {
+        guard let game = game else { return [] }
+        return game.users
+    }
+    
     func addListenerForGame() {
         guard let game = game else { return }
         
@@ -27,7 +54,16 @@ final class GameStartViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func createGame(byUser user: DBUser) async -> GameModel? {
-        try? await GameManager.shared.createNewGame(creatorUser: user)
+//    func removeListenerForGame() {
+//        GameManager.shared.removeListenerForGame()
+//    }
+    
+    func createGame(byUser user: DBUser) async -> String? {
+        self.game = try? await GameManager.shared.createNewGame(creatorUser: user)
+        return self.game?.id
+    }
+    
+    func loadGame(gameId: String) async {
+        self.game = try? await GameManager.shared.getGame(gameId: gameId)
     }
 }
