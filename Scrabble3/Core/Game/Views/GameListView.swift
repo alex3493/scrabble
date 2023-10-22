@@ -16,9 +16,17 @@ struct GameListView: View {
             
             List {
                 ForEach(viewModel.games, id: \.id.self) { item in
-                    NavigationLink(destination: GameStartView(gameId: item.id)) {
+                    NavigationLink {
+                        GameStartView(gameId: item.id)
+                            .navigationBarBackButtonHidden()
+                    } label: {
                         Text(item.creatorUser.name ?? "")
                     }
+                    
+//                    NavigationLink(destination: GameStartView(gameId: item.id)
+//                        .navigationBarBackButtonHidden()) {
+//                            Text(item.creatorUser.name ?? "")
+//                        }
                 }
             }
             .task {

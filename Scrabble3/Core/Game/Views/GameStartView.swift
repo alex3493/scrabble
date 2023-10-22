@@ -17,9 +17,11 @@ struct GameStartView: View {
     
     @Environment(\.dismiss) var dismiss
     
+    let errorStore = ErrorStore.shared
+    
     var body: some View {
         VStack {
-            if viewModel.game != nil {
+            if viewModel.game != nil && gameId != nil {
                 List {
                     Section("Game") {
                         Text("Current game creator: \(viewModel.game!.creatorUser.name!)")
@@ -27,17 +29,83 @@ struct GameStartView: View {
                     }
                     
                     Section("Players") {
-                        VStack {
+                        VStack(alignment: .leading) {
                             ForEach(viewModel.players, id: \.self) { player in
-                                Text("Name: \(player.name!)")
+                                Text(player.name!)
                             }
                         }
                         
                     }
-                    
-//                    Section {
-//                        
-//                    }
+                }
+                
+                if (viewModel.isMeGameCreator()) {
+                    Button {
+                        Task {
+                            do {
+                                try await viewModel.deleteGame(gameId: gameId!)
+                                dismiss()
+                            } catch {
+                                print("DEBUG :: Error deleting game: \(error.localizedDescription)")
+                                // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text("DELETE GAME")
+                                .fontWeight(.semibold)
+                            Image(systemName: "arrow.right")
+                        }
+                        .foregroundColor(.white)
+                        .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+                    }
+                    .background(Color(.systemBlue))
+                    .cornerRadius(10)
+                    .padding(.top, 0)
+                } else if viewModel.isMeGamePlayer() {
+                    Button {
+                        Task {
+                            do {
+                                try await viewModel.leaveGame(gameId: gameId!)
+                                dismiss()
+                            } catch {
+                                print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                                // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text("LEAVE GAME")
+                                .fontWeight(.semibold)
+                            Image(systemName: "arrow.right")
+                        }
+                        .foregroundColor(.white)
+                        .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+                    }
+                    .background(Color(.systemBlue))
+                    .cornerRadius(10)
+                    .padding(.top, 0)
+                } else {
+                    Button {
+                        Task {
+                            do {
+                                try await viewModel.joinGame(gameId: gameId!)
+                            } catch {
+                                print("DEBUG :: Error joining game: \(error.localizedDescription)")
+                                // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text("JOIN GAME")
+                                .fontWeight(.semibold)
+                            Image(systemName: "arrow.right")
+                        }
+                        .foregroundColor(.white)
+                        .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+                    }
+                    .background(Color(.systemBlue))
+                    .cornerRadius(10)
+                    .padding(.top, 0)
                 }
             }
             

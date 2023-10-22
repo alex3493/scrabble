@@ -17,24 +17,18 @@ final class GameStartViewModel: ObservableObject {
     let currentUser = AuthWithEmailViewModel.shared.currentUser
 
     func isMeGameCreator() -> Bool {
-        guard game != nil else { return false }
+        guard let game = game else { return false }
         
-        return game?.creatorUser.userId == currentUser?.userId
+        return game.creatorUser.userId == AuthWithEmailViewModel.shared.currentUser?.userId
     }
     
     func isMeGamePlayer() -> Bool {
-        guard game != nil else { return false }
+        guard let game = game else { return false }
         
-        return ((game?.users.contains(where: { user in
-            return user.userId == currentUser?.userId
-        })) != nil)
+        return game.users.contains(where: { user in
+            return user.userId == AuthWithEmailViewModel.shared.currentUser?.userId
+        })
     }
-    
-//    func getPlayers() -> [DBUser] {
-//        guard let game = game else { return [] }
-//        print("Current players: \(game.users)")
-//        return game.users
-//    }
     
     var players: [DBUser] {
         guard let game = game else { return [] }
@@ -65,5 +59,19 @@ final class GameStartViewModel: ObservableObject {
     
     func loadGame(gameId: String) async {
         self.game = try? await GameManager.shared.getGame(gameId: gameId)
+    }
+    
+    func joinGame(gameId: String) async throws {
+        guard let user = AuthWithEmailViewModel.shared.currentUser else { return }
+        try await GameManager.shared.joinGame(gameId: gameId, user: user)
+    }
+    
+    func leaveGame(gameId: String) async throws {
+        guard let user = AuthWithEmailViewModel.shared.currentUser else { return }
+        try await GameManager.shared.leaveGame(gameId: gameId, user: user)
+    }
+    
+    func deleteGame(gameId: String) async throws {
+        try await GameManager.shared.deleteGame(gameId: gameId)
     }
 }

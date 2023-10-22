@@ -110,6 +110,10 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(dict)
     }
     
+    func deleteGame(gameId: String) async throws {
+        try await gameDocument(gameId: gameId).delete()
+    }
+    
     func addListenerForGames() -> AnyPublisher<[GameModel], Error> {
         let (publisher, listener) = gameCollection
             .addListSnapshotListener(as: GameModel.self)
