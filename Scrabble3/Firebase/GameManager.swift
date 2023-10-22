@@ -38,10 +38,6 @@ struct GameModel: Identifiable, Codable {
         self.creatorUser = creatorUser
         self.users = users
     }
-    
-    func updateItem(item: GameModel) -> GameModel {
-        return GameModel(id: item.id, createdAt: item.createdAt, creatorUser: item.creatorUser, users: item.users, gameStatus: item.gameStatus)
-    }
 }
 
 final class GameManager {
@@ -112,6 +108,17 @@ final class GameManager {
     
     func deleteGame(gameId: String) async throws {
         try await gameDocument(gameId: gameId).delete()
+    }
+    
+    func startGame(gameId: String) async throws {
+        var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
+        game.gameStatus = .running
+        
+        guard let data = try? encoder.encode(game) else {
+            throw URLError(.cannotDecodeRawData)
+        }
+        
+        try await gameDocument(gameId: gameId).updateData(data)
     }
     
     func addListenerForGames() -> AnyPublisher<[GameModel], Error> {

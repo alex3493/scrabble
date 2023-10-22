@@ -20,88 +20,109 @@ struct GameStartView: View {
     let errorStore = ErrorStore.shared
     
     var body: some View {
-        VStack {
-            if viewModel.game != nil && gameId != nil {
-                List {
-                    Section("Game") {
-                        Text("Current game creator: \(viewModel.game!.creatorUser.name!)")
-                        Text("Current game ID: \(viewModel.game!.id)")
-                    }
-                    
-                    Section("Players") {
-                        ForEach(viewModel.players, id: \.self) { player in
-                            Text(player.name!)
+        if (viewModel.isGameRunning()) {
+            BoardView()
+        } else {
+            VStack {
+                if viewModel.game != nil && gameId != nil {
+                    List {
+                        Section("Game") {
+                            Text("Current game creator: \(viewModel.game!.creatorUser.name!)")
+                            Text("Current game ID: \(viewModel.game!.id)")
+                            Text("Current game status: \(viewModel.game!.gameStatus.rawValue)")
                         }
                         
+                        Section("Players") {
+                            ForEach(viewModel.players, id: \.self) { player in
+                                Text(player.name!)
+                            }
+                            
+                        }
+                    }
+                    
+                    if (viewModel.isMeGameCreator()) {
+                        ActionButton(label: "DELETE GAME", action: {
+                            do {
+                                try await viewModel.deleteGame(gameId: gameId!)
+                                dismiss()
+                            } catch {
+                                print("DEBUG :: Error deleting game: \(error.localizedDescription)")
+                                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                            }
+                        }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed))
+                    } else if viewModel.isMeGamePlayer() {
+                        ActionButton(label: "LEAVE GAME", action: {
+                            do {
+                                try await viewModel.leaveGame(gameId: gameId!)
+                                dismiss()
+                            } catch {
+                                print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                            }
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange))
+                    } else {
+                        ActionButton(label: "JOIN GAME", action: {
+                            do {
+                                try await viewModel.joinGame(gameId: gameId!)
+                            } catch {
+                                print("DEBUG :: Error joining game: \(error.localizedDescription)")
+                                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                            }
+                        }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue))
+                    }
+                    if (viewModel.canStartGame()) {
+                        ActionButton(label: "START GAME", action: {
+                            do {
+                                try await viewModel.startGame(gameId: gameId!)
+                            } catch {
+                                print("DEBUG :: Error starting game: \(error.localizedDescription)")
+                                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                            }
+                        }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue))
                     }
                 }
                 
-                if (viewModel.isMeGameCreator()) {
-                    ActionButton(label: "DELETE GAME", action: {
-                        do {
-                            try await viewModel.deleteGame(gameId: gameId!)
-                            dismiss()
-                        } catch {
-                            print("DEBUG :: Error deleting game: \(error.localizedDescription)")
-                            // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
-                        }
-                    }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed))
-                } else if viewModel.isMeGamePlayer() {
-                    ActionButton(label: "LEAVE GAME", action: {
-                        do {
-                            try await viewModel.leaveGame(gameId: gameId!)
-                            dismiss()
-                        } catch {
-                            print("DEBUG :: Error deleting game: \(error.localizedDescription)")
-                            // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
-                        }
-                    }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange))
+                Spacer()
+                
+                // TODO: add return to list controls here...
+                Button {
+                    dismiss()
+                } label: {
+                    HStack(spacing: 3) {
+                        Text("Already have an account?")
+                        Text("Sign in")
+                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    }
+                    .font(.system(size: 14))
+                }
+                
+            }
+            .task {
+                if (gameId == nil) {
+                    do {
+                        try await createGame()
+                    } catch {
+                        print("DEBUG :: Error creating game: \(error.localizedDescription)")
+                        errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                    }
+                    viewModel.addListenerForGame()
                 } else {
-                    ActionButton(label: "JOIN GAME", action: {
-                        do {
-                            try await viewModel.joinGame(gameId: gameId!)
-                        } catch {
-                            print("DEBUG :: Error joining game: \(error.localizedDescription)")
-                            // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
-                        }
-                    }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue))
+                    guard let gameId = gameId else { return }
+                    await viewModel.loadGame(gameId: gameId)
+                    viewModel.addListenerForGame()
                 }
-            }
-            
-            Spacer()
-            
-            // TODO: add return to list controls here...
-            Button {
-                dismiss()
-            } label: {
-                HStack(spacing: 3) {
-                    Text("Already have an account?")
-                    Text("Sign in")
-                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                }
-                .font(.system(size: 14))
-            }
-            
-        }
-        .task {
-            if (gameId == nil) {
-                await createGame()
-                viewModel.addListenerForGame()
-            } else {
-                guard let gameId = gameId else { return }
-                await viewModel.loadGame(gameId: gameId)
-                viewModel.addListenerForGame()
             }
         }
     }
     
-    func createGame() async {
+    // TODO: move it to view model.
+    func createGame() async throws {
         print("Start game create")
         guard let user = authViewModel.currentUser else { return }
         
         print ("Creating game. User: \(String(describing: user.email))")
         
-        gameId = await viewModel.createGame(byUser: user)
+        gameId = try await viewModel.createGame(byUser: user)
         
         print ("Game created. Id: \(String(describing: gameId))")
         
@@ -109,9 +130,6 @@ struct GameStartView: View {
         
     }
     
-    func leaveGame() {
-        // TODO.
-    }
 }
 
 #Preview {

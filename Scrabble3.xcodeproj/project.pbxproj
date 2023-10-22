@@ -38,6 +38,7 @@
 		FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */; };
 		FAC46A022AD4AB9700AB3A8E /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */; };
 		FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962202AE56C4300BAAC7B /* ActionButton.swift */; };
+		FAE962252AE5A75200BAAC7B /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962242AE5A75200BAAC7B /* BoardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 		FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAE962202AE56C4300BAAC7B /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
+		FAE962242AE5A75200BAAC7B /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -290,6 +292,7 @@
 		FAC469F92AD3FD1100AB3A8E /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				FAE962222AE5A73400BAAC7B /* Board */,
 				FA592C5C2ADB1F7400BAFF8F /* Game */,
 				FAC469FA2AD3FDD300AB3A8E /* Profile */,
 				FAB872502AA258610015D0FA /* RootView.swift */,
@@ -303,6 +306,22 @@
 				FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		FAE962222AE5A73400BAAC7B /* Board */ = {
+			isa = PBXGroup;
+			children = (
+				FAE962232AE5A73F00BAAC7B /* Views */,
+			);
+			path = Board;
+			sourceTree = "<group>";
+		};
+		FAE962232AE5A73F00BAAC7B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAE962242AE5A75200BAAC7B /* BoardView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -464,6 +483,7 @@
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,
 				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
 				FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */,
+				FAE962252AE5A75200BAAC7B /* BoardView.swift in Sources */,
 				FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */,
 				FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */,
 			);

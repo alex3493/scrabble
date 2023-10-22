@@ -30,6 +30,18 @@ final class GameStartViewModel: ObservableObject {
         })
     }
     
+    func canStartGame() -> Bool {
+        guard let game = game else { return false }
+        
+        return isMeGamePlayer() && game.users.count >= 2
+    }
+    
+    func isGameRunning() -> Bool {
+        guard let game = game else { return false }
+        
+        return game.gameStatus == .running
+    }
+    
     var players: [DBUser] {
         guard let game = game else { return [] }
         return game.users
@@ -52,13 +64,17 @@ final class GameStartViewModel: ObservableObject {
 //        GameManager.shared.removeListenerForGame()
 //    }
     
-    func createGame(byUser user: DBUser) async -> String? {
-        self.game = try? await GameManager.shared.createNewGame(creatorUser: user)
+    func createGame(byUser user: DBUser) async throws -> String? {
+        self.game = try await GameManager.shared.createNewGame(creatorUser: user)
         return self.game?.id
     }
     
     func loadGame(gameId: String) async {
         self.game = try? await GameManager.shared.getGame(gameId: gameId)
+    }
+    
+    func startGame (gameId: String) async throws {
+        try await GameManager.shared.startGame(gameId: gameId)
     }
     
     func joinGame(gameId: String) async throws {

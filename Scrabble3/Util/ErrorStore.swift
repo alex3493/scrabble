@@ -13,12 +13,16 @@ enum AppError: LocalizedError {
     
     case registrationError(message: String?)
     
+    case gameSetupError(message: String?)
+    
     var errorDescription: String? {
         switch self {
         case .loginError:
             return "Failed logging in account"
         case .registrationError:
-            return"Failed registering new account"
+            return "Failed registering new account"
+        case .gameSetupError:
+            return "Error setting up game"
         }
     }
     
@@ -28,17 +32,11 @@ enum AppError: LocalizedError {
             return message ?? "Entered email or password were incorrect"
         case .registrationError(let message):
             return message ?? "Email address is already in use"
+        case .gameSetupError(let message):
+            return message ?? "Error trying to create, join, leave, remove or start game"
         }
     }
     
-    //    var recoverySuggestion: String? {
-    //        switch self {
-    //        case .loginError:
-    //            return "Please try again with different credentials"
-    //        case .registrationError:
-    //            return "Please try again with different email"
-    //        }
-    //    }
 }
 
 final class ErrorStore: ObservableObject {
@@ -63,6 +61,10 @@ final class ErrorStore: ObservableObject {
     
     func showRegistrationAlertView(withMessage message: String?) {
         activeError = AppError.registrationError(message: message)
+    }
+    
+    func showGameSetupAlertView(withMessage message: String?) {
+        activeError = AppError.gameSetupError(message: message)
     }
     
     
