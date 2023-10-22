@@ -29,10 +29,8 @@ struct GameStartView: View {
                     }
                     
                     Section("Players") {
-                        VStack(alignment: .leading) {
-                            ForEach(viewModel.players, id: \.self) { player in
-                                Text(player.name!)
-                            }
+                        ForEach(viewModel.players, id: \.self) { player in
+                            Text(player.name!)
                         }
                         
                     }
