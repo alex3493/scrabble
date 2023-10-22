@@ -37,6 +37,7 @@
 		FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */; };
 		FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */; };
 		FAC46A022AD4AB9700AB3A8E /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */; };
+		FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962202AE56C4300BAAC7B /* ActionButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 		FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWithEmailViewModel.swift; sourceTree = "<group>"; };
+		FAE962202AE56C4300BAAC7B /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +257,7 @@
 			children = (
 				FAC114BC2AD1AC65001152D8 /* TextInputView.swift */,
 				FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */,
+				FAE962202AE56C4300BAAC7B /* ActionButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
+				FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */,
 				FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */,
 				FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */,
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,

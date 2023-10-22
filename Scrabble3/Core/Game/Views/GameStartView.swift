@@ -39,73 +39,34 @@ struct GameStartView: View {
                 }
                 
                 if (viewModel.isMeGameCreator()) {
-                    Button {
-                        Task {
-                            do {
-                                try await viewModel.deleteGame(gameId: gameId!)
-                                dismiss()
-                            } catch {
-                                print("DEBUG :: Error deleting game: \(error.localizedDescription)")
-                                // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
-                            }
+                    ActionButton(label: "DELETE GAME", action: {
+                        do {
+                            try await viewModel.deleteGame(gameId: gameId!)
+                            dismiss()
+                        } catch {
+                            print("DEBUG :: Error deleting game: \(error.localizedDescription)")
+                            // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
                         }
-                    } label: {
-                        HStack {
-                            Text("DELETE GAME")
-                                .fontWeight(.semibold)
-                            Image(systemName: "arrow.right")
-                        }
-                        .foregroundColor(.white)
-                        .frame(width: UIScreen.main.bounds.width - 32, height: 48)
-                    }
-                    .background(Color(.systemBlue))
-                    .cornerRadius(10)
-                    .padding(.top, 0)
+                    }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed))
                 } else if viewModel.isMeGamePlayer() {
-                    Button {
-                        Task {
-                            do {
-                                try await viewModel.leaveGame(gameId: gameId!)
-                                dismiss()
-                            } catch {
-                                print("DEBUG :: Error leaving game: \(error.localizedDescription)")
-                                // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
-                            }
+                    ActionButton(label: "LEAVE GAME", action: {
+                        do {
+                            try await viewModel.leaveGame(gameId: gameId!)
+                            dismiss()
+                        } catch {
+                            print("DEBUG :: Error deleting game: \(error.localizedDescription)")
+                            // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
                         }
-                    } label: {
-                        HStack {
-                            Text("LEAVE GAME")
-                                .fontWeight(.semibold)
-                            Image(systemName: "arrow.right")
-                        }
-                        .foregroundColor(.white)
-                        .frame(width: UIScreen.main.bounds.width - 32, height: 48)
-                    }
-                    .background(Color(.systemBlue))
-                    .cornerRadius(10)
-                    .padding(.top, 0)
+                    }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange))
                 } else {
-                    Button {
-                        Task {
-                            do {
-                                try await viewModel.joinGame(gameId: gameId!)
-                            } catch {
-                                print("DEBUG :: Error joining game: \(error.localizedDescription)")
-                                // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
-                            }
+                    ActionButton(label: "JOIN GAME", action: {
+                        do {
+                            try await viewModel.joinGame(gameId: gameId!)
+                        } catch {
+                            print("DEBUG :: Error joining game: \(error.localizedDescription)")
+                            // errorStore.showLoginAlertView(withMessage: error.localizedDescription)
                         }
-                    } label: {
-                        HStack {
-                            Text("JOIN GAME")
-                                .fontWeight(.semibold)
-                            Image(systemName: "arrow.right")
-                        }
-                        .foregroundColor(.white)
-                        .frame(width: UIScreen.main.bounds.width - 32, height: 48)
-                    }
-                    .background(Color(.systemBlue))
-                    .cornerRadius(10)
-                    .padding(.top, 0)
+                    }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue))
                 }
             }
             
