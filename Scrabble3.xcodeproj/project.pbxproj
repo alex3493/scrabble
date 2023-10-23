@@ -39,6 +39,7 @@
 		FAC46A022AD4AB9700AB3A8E /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */; };
 		FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962202AE56C4300BAAC7B /* ActionButton.swift */; };
 		FAE962252AE5A75200BAAC7B /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962242AE5A75200BAAC7B /* BoardView.swift */; };
+		FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +89,7 @@
 		FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAE962202AE56C4300BAAC7B /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		FAE962242AE5A75200BAAC7B /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +243,7 @@
 			children = (
 				FAC114B42AD1AA07001152D8 /* LoginView.swift */,
 				FAC114B62AD1AA6C001152D8 /* RegistrationView.swift */,
+				FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -467,6 +470,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA592C632ADBB15C00BAFF8F /* Query+EXT.swift in Sources */,
+				FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */,
 				FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */,
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,

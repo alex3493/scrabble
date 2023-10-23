@@ -49,6 +49,15 @@ struct ProfileView: View {
                 }
                 
                 Section("Account") {
+                    HStack(spacing: 12) {
+                        Image(systemName: "lock.circle")
+                            .imageScale(.small)
+                            .font(.title)
+                            .foregroundColor(Color(.systemGray))
+                        NavigationLink(destination: ChangePasswordView(), label: {
+                            Text("Change Password")
+                        })
+                    }
                     Button {
                         viewModel.signOut()
                     } label: {

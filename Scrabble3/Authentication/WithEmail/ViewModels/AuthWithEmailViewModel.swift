@@ -53,7 +53,20 @@ final class AuthWithEmailViewModel: ObservableObject {
         
         userSession = authDataResult.user
         try? await fetchUser()
+    }
+    
+    func updatePassword(newPassword: String, currentPassword: String) async -> Bool {
+        guard let userSession = userSession else { return false }
+        guard let email = userSession.email else { return false }
         
+        do {
+            try await AuthenticationManager.shared.signInUser(email: email, password: currentPassword)
+            try await AuthenticationManager.shared.updatePassword(password: newPassword)
+        } catch {
+            return false
+        }
+        
+        return true
     }
     
     func signOut() {
