@@ -16,7 +16,7 @@ final class AuthWithEmailViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: DBUser?
     
-    static let shared = AuthWithEmailViewModel()
+    static var sharedCurrentUser: DBUser? = nil
     
     init() {
         userSession = Auth.auth().currentUser
@@ -80,8 +80,10 @@ final class AuthWithEmailViewModel: ObservableObject {
     
     func deleteAccount() {
         guard let userSession = userSession else { return }
+        
         AuthenticationManager.shared.deleteAccount()
         UserManager.shared.deleteUser(userId: userSession.uid)
+        
         clearUser()
     }
     
@@ -89,10 +91,14 @@ final class AuthWithEmailViewModel: ObservableObject {
         guard let userId = userSession?.uid else { return }
         
         currentUser = try? await UserManager.shared.getUser(userId: userId)
+        
+        AuthWithEmailViewModel.sharedCurrentUser = currentUser
     }
     
     func clearUser() {
         userSession = nil
         currentUser = nil
+        
+        AuthWithEmailViewModel.sharedCurrentUser = nil
     }
 }

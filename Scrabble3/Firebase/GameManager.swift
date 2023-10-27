@@ -10,36 +10,6 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import Combine
 
-struct GameModel: Identifiable, Codable {
-    
-    let id: String
-    let createdAt: Timestamp
-    let creatorUser: DBUser
-    var users: [DBUser]
-    var gameStatus: GameStatus = .waiting
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case createdAt = "created_at"
-        case creatorUser = "creator_user"
-        case users
-        case gameStatus = "game_status"
-    }
-    
-    enum GameStatus: String, Codable {
-        case waiting
-        case running
-        case finished
-    }
-    
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, users: [DBUser], gameStatus: GameStatus = .waiting) {
-        self.id = id
-        self.createdAt = createdAt
-        self.creatorUser = creatorUser
-        self.users = users
-    }
-}
-
 final class GameManager {
     
     static let shared = GameManager()
@@ -72,7 +42,7 @@ final class GameManager {
     func createNewGame(creatorUser: DBUser) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
-        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser])
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser], turn: 0)
         
         try document.setData(from: game, merge: false, encoder: encoder)
         return game
