@@ -13,7 +13,7 @@ struct GamePlayView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            if (proxy.size.width > proxy.size.height) {
+            if (isLandscape(proxy.size)) {
                 HStack {
                     BoardView()
                         .environment(\.mainWindowSize, proxy.size)
@@ -34,6 +34,10 @@ struct GamePlayView: View {
             }
             
         }
+    }
+    
+    func isLandscape(_ size: CGSize) -> Bool {
+        return size.width > size.height
     }
 }
 

@@ -34,6 +34,7 @@
 		FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545952AEE2C2200B58EFC /* ValidationError.swift */; };
 		FA7545982AEE36E900B58EFC /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545972AEE36E900B58EFC /* BoardViewModel.swift */; };
 		FA75459A2AEE39B600B58EFC /* RackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545992AEE39B600B58EFC /* RackViewModel.swift */; };
+		FA75459C2AEE491100B58EFC /* CellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75459B2AEE491100B58EFC /* CellView.swift */; };
 		FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8724E2AA258610015D0FA /* Scrabble3App.swift */; };
 		FAB872512AA258610015D0FA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872502AA258610015D0FA /* RootView.swift */; };
 		FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB872522AA2586B0015D0FA /* Assets.xcassets */; };
@@ -101,6 +102,8 @@
 		FA7545952AEE2C2200B58EFC /* ValidationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationError.swift; sourceTree = "<group>"; };
 		FA7545972AEE36E900B58EFC /* BoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewModel.swift; sourceTree = "<group>"; };
 		FA7545992AEE39B600B58EFC /* RackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RackViewModel.swift; sourceTree = "<group>"; };
+		FA75459B2AEE491100B58EFC /* CellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellView.swift; sourceTree = "<group>"; };
+		FA75459D2AEE5B0F00B58EFC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FAB8724B2AA258610015D0FA /* Scrabble3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrabble3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB8724E2AA258610015D0FA /* Scrabble3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3App.swift; sourceTree = "<group>"; };
 		FAB872502AA258610015D0FA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -248,6 +251,7 @@
 		FAB8724D2AA258610015D0FA /* Scrabble3 */ = {
 			isa = PBXGroup;
 			children = (
+				FA75459D2AEE5B0F00B58EFC /* Info.plist */,
 				FA7545772AEA582C00B58EFC /* Models */,
 				FA592C572ADA8A0700BAFF8F /* Util */,
 				FAC469F92AD3FD1100AB3A8E /* Core */,
@@ -387,6 +391,7 @@
 				FA7545822AEC046C00B58EFC /* BoardView.swift */,
 				FA7545842AEC048D00B58EFC /* RackView.swift */,
 				FA7545862AEC04B400B58EFC /* CommandView.swift */,
+				FA75459B2AEE491100B58EFC /* CellView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -551,6 +556,7 @@
 				FA7545892AEC05F100B58EFC /* DeviceEnvironment.swift in Sources */,
 				FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
+				FA75459C2AEE491100B58EFC /* CellView.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
 				FA7545812AEACFE600B58EFC /* LetterTileModel.swift in Sources */,
 				FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */,
@@ -735,6 +741,7 @@
 				DEVELOPMENT_TEAM = 4FW64CF2L7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Scrabble3/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -764,6 +771,7 @@
 				DEVELOPMENT_TEAM = 4FW64CF2L7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Scrabble3/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

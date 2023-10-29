@@ -16,9 +16,11 @@ class RackViewModel: LetterStoreBase {
     private override init() {
         super.init()
         for i in 0...self.size - 1 {
-            let cell = CellModel(row: -1, col: -1, pos: i, letterTile: nil, cellStatus: .empty, role: .rack)
+            let cell = CellModel(row: -1, col: -1, pos: Int(i), letterTile: nil, cellStatus: .empty, role: .rack)
             cells.append(cell)
         }
+        // TODO: just testing...
+        fillRack()
     }
     
     func cellByPosition(pos: Int) -> CellModel {
