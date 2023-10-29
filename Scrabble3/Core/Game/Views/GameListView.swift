@@ -22,11 +22,6 @@ struct GameListView: View {
                     } label: {
                         Text(item.creatorUser.name ?? "")
                     }
-                    
-//                    NavigationLink(destination: GameStartView(gameId: item.id)
-//                        .navigationBarBackButtonHidden()) {
-//                            Text(item.creatorUser.name ?? "")
-//                        }
                 }
             }
             .task {

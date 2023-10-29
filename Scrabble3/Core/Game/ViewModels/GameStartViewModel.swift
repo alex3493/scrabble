@@ -14,20 +14,32 @@ final class GameStartViewModel: ObservableObject {
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
     
-    let currentUser = AuthWithEmailViewModel.shared.currentUser
-
+    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
+    
     func isMeGameCreator() -> Bool {
         guard let game = game else { return false }
         
-        return game.creatorUser.userId == AuthWithEmailViewModel.shared.currentUser?.userId
+        return game.creatorUser.userId == currentUser?.userId
     }
     
     func isMeGamePlayer() -> Bool {
         guard let game = game else { return false }
         
         return game.users.contains(where: { user in
-            return user.userId == AuthWithEmailViewModel.shared.currentUser?.userId
+            return user.userId == currentUser?.userId
         })
+    }
+    
+    func canStartGame() -> Bool {
+        guard let game = game else { return false }
+        
+        return isMeGamePlayer() && game.users.count >= 2
+    }
+    
+    func isGameRunning() -> Bool {
+        guard let game = game else { return false }
+        
+        return game.gameStatus == .running
     }
     
     var players: [DBUser] {
@@ -48,12 +60,15 @@ final class GameStartViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-//    func removeListenerForGame() {
-//        GameManager.shared.removeListenerForGame()
-//    }
+    //    func removeListenerForGame() {
+    //        GameManager.shared.removeListenerForGame()
+    //    }
     
-    func createGame(byUser user: DBUser) async -> String? {
-        self.game = try? await GameManager.shared.createNewGame(creatorUser: user)
+    func createGame(byUser user: DBUser) async throws -> String? {
+        self.game = try await GameManager.shared.createNewGame(creatorUser: user)
+        
+        addListenerForGame()
+        
         return self.game?.id
     }
     
@@ -61,13 +76,17 @@ final class GameStartViewModel: ObservableObject {
         self.game = try? await GameManager.shared.getGame(gameId: gameId)
     }
     
+    func startGame (gameId: String) async throws {
+        try await GameManager.shared.startGame(gameId: gameId)
+    }
+    
     func joinGame(gameId: String) async throws {
-        guard let user = AuthWithEmailViewModel.shared.currentUser else { return }
+        guard let user = currentUser else { return }
         try await GameManager.shared.joinGame(gameId: gameId, user: user)
     }
     
     func leaveGame(gameId: String) async throws {
-        guard let user = AuthWithEmailViewModel.shared.currentUser else { return }
+        guard let user = currentUser else { return }
         try await GameManager.shared.leaveGame(gameId: gameId, user: user)
     }
     
