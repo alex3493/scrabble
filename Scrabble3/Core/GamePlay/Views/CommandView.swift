@@ -19,26 +19,56 @@ struct CommandView: View {
     
     var body: some View {
         if let gameId = gameId {
-            List {
-                ForEach(playerList, id: \.id.self)  { item in
-                    HStack {
-                        Text(item.name)
-                        Text("\(item.score)")
-                        if item.hasTurn {
-                            Text("Current")
+            if isLandscape {
+                VStack {
+                    List {
+                        ForEach(playerList, id: \.id.self)  { item in
+                            HStack {
+                                Text(item.name)
+                                Text("\(item.score)")
+                                if item.hasTurn {
+                                    Text("Current")
+                                }
+                            }
                         }
+                    }.task {
+                        playerList = await viewModel.getPlayersList(gameId: gameId)
                     }
+                    
+                    ActionButton(label: "STOP GAME", action: {
+                        do {
+                            try await viewModel.stopGame(gameId: gameId)
+                        } catch {
+                            print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                        }
+                    }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
                 }
-            }.task {
-                playerList = await viewModel.getPlayersList(gameId: gameId)
+                .padding()
+            } else {
+                HStack {
+                    List {
+                        ForEach(playerList, id: \.id.self)  { item in
+                            HStack {
+                                Text(item.name)
+                                Text("\(item.score)")
+                                if item.hasTurn {
+                                    Text("Current")
+                                }
+                            }
+                        }
+                    }.task {
+                        playerList = await viewModel.getPlayersList(gameId: gameId)
+                    }
+                    ActionButton(label: "STOP GAME", action: {
+                        do {
+                            try await viewModel.stopGame(gameId: gameId)
+                        } catch {
+                            print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                        }
+                    }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                }
+                .padding()
             }
-            ActionButton(label: "STOP GAME", action: {
-                do {
-                    try await viewModel.stopGame(gameId: gameId)
-                } catch {
-                    print("DEBUG :: Error leaving game: \(error.localizedDescription)")
-                }
-            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange))
         }
     }
     

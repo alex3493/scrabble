@@ -49,7 +49,7 @@ struct GameStartView: View {
                                 print("DEBUG :: Error deleting game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
-                        }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed))
+                        }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
                     } else if viewModel.isMeGamePlayer() {
                         ActionButton(label: "LEAVE GAME", action: {
                             do {
@@ -59,7 +59,7 @@ struct GameStartView: View {
                                 print("DEBUG :: Error leaving game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
-                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange))
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: true)
                     } else {
                         ActionButton(label: "JOIN GAME", action: {
                             do {
@@ -68,7 +68,7 @@ struct GameStartView: View {
                                 print("DEBUG :: Error joining game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
-                        }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue))
+                        }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue), maxWidth: true)
                     }
                     if (viewModel.canStartGame()) {
                         ActionButton(label: "START GAME", action: {
@@ -78,7 +78,7 @@ struct GameStartView: View {
                                 print("DEBUG :: Error starting game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
-                        }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue))
+                        }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
                     }
                 }
                 

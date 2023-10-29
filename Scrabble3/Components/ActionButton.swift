@@ -12,6 +12,7 @@ struct ActionButton: View {
     let action: () async -> Void
     let buttonSystemImage: String
     let backGroundColor: Color
+    let maxWidth: Bool
     
     var body: some View {
         Button {
@@ -25,7 +26,7 @@ struct ActionButton: View {
                 Image(systemName: buttonSystemImage)
             }
             .foregroundColor(.white)
-            .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+            .frame(width: maxWidth ? UIScreen.main.bounds.width - 32 : nil, height: 48).padding()
         }
         .background(backGroundColor)
         .cornerRadius(10)
@@ -34,5 +35,5 @@ struct ActionButton: View {
 }
 
 #Preview {
-    ActionButton(label: "Label", action: {}, buttonSystemImage: "arrow.right", backGroundColor: Color(.systemBlue))
+    ActionButton(label: "Label", action: {}, buttonSystemImage: "arrow.right", backGroundColor: Color(.systemBlue), maxWidth: true)
 }

@@ -39,7 +39,7 @@ struct ChangePasswordView: View {
                     print("DEBUG :: Error updating password")
                     errorStore.showLoginAlertView(withMessage: "Password could not be updated")
                 }
-            }, buttonSystemImage: "lock.fill", backGroundColor: Color(.systemBlue))
+            }, buttonSystemImage: "lock.fill", backGroundColor: Color(.systemBlue), maxWidth: true)
             
             Spacer()
         }
