@@ -13,6 +13,8 @@ struct CommandView: View {
     
     @StateObject private var viewModel = CommandViewModel()
     
+    @StateObject private var rackViewModel = RackViewModel.shared
+    
     let gameId: String?
     
     @State var playerList = [Player]()
@@ -23,16 +25,31 @@ struct CommandView: View {
                 VStack {
                     List {
                         ForEach(playerList, id: \.id.self)  { item in
-                            HStack {
+                            HStack(spacing: 12) {
+                                Image(systemName: item.hasTurn ? "person.fill" : "person")
                                 Text(item.name)
+                                Spacer()
                                 Text("\(item.score)")
-                                if item.hasTurn {
-                                    Text("Current")
-                                }
                             }
                         }
                     }.task {
                         playerList = await viewModel.getPlayersList(gameId: gameId)
+                    }
+                    
+                    if isInChangeLetterMode {
+                        ActionButton(label: "CHANGE LETTERS", action: {
+                            viewModel.changeLetters(confirmed: true)
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                        ActionButton(label: "CANCEL", action: {
+                            viewModel.setChangeLettersMode(mode: false)
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                    } else {
+                        ActionButton(label: "CHANGE LETTERS", action: {
+                            viewModel.setChangeLettersMode(mode: true)
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                        ActionButton(label: "SUBMIT", action: {
+                            await viewModel.submitMove()
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
                     }
                     
                     ActionButton(label: "STOP GAME", action: {
@@ -48,17 +65,33 @@ struct CommandView: View {
                 HStack {
                     List {
                         ForEach(playerList, id: \.id.self)  { item in
-                            HStack {
+                            HStack(spacing: 12) {
+                                Image(systemName: item.hasTurn ? "person.fill" : "person")
                                 Text(item.name)
+                                Spacer()
                                 Text("\(item.score)")
-                                if item.hasTurn {
-                                    Text("Current")
-                                }
                             }
                         }
                     }.task {
                         playerList = await viewModel.getPlayersList(gameId: gameId)
                     }
+                    
+                    if isInChangeLetterMode {
+                        ActionButton(label: "CHANGE LETTERS", action: {
+                            viewModel.changeLetters(confirmed: true)
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                        ActionButton(label: "CANCEL", action: {
+                            viewModel.setChangeLettersMode(mode: false)
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                    } else {
+                        ActionButton(label: "CHANGE LETTERS", action: {
+                            viewModel.setChangeLettersMode(mode: true)
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                        ActionButton(label: "SUBMIT", action: {
+                            await viewModel.submitMove()
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                    }
+                    
                     ActionButton(label: "STOP GAME", action: {
                         do {
                             try await viewModel.stopGame(gameId: gameId)
@@ -74,6 +107,10 @@ struct CommandView: View {
     
     var isLandscape: Bool {
         return mainWindowSize.width > mainWindowSize.height
+    }
+    
+    var isInChangeLetterMode: Bool {
+        return rackViewModel.changeLettersMode
     }
 }
 

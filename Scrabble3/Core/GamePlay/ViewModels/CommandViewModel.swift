@@ -18,6 +18,12 @@ struct Player {
 @MainActor
 final class CommandViewModel: ObservableObject {
     
+    private var rackViewModel = RackViewModel.shared
+    // private var boardViewModel = BoardViewModel.shared
+    
+    private var gameViewModel = GamePlayViewModel.shared
+    
+    
     func getPlayersList(gameId: String) async -> [Player] {
         guard let game = try? await GameManager.shared.getGame(gameId: gameId) else { return [] }
         
@@ -32,6 +38,26 @@ final class CommandViewModel: ObservableObject {
     
     func stopGame(gameId: String) async throws {
         try await GameManager.shared.stopGame(gameId: gameId)
+    }
+    
+    func setChangeLettersMode(mode: Bool) {
+        gameViewModel.resetMove()
+        rackViewModel.setChangeLettersMode(mode: mode)
+    }
+    
+    func changeLetters(confirmed: Bool) {
+        if (confirmed) {
+            rackViewModel.changeLetters()
+            gameViewModel.nextTurn()
+        }
+        rackViewModel.setChangeLettersMode(mode: false)
+    }
+    
+    // TODO: We have to get all-users' previous moves words.
+    func submitMove() async {
+        if await gameViewModel.submitMove(existingWords: []) {
+            gameViewModel.nextTurn()
+        }
     }
     
 }

@@ -35,6 +35,7 @@
 		FA7545982AEE36E900B58EFC /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545972AEE36E900B58EFC /* BoardViewModel.swift */; };
 		FA75459A2AEE39B600B58EFC /* RackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545992AEE39B600B58EFC /* RackViewModel.swift */; };
 		FA75459C2AEE491100B58EFC /* CellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75459B2AEE491100B58EFC /* CellView.swift */; };
+		FA75459F2AEE808800B58EFC /* BackenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75459E2AEE808800B58EFC /* BackenService.swift */; };
 		FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8724E2AA258610015D0FA /* Scrabble3App.swift */; };
 		FAB872512AA258610015D0FA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872502AA258610015D0FA /* RootView.swift */; };
 		FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB872522AA2586B0015D0FA /* Assets.xcassets */; };
@@ -104,6 +105,7 @@
 		FA7545992AEE39B600B58EFC /* RackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RackViewModel.swift; sourceTree = "<group>"; };
 		FA75459B2AEE491100B58EFC /* CellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellView.swift; sourceTree = "<group>"; };
 		FA75459D2AEE5B0F00B58EFC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		FA75459E2AEE808800B58EFC /* BackenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackenService.swift; sourceTree = "<group>"; };
 		FAB8724B2AA258610015D0FA /* Scrabble3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrabble3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB8724E2AA258610015D0FA /* Scrabble3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3App.swift; sourceTree = "<group>"; };
 		FAB872502AA258610015D0FA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 			children = (
 				FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */,
 				FA7545882AEC05F100B58EFC /* DeviceEnvironment.swift */,
+				FA75459E2AEE808800B58EFC /* BackenService.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -547,6 +550,7 @@
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
 				FA75457D2AEA589D00B58EFC /* MoveModel.swift in Sources */,
 				FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */,
+				FA75459F2AEE808800B58EFC /* BackenService.swift in Sources */,
 				FA7545872AEC04B400B58EFC /* CommandView.swift in Sources */,
 				FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */,
 				FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */,

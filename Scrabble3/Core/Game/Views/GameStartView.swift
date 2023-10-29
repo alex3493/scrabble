@@ -84,17 +84,16 @@ struct GameStartView: View {
                 
                 Spacer()
                 
-                // TODO: add return to list controls here...
                 Button {
                     dismiss()
                 } label: {
                     HStack(spacing: 3) {
-                        Text("Already have an account?")
-                        Text("Sign in")
+                        Text("Return to game list")
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     }
                     .font(.system(size: 14))
                 }
+                .padding()
                 
             }
             .task {

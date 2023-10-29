@@ -33,7 +33,7 @@ struct CellView: View {
                     }
                     return true
                 }
-        } else if (!cell.isImmutable && !isCellReadyForLetterChange()) {
+        } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
             cellPiece
                 .draggable(cell)
                 .dropDestination(for: CellModel.self) { items, location in
@@ -43,7 +43,7 @@ struct CellView: View {
                     }
                     return true
                 }
-        } else if (isCellReadyForLetterChange()) {
+        } else if (isCellReadyForLetterChange) {
             cellPiece
                 .onTapGesture {
                     rack.setCellStatusByPosition(
@@ -119,7 +119,7 @@ struct CellView: View {
         }
     }
     
-    private func isCellReadyForLetterChange() -> Bool {
+    private var isCellReadyForLetterChange: Bool {
         return rack.changeLettersMode && cell.role == .rack && !cell.isEmpty
     }
 }
