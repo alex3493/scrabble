@@ -16,6 +16,7 @@ struct GameModel: Identifiable, Codable {
     let creatorUser: DBUser
     var users: [DBUser]
     var turn: Int = 0
+    var scores: [Int]
     var gameStatus: GameStatus = .waiting
     
     enum CodingKeys: String, CodingKey {
@@ -24,6 +25,7 @@ struct GameModel: Identifiable, Codable {
         case creatorUser = "creator_user"
         case users
         case turn
+        case scores
         case gameStatus = "game_status"
     }
     
@@ -33,11 +35,13 @@ struct GameModel: Identifiable, Codable {
         case finished
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, users: [DBUser], turn: Int, gameStatus: GameStatus = .waiting) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, users: [DBUser], turn: Int, scores: [Int], gameStatus: GameStatus = .waiting) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
         self.users = users
         self.turn = turn
+        self.scores = scores
+        self.gameStatus = gameStatus
     }
 }

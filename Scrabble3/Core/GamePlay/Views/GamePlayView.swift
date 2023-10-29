@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct GamePlayView: View {
+    
+    let gameId: String?
+    
     var body: some View {
         GeometryReader { proxy in
             if (proxy.size.width > proxy.size.height) {
@@ -16,7 +19,7 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                     RackView()
                         .environment(\.mainWindowSize, proxy.size)
-                    CommandView()
+                    CommandView(gameId: gameId)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             } else {
@@ -25,7 +28,7 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                     RackView()
                         .environment(\.mainWindowSize, proxy.size)
-                    CommandView()
+                    CommandView(gameId: gameId)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             }
@@ -35,5 +38,5 @@ struct GamePlayView: View {
 }
 
 #Preview {
-    GamePlayView()
+    GamePlayView(gameId: nil)
 }

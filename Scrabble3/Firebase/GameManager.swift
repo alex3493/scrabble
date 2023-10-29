@@ -42,9 +42,10 @@ final class GameManager {
     func createNewGame(creatorUser: DBUser) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
-        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser], turn: 0)
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser], turn: 0, scores: [0])
         
         try document.setData(from: game, merge: false, encoder: encoder)
+        
         return game
     }
     
@@ -57,8 +58,11 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
+        guard let game = try? await getGame(gameId: gameId) else { return }
+        
         let dict: [String:Any] = [
-            GameModel.CodingKeys.users.rawValue : FieldValue.arrayUnion([data])
+            GameModel.CodingKeys.users.rawValue : FieldValue.arrayUnion([data]),
+            GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count + 1)
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -69,8 +73,11 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
+        guard let game = try? await getGame(gameId: gameId) else { return }
+        
         let dict: [String:Any] = [
-            GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data])
+            GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data]),
+            GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count - 1)
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -83,6 +90,17 @@ final class GameManager {
     func startGame(gameId: String) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
         game.gameStatus = .running
+        
+        guard let data = try? encoder.encode(game) else {
+            throw URLError(.cannotDecodeRawData)
+        }
+        
+        try await gameDocument(gameId: gameId).updateData(data)
+    }
+    
+    func stopGame(gameId: String) async throws {
+        var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
+        game.gameStatus = .finished
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)

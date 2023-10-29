@@ -66,6 +66,9 @@ final class GameStartViewModel: ObservableObject {
     
     func createGame(byUser user: DBUser) async throws -> String? {
         self.game = try await GameManager.shared.createNewGame(creatorUser: user)
+        
+        addListenerForGame()
+        
         return self.game?.id
     }
     

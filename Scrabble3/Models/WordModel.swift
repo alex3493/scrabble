@@ -8,10 +8,44 @@
 import Foundation
 
 struct WordModel: Codable {
-    let word: String
-    let score: Int
+    var word: String = ""
+    
     let anchorRow: Int
     let anchorCol: Int
-    let direction: String
-    let cells: [CellModel]
+    
+    enum WordDirection: String, Codable {
+        case horizontal
+        case vertical
+    }
+    
+    let direction: WordDirection
+    
+    var score: Int = 0
+    
+    var cells: [CellModel] = []
+    
+    var isConnectedToExisting: Bool = false
+    
+    var isWord: Bool {
+        return word.count > 1
+    }
+    
+    func getHash() -> String {
+        return "\(anchorRow)::\(anchorCol)::\(direction)::\(cells.count)"
+    }
+    
+    func intersectsWith(word: WordModel) -> Bool {
+        if (getHash() == word.getHash()) {
+            // Do not count intersection with self.
+            return false
+        }
+        
+        let currentCells: Set<CellModel> = Set(cells)
+        let wordCells: Set<CellModel> = Set(word.cells)
+        
+        let intersection = currentCells.intersection(wordCells)
+        
+        return !intersection.isEmpty
+        
+    }
 }

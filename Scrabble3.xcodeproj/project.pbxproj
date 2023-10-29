@@ -28,6 +28,12 @@
 		FA7545852AEC048D00B58EFC /* RackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545842AEC048D00B58EFC /* RackView.swift */; };
 		FA7545872AEC04B400B58EFC /* CommandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545862AEC04B400B58EFC /* CommandView.swift */; };
 		FA7545892AEC05F100B58EFC /* DeviceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545882AEC05F100B58EFC /* DeviceEnvironment.swift */; };
+		FA75458E2AECF23C00B58EFC /* CommandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75458D2AECF23C00B58EFC /* CommandViewModel.swift */; };
+		FA7545902AED566A00B58EFC /* LetterStoreBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75458F2AED566A00B58EFC /* LetterStoreBase.swift */; };
+		FA7545942AEE256500B58EFC /* GamePlayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545932AEE256500B58EFC /* GamePlayViewModel.swift */; };
+		FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545952AEE2C2200B58EFC /* ValidationError.swift */; };
+		FA7545982AEE36E900B58EFC /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545972AEE36E900B58EFC /* BoardViewModel.swift */; };
+		FA75459A2AEE39B600B58EFC /* RackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545992AEE39B600B58EFC /* RackViewModel.swift */; };
 		FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8724E2AA258610015D0FA /* Scrabble3App.swift */; };
 		FAB872512AA258610015D0FA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872502AA258610015D0FA /* RootView.swift */; };
 		FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB872522AA2586B0015D0FA /* Assets.xcassets */; };
@@ -89,6 +95,12 @@
 		FA7545842AEC048D00B58EFC /* RackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RackView.swift; sourceTree = "<group>"; };
 		FA7545862AEC04B400B58EFC /* CommandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandView.swift; sourceTree = "<group>"; };
 		FA7545882AEC05F100B58EFC /* DeviceEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceEnvironment.swift; sourceTree = "<group>"; };
+		FA75458D2AECF23C00B58EFC /* CommandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandViewModel.swift; sourceTree = "<group>"; };
+		FA75458F2AED566A00B58EFC /* LetterStoreBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterStoreBase.swift; sourceTree = "<group>"; };
+		FA7545932AEE256500B58EFC /* GamePlayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePlayViewModel.swift; sourceTree = "<group>"; };
+		FA7545952AEE2C2200B58EFC /* ValidationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationError.swift; sourceTree = "<group>"; };
+		FA7545972AEE36E900B58EFC /* BoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewModel.swift; sourceTree = "<group>"; };
+		FA7545992AEE39B600B58EFC /* RackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RackViewModel.swift; sourceTree = "<group>"; };
 		FAB8724B2AA258610015D0FA /* Scrabble3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrabble3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB8724E2AA258610015D0FA /* Scrabble3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3App.swift; sourceTree = "<group>"; };
 		FAB872502AA258610015D0FA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -195,8 +207,21 @@
 				FA75457C2AEA589D00B58EFC /* MoveModel.swift */,
 				FA75457E2AEA58AA00B58EFC /* CellModel.swift */,
 				FA7545802AEACFE600B58EFC /* LetterTileModel.swift */,
+				FA75458F2AED566A00B58EFC /* LetterStoreBase.swift */,
+				FA7545952AEE2C2200B58EFC /* ValidationError.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FA75458A2AECE98E00B58EFC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				FA75458D2AECF23C00B58EFC /* CommandViewModel.swift */,
+				FA7545932AEE256500B58EFC /* GamePlayViewModel.swift */,
+				FA7545972AEE36E900B58EFC /* BoardViewModel.swift */,
+				FA7545992AEE39B600B58EFC /* RackViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		FAB872422AA258610015D0FA = {
@@ -330,7 +355,7 @@
 		FAC469F92AD3FD1100AB3A8E /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				FAE962222AE5A73400BAAC7B /* Board */,
+				FAE962222AE5A73400BAAC7B /* GamePlay */,
 				FA592C5C2ADB1F7400BAFF8F /* Game */,
 				FAC469FA2AD3FDD300AB3A8E /* Profile */,
 				FAB872502AA258610015D0FA /* RootView.swift */,
@@ -346,12 +371,13 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
-		FAE962222AE5A73400BAAC7B /* Board */ = {
+		FAE962222AE5A73400BAAC7B /* GamePlay */ = {
 			isa = PBXGroup;
 			children = (
+				FA75458A2AECE98E00B58EFC /* ViewModels */,
 				FAE962232AE5A73F00BAAC7B /* Views */,
 			);
-			path = Board;
+			path = GamePlay;
 			sourceTree = "<group>";
 		};
 		FAE962232AE5A73F00BAAC7B /* Views */ = {
@@ -511,6 +537,7 @@
 				FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */,
 				FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */,
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
+				FA7545902AED566A00B58EFC /* LetterStoreBase.swift in Sources */,
 				FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
 				FA75457D2AEA589D00B58EFC /* MoveModel.swift in Sources */,
@@ -522,11 +549,15 @@
 				FA7545792AEA584100B58EFC /* GameModel.swift in Sources */,
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
 				FA7545892AEC05F100B58EFC /* DeviceEnvironment.swift in Sources */,
+				FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
 				FA7545812AEACFE600B58EFC /* LetterTileModel.swift in Sources */,
 				FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */,
+				FA7545942AEE256500B58EFC /* GamePlayViewModel.swift in Sources */,
 				FA7545852AEC048D00B58EFC /* RackView.swift in Sources */,
+				FA75459A2AEE39B600B58EFC /* RackViewModel.swift in Sources */,
+				FA7545982AEE36E900B58EFC /* BoardViewModel.swift in Sources */,
 				FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */,
 				FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */,
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,
@@ -535,6 +566,7 @@
 				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
 				FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */,
 				FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */,
+				FA75458E2AECF23C00B58EFC /* CommandViewModel.swift in Sources */,
 				FA75457F2AEA58AA00B58EFC /* CellModel.swift in Sources */,
 				FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */,
 				FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */,

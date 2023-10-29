@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import CoreTransferable
+import UniformTypeIdentifiers
 
-struct CellModel: Codable {
+struct CellModel: Codable, Hashable {
     let row: Int
     let col: Int
+    let pos: Int
     var letterTile: LetterTile? = nil
     
     var isImmutable: Bool = false
@@ -45,17 +48,12 @@ struct CellModel: Codable {
     enum CodingKeys: String, CodingKey {
         case row
         case col
+        case pos
         case letterTile = "letter_tile"
         case isImmutable = "is_immutable"
         case cellStatus = "cell_status"
         case role
         case cellBonus = "cell_bonus"
-    }
-    
-    init(row: Int, col: Int, letterTile: LetterTile) {
-        self.row = row
-        self.col = col
-        self.letterTile = letterTile
     }
     
     mutating func setTile(tile: LetterTile?)
@@ -118,5 +116,17 @@ struct CellModel: Codable {
             return 1
         }
     }
+}
+
+extension CellModel: Transferable
+{
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .cell)
+    }
+    
+}
+
+extension UTType {
+    static var cell: UTType { UTType(exportedAs: "org.scrabble.cell") }
 }
 

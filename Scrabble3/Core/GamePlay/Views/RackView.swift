@@ -11,6 +11,8 @@ struct RackView: View {
     
     @Environment(\.mainWindowSize) var mainWindowSize
     
+    @StateObject private var viewModel = RackViewModel.shared
+    
     var body: some View {
         Text("Rack view: \(mainWindowSize.width) / \(mainWindowSize.height)")
     }

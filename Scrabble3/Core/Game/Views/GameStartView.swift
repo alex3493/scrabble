@@ -21,7 +21,7 @@ struct GameStartView: View {
     
     var body: some View {
         if (viewModel.isGameRunning()) {
-            GamePlayView()
+            GamePlayView(gameId: gameId)
         } else {
             VStack {
                 if viewModel.game != nil && gameId != nil {
@@ -115,19 +115,12 @@ struct GameStartView: View {
         }
     }
     
-    // TODO: move it to view model.
     func createGame() async throws {
-        print("Start game create")
         guard let user = authViewModel.currentUser else { return }
-        
-        print ("Creating game. User: \(String(describing: user.email))")
         
         gameId = try await viewModel.createGame(byUser: user)
         
-        print ("Game created. Id: \(String(describing: gameId))")
-        
-        viewModel.addListenerForGame()
-        
+        print ("Game created. ID: \(String(describing: gameId)), User: \(String(describing: user.email))")
     }
     
 }
