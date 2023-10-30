@@ -109,6 +109,17 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
+    func nextTurn(gameId: String, score: Int) async throws {
+        var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
+        game.nextTurn(score: score)
+        
+        guard let data = try? encoder.encode(game) else {
+            throw URLError(.cannotDecodeRawData)
+        }
+        
+        try await gameDocument(gameId: gameId).updateData(data)
+    }
+    
     func addListenerForGames() -> AnyPublisher<[GameModel], Error> {
         let (publisher, listener) = gameCollection
             .addListSnapshotListener(as: GameModel.self)

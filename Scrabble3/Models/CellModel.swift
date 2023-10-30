@@ -13,7 +13,7 @@ struct CellModel: Codable, Hashable {
     let row: Int
     let col: Int
     let pos: Int
-    var letterTile: LetterTile? = nil
+    var letterTile: LetterTile?
     
     var isImmutable: Bool = false
     

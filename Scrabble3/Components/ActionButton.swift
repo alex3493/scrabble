@@ -21,12 +21,19 @@ struct ActionButton: View {
             }
         } label: {
             HStack {
-                Text(label)
-                    .fontWeight(.semibold)
-                Image(systemName: buttonSystemImage)
+                Group {
+                    Text(label)
+                        .fontWeight(.semibold)
+                    Image(systemName: buttonSystemImage)
+                }
+                // TODO: how to make button use available width (with padding)?
+//                .frame(maxWidth: .infinity)
+//                .padding()
             }
             .foregroundColor(.white)
-            .frame(width: maxWidth ? UIScreen.main.bounds.width - 32 : nil, height: 48).padding()
+            // TODO: UIScreen doesn't work when screen is rotated.
+            .frame(/* width: maxWidth ? UIScreen.main.bounds.width - 32 : nil,*/ height: 48)
+            .padding()
         }
         .background(backGroundColor)
         .cornerRadius(10)

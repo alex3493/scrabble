@@ -11,28 +11,34 @@ struct GamePlayView: View {
     
     let gameId: String?
     
+    @StateObject private var viewModel = GamePlayViewModel.shared
+    
     var body: some View {
-        GeometryReader { proxy in
-            if (isLandscape(proxy.size)) {
-                HStack {
-                    BoardView()
-                        .environment(\.mainWindowSize, proxy.size)
-                    RackView()
-                        .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: gameId)
-                        .environment(\.mainWindowSize, proxy.size)
-                }
-            } else {
-                VStack {
-                    BoardView()
-                        .environment(\.mainWindowSize, proxy.size)
-                    RackView()
-                        .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: gameId)
-                        .environment(\.mainWindowSize, proxy.size)
+        if let gameId = gameId {
+            GeometryReader { proxy in
+                if (isLandscape(proxy.size)) {
+                    HStack {
+                        BoardView()
+                            .environment(\.mainWindowSize, proxy.size)
+                        RackView()
+                            .environment(\.mainWindowSize, proxy.size)
+                        CommandView(gameId: gameId)
+                            .environment(\.mainWindowSize, proxy.size)
+                    }
+                } else {
+                    VStack {
+                        BoardView()
+                            .environment(\.mainWindowSize, proxy.size)
+                        RackView()
+                            .environment(\.mainWindowSize, proxy.size)
+                        CommandView(gameId: gameId)
+                            .environment(\.mainWindowSize, proxy.size)
+                    }
                 }
             }
-            
+            .task {
+                viewModel.addListenerForMoves(gameId: gameId)
+            }
         }
     }
     

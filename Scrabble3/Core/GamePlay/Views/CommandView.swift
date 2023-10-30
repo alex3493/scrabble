@@ -13,61 +13,113 @@ struct CommandView: View {
     
     @StateObject private var viewModel = CommandViewModel()
     
-    let gameId: String?
+    @StateObject private var rackViewModel = RackViewModel.shared
     
-    @State var playerList = [Player]()
+    let gameId: String
     
     var body: some View {
-        if let gameId = gameId {
-            if isLandscape {
-                VStack {
-                    List {
-                        ForEach(playerList, id: \.id.self)  { item in
-                            HStack {
-                                Text(item.name)
-                                Text("\(item.score)")
-                                if item.hasTurn {
-                                    Text("Current")
+        Group {
+            // TODO: testing only!
+            Text("COMMAND VIEW HERE! ")
+                .task {
+                    print("GROUP TASK!")
+                    await viewModel.loadGame(gameId: gameId)
+                    viewModel.addListenerForGame()
+                }
+            if let game = viewModel.game {
+                if isLandscape {
+                    VStack {
+                        List {
+                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                                HStack(spacing: 12) {
+                                    Image(systemName: game.turn == index ? "person.fill" : "person")
+                                    Text(item.name!)
+                                    Spacer()
+                                    Text("\(game.scores[index])")
                                 }
                             }
                         }
-                    }.task {
-                        playerList = await viewModel.getPlayersList(gameId: gameId)
-                    }
-                    
-                    ActionButton(label: "STOP GAME", action: {
-                        do {
-                            try await viewModel.stopGame(gameId: gameId)
-                        } catch {
-                            print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                        
+                        if isInChangeLetterMode {
+                            ActionButton(label: "CHANGE LETTERS", action: {
+                                do {
+                                    try await viewModel.changeLetters(gameId: game.id, confirmed: true)
+                                } catch {
+                                    print("DEBUG :: Error changing letter: \(error.localizedDescription)")
+                                }
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                            ActionButton(label: "CANCEL", action: {
+                                viewModel.setChangeLettersMode(mode: false)
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                        } else {
+                            ActionButton(label: "CHANGE LETTERS", action: {
+                                viewModel.setChangeLettersMode(mode: true)
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                            ActionButton(label: "SUBMIT", action: {
+                                do {
+                                    try await viewModel.submitMove(gameId: game.id)
+                                } catch {
+                                    print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                }
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
                         }
-                    }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
-                }
-                .padding()
-            } else {
-                HStack {
-                    List {
-                        ForEach(playerList, id: \.id.self)  { item in
-                            HStack {
-                                Text(item.name)
-                                Text("\(item.score)")
-                                if item.hasTurn {
-                                    Text("Current")
+                        
+                        ActionButton(label: "STOP GAME", action: {
+                            do {
+                                try await viewModel.stopGame(gameId: game.id)
+                            } catch {
+                                print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                            }
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                    }
+                    .padding()
+                } else {
+                    HStack {
+                        List {
+                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                                HStack(spacing: 12) {
+                                    Image(systemName: game.turn == index ? "person.fill" : "person")
+                                    Text(item.name!)
+                                    Spacer()
+                                    Text("\(game.scores[index])")
                                 }
                             }
                         }
-                    }.task {
-                        playerList = await viewModel.getPlayersList(gameId: gameId)
-                    }
-                    ActionButton(label: "STOP GAME", action: {
-                        do {
-                            try await viewModel.stopGame(gameId: gameId)
-                        } catch {
-                            print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                        
+                        if isInChangeLetterMode {
+                            ActionButton(label: "CHANGE LETTERS", action: {
+                                do {
+                                    try await viewModel.changeLetters(gameId: game.id, confirmed: true)
+                                } catch {
+                                    print("DEBUG :: Error changing letter: \(error.localizedDescription)")
+                                }
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                            ActionButton(label: "CANCEL", action: {
+                                viewModel.setChangeLettersMode(mode: false)
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                        } else {
+                            ActionButton(label: "CHANGE LETTERS", action: {
+                                viewModel.setChangeLettersMode(mode: true)
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
+                            ActionButton(label: "SUBMIT", action: {
+                                do {
+                                    try await viewModel.submitMove(gameId: game.id)
+                                } catch {
+                                    print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                }
+                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
                         }
-                    }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                        
+                        ActionButton(label: "STOP GAME", action: {
+                            do {
+                                try await viewModel.stopGame(gameId: game.id)
+                            } catch {
+                                print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                            }
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
+                    }
+                    .padding()
                 }
-                .padding()
             }
         }
     }
@@ -75,8 +127,12 @@ struct CommandView: View {
     var isLandscape: Bool {
         return mainWindowSize.width > mainWindowSize.height
     }
+    
+    var isInChangeLetterMode: Bool {
+        return rackViewModel.changeLettersMode
+    }
 }
 
 #Preview {
-    CommandView(gameId: nil)
+    CommandView(gameId: "fake_id")
 }

@@ -20,6 +20,14 @@ struct LetterTile: Codable, Hashable {
     let isAsterisk: Bool
     
     let lang: Lang
+    
+    enum CodingKeys: String, CodingKey {
+        case char
+        case score
+        case probability
+        case isAsterisk = "is_asterisk"
+        case lang
+    }
 }
 
 struct LetterTileBank {
