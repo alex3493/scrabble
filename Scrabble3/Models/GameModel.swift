@@ -44,4 +44,12 @@ struct GameModel: Identifiable, Codable {
         self.scores = scores
         self.gameStatus = gameStatus
     }
+    
+    mutating func nextTurn(score: Int) {
+        scores[turn] = scores[turn] + score
+        turn = turn + 1
+        if turn >= users.count {
+            turn = 0
+        }
+    }
 }

@@ -15,6 +15,8 @@ class GamePlayViewModel: ObservableObject {
     
     static var shared = GamePlayViewModel()
     
+    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
+    
     private init() { }
     
     func newGame() {
@@ -98,10 +100,17 @@ class GamePlayViewModel: ObservableObject {
         }
     }
     
-    func nextTurn() {
+    func nextTurn(gameId: String) async throws {
+        
         let moveScore = boardViewModel.getMoveScore()
         
-        // TODO: Store move data here...
+        let moveWords = try? boardViewModel.getMoveWords()
+        
+        guard let moveWords = moveWords, let currentUser = currentUser else { return }
+        
+        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore)
+        
+        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore)
         
         boardViewModel.confirmMove()
         
