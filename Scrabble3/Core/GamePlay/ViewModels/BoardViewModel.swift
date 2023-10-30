@@ -242,6 +242,21 @@ class BoardViewModel: LetterStoreBase {
         }
         resetCellsStatus()
     }
+    
+    func setWordsToBoard(words: [WordModel]) {
+        for word in words {
+            for var cell in word.cells {
+                cell.isImmutable = true
+                cell.setCellStatus(status: .immutable)
+                setCellByPosition(row: cell.row, col: cell.col, cell: cell)
+            }
+        }
+    }
+    
+    func setCellByPosition(row: Int, col: Int, cell: CellModel) {
+        let index = row * cols + col
+        cells[index] = cell
+    }
 }
 
 struct BonusCell {

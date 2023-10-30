@@ -30,7 +30,7 @@ class GamePlayViewModel: ObservableObject {
         
     }
     
-    func validateMove(/*existingWords: [WordModel]*/) async throws {
+    func validateMove() async throws {
         boardViewModel.resetCellsStatus()
         let words = try boardViewModel.getMoveWords()
         
@@ -84,9 +84,9 @@ class GamePlayViewModel: ObservableObject {
         }
     }
     
-    func submitMove(/*existingWords: [WordModel]*/) async -> Bool {
+    func submitMove() async -> Bool {
         do {
-            try await validateMove(/*existingWords: existingWords*/)
+            try await validateMove()
             return true
         } catch(ValidationError.hangingWords /* (let words) */) {
             // TODO: show error message.
@@ -164,9 +164,10 @@ class GamePlayViewModel: ObservableObject {
         }
         existingWords = words
         print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
+        
+        boardViewModel.clearBoard()
+        boardViewModel.setWordsToBoard(words: existingWords)
+        
     }
     
-    func putWordsToBoard() {
-        // TODO: put existing words to board.
-    }
 }

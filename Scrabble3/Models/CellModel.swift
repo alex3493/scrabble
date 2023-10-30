@@ -49,7 +49,6 @@ struct CellModel: Codable, Hashable {
         case row
         case col
         case pos
-        // TODO: letterTile optional breaks firestore encoding!
         case letterTile = "letter_tile"
         case isImmutable = "is_immutable"
         case cellStatus = "cell_status"

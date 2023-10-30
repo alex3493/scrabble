@@ -46,7 +46,7 @@ final class CommandViewModel: ObservableObject {
     
     // TODO: We have to get all-users' previous moves words.
     func submitMove(gameId: String) async throws {
-        if await gameViewModel.submitMove(/*existingWords: []*/) {
+        if await gameViewModel.submitMove() {
             try await gameViewModel.nextTurn(gameId: gameId)
         }
     }

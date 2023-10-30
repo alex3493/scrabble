@@ -19,6 +19,7 @@ struct CommandView: View {
     
     var body: some View {
         Group {
+            // TODO: testing only!
             Text("COMMAND VIEW HERE! ")
                 .task {
                     print("GROUP TASK!")
