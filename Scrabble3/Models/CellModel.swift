@@ -13,7 +13,7 @@ struct CellModel: Codable, Hashable {
     let row: Int
     let col: Int
     let pos: Int
-    var letterTile: LetterTile? = nil
+    var letterTile: LetterTile?
     
     var isImmutable: Bool = false
     
@@ -49,6 +49,7 @@ struct CellModel: Codable, Hashable {
         case row
         case col
         case pos
+        // TODO: letterTile optional breaks firestore encoding!
         case letterTile = "letter_tile"
         case isImmutable = "is_immutable"
         case cellStatus = "cell_status"

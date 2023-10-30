@@ -11,6 +11,8 @@ struct GamePlayView: View {
     
     let gameId: String?
     
+    @StateObject private var viewModel = GamePlayViewModel.shared
+    
     var body: some View {
         if let gameId = gameId {
             GeometryReader { proxy in
@@ -33,7 +35,9 @@ struct GamePlayView: View {
                             .environment(\.mainWindowSize, proxy.size)
                     }
                 }
-                
+            }
+            .task {
+                viewModel.addListenerForMoves(gameId: gameId)
             }
         }
     }

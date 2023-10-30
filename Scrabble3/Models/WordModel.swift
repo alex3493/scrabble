@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WordModel: Codable {
+struct WordModel: Codable, Hashable {
     var word: String = ""
     
     let anchorRow: Int
@@ -25,6 +25,16 @@ struct WordModel: Codable {
     var cells: [CellModel] = []
     
     var isConnectedToExisting: Bool = false
+    
+    enum CodingKeys: String, CodingKey {
+        case word
+        case anchorRow = "anchor_row"
+        case anchorCol = "anchor_col"
+        case direction
+        case score
+        case cells
+        case isConnectedToExisting = "is_connected_to_existing"
+    }
     
     var isWord: Bool {
         return word.count > 1

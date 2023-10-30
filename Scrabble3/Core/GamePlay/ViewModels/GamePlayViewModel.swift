@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 class GamePlayViewModel: ObservableObject {
@@ -17,6 +18,11 @@ class GamePlayViewModel: ObservableObject {
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
+    private var existingWords = [WordModel]()
+    
+    @Published var gameMoves: [MoveModel] = []
+    private var cancellables = Set<AnyCancellable>()
+    
     private init() { }
     
     func newGame() {
@@ -24,7 +30,7 @@ class GamePlayViewModel: ObservableObject {
         
     }
     
-    func validateMove(existingWords: [WordModel]) async throws {
+    func validateMove(/*existingWords: [WordModel]*/) async throws {
         boardViewModel.resetCellsStatus()
         let words = try boardViewModel.getMoveWords()
         
@@ -78,9 +84,9 @@ class GamePlayViewModel: ObservableObject {
         }
     }
     
-    func submitMove(existingWords: [WordModel]) async -> Bool {
+    func submitMove(/*existingWords: [WordModel]*/) async -> Bool {
         do {
-            try await validateMove(existingWords: existingWords)
+            try await validateMove(/*existingWords: existingWords*/)
             return true
         } catch(ValidationError.hangingWords /* (let words) */) {
             // TODO: show error message.
@@ -124,8 +130,6 @@ class GamePlayViewModel: ObservableObject {
         // Change game status.
     }
     
-    // TODO: how to return reference to Player (so it is mutable)?
-    
     func resetMove() {
         let moveCells = boardViewModel.getCurrentMoveCells()
         
@@ -133,5 +137,36 @@ class GamePlayViewModel: ObservableObject {
             rackViewModel.insertLetterTileByPos(pos: 0, letterTile: cell.letterTile!, emptyPromisePos: nil)
             boardViewModel.setLetterTileByPosition(row: cell.row, col: cell.col, letterTile: nil)
         }
+    }
+    
+    func addListenerForMoves(gameId: String?) {
+        guard let gameId = gameId else { return }
+        
+        MoveManager.shared.addListenerForMoves(gameId: gameId)
+            .sink { completion in
+                
+            } receiveValue: { [weak self] moves in
+                print("Game ID \(gameId) moves updated count: \(moves.count)")
+                self?.gameMoves = moves
+                
+                if (self != nil) {
+                    self!.getExistingWords(moves: moves)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func getExistingWords(moves: [MoveModel]) {
+        
+        var words = [WordModel]()
+        for move in moves {
+            words = words + move.words
+        }
+        existingWords = words
+        print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
+    }
+    
+    func putWordsToBoard() {
+        // TODO: put existing words to board.
     }
 }

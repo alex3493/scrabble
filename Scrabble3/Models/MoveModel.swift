@@ -17,16 +17,13 @@ struct MoveModel: Identifiable, Codable {
     let words: [WordModel]
     let score: Int
     
-//    init(gameId: String, user: DBUser, words: [WordModel], score: Int) {
-//        self.id = ""
-//        self.gameId = gameId
-//        self.createdAt = Timestamp()
-//        self.user = user
-//        self.words = words
-//        self.score = score
-//    }
-//    
-//    mutating func setId(id: String) {
-//        self.id = id
-//    }
+    enum CodingKeys: String, CodingKey {
+        case id
+        case gameId = "game_id"
+        case createdAt = "created_at"
+        case user
+        case words
+        case score
+    }
+
 }

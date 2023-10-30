@@ -20,7 +20,7 @@ final class MoveManager {
     private let moveCollection = Firestore.firestore().collection("moves")
     
     func getGameMoves(gameId: String) -> Query {
-        return moveCollection.whereField("gameId", isEqualTo: gameId)
+        return moveCollection.whereField(MoveModel.CodingKeys.gameId.rawValue, isEqualTo: gameId)
     }
     
     func addMove(gameId: String, user: DBUser, words: [WordModel], score: Int) throws {
@@ -31,20 +31,6 @@ final class MoveManager {
         
         try document.setData(from: move, merge: false, encoder: encoder)
     }
-    
-//    func addMove(move moveData: MoveModel) throws -> MoveModel {
-//        let document = moveCollection.document()
-//        let documentId = document.documentID
-//        
-//        // TODO: refactor - use full init() for MoveModel...
-//        
-//        var move = MoveModel(gameId: moveData.gameId, user: moveData.user, words: moveData.words, score: moveData.score)
-//        move.setId(id: documentId)
-//        
-//        try document.setData(from: move, merge: false, encoder: encoder)
-//        
-//        return move
-//    }
     
     private let encoder: Firestore.Encoder = {
         let encoder = Firestore.Encoder()
