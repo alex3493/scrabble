@@ -9,6 +9,15 @@ import Foundation
 import Combine
 
 @MainActor
+struct Player {
+    let id: String
+    let name: String
+    let score: Int
+    let hasTurn: Bool
+    
+}
+
+@MainActor
 class GamePlayViewModel: ObservableObject {
     
     private var rackViewModel = RackViewModel.shared

@@ -8,24 +8,16 @@
 import Foundation
 import Combine
 
-struct Player {
-    let id: String
-    let name: String
-    let score: Int
-    let hasTurn: Bool
-}
-
-
 @MainActor
 final class CommandViewModel: ObservableObject {
     
     private var rackViewModel = RackViewModel.shared
-    // private var boardViewModel = BoardViewModel.shared
-    
     private var gameViewModel = GamePlayViewModel.shared
     
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
+    
+    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
     func stopGame(gameId: String) async throws {
         try await GameManager.shared.stopGame(gameId: gameId)
@@ -44,7 +36,6 @@ final class CommandViewModel: ObservableObject {
         rackViewModel.setChangeLettersMode(mode: false)
     }
     
-    // TODO: We have to get all-users' previous moves words.
     func submitMove(gameId: String) async throws {
         if await gameViewModel.submitMove() {
             try await gameViewModel.nextTurn(gameId: gameId)
