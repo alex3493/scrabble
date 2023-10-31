@@ -11,7 +11,7 @@ struct GamePlayView: View {
     
     let gameId: String?
     
-    var game: GameModel? = nil
+    let game: GameModel
     
     @StateObject private var viewModel = GamePlayViewModel.shared
     
@@ -20,7 +20,7 @@ struct GamePlayView: View {
             GeometryReader { proxy in
                 if (isLandscape(proxy.size)) {
                     HStack {
-                        BoardView()
+                        BoardView(boardIsLocked: !hasTurn)
                             .environment(\.mainWindowSize, proxy.size)
                         RackView()
                             .environment(\.mainWindowSize, proxy.size)
@@ -29,7 +29,7 @@ struct GamePlayView: View {
                     }
                 } else {
                     VStack {
-                        BoardView()
+                        BoardView(boardIsLocked: !hasTurn)
                             .environment(\.mainWindowSize, proxy.size)
                         RackView()
                             .environment(\.mainWindowSize, proxy.size)
@@ -50,8 +50,30 @@ struct GamePlayView: View {
     func isLandscape(_ size: CGSize) -> Bool {
         return size.width > size.height
     }
+    
+    var hasTurn: Bool {
+        guard let user = viewModel.currentUser else { return false }
+        
+        let userIndex = game.users.firstIndex { $0.userId == user.userId }
+        
+        return game.turn == userIndex
+    }
 }
 
-#Preview {
-    GamePlayView(gameId: nil)
+import FirebaseFirestore
+import FirebaseFirestoreSwift
+
+struct CommandView_Previews: PreviewProvider {
+    static var previews: some View {
+        let uuid = UUID().uuidString
+        let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
+        GamePlayView(gameId: uuid, game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, users: [user], turn: 0, scores: [0]))
+    }
 }
+
+// TODO: Shortcut version is not working.
+//#Preview {
+//    let uuid = UUID().uuidString
+//    let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
+//    GamePlayView(gameId: uuid, game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, users: [user], turn: 0, scores: [0]))
+//}

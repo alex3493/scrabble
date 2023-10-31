@@ -21,7 +21,7 @@ struct GameStartView: View {
     
     var body: some View {
         if (viewModel.isGameRunning()) {
-            GamePlayView(gameId: gameId)
+            GamePlayView(gameId: gameId, game: viewModel.game!)
         } else {
             VStack {
                 if viewModel.game != nil && gameId != nil {
