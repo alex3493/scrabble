@@ -20,40 +20,39 @@ struct GameStartView: View {
     let errorStore = ErrorStore.shared
     
     var body: some View {
-        if (viewModel.isGameRunning) {
-            GamePlayView(game: viewModel.game!)
+        if viewModel.isGameRunning, let game = viewModel.game {
+            GamePlayView(game: game)
         } else {
             VStack {
-                if viewModel.game != nil && gameId != nil {
+                if let game = viewModel.game, let gameId = gameId {
                     List {
                         Section("Game") {
-                            Text("Current game creator: \(viewModel.game!.creatorUser.name!)")
-                            Text("Current game ID: \(viewModel.game!.id)")
-                            Text("Current game status: \(viewModel.game!.gameStatus.rawValue)")
+                            Text("Current game creator: \(game.creatorUser.name!)")
+                            Text("Current game ID: \(game.id)")
+                            Text("Current game status: \(game.gameStatus.rawValue)")
                         }
                         
                         Section("Players") {
                             ForEach(viewModel.players, id: \.self) { player in
                                 Text(player.name!)
                             }
-                            
                         }
                     }
                     
-                    if (viewModel.isMeGameCreator()) {
+                    if (viewModel.isMeGameCreator) {
                         ActionButton(label: "DELETE GAME", action: {
                             do {
-                                try await viewModel.deleteGame(gameId: gameId!)
+                                try await viewModel.deleteGame(gameId: gameId)
                                 dismiss()
                             } catch {
                                 print("DEBUG :: Error deleting game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
-                    } else if viewModel.isMeGamePlayer() {
+                    } else if viewModel.isMeGamePlayer {
                         ActionButton(label: "LEAVE GAME", action: {
                             do {
-                                try await viewModel.leaveGame(gameId: gameId!)
+                                try await viewModel.leaveGame(gameId: gameId)
                                 dismiss()
                             } catch {
                                 print("DEBUG :: Error leaving game: \(error.localizedDescription)")
@@ -63,17 +62,17 @@ struct GameStartView: View {
                     } else {
                         ActionButton(label: "JOIN GAME", action: {
                             do {
-                                try await viewModel.joinGame(gameId: gameId!)
+                                try await viewModel.joinGame(gameId: gameId)
                             } catch {
                                 print("DEBUG :: Error joining game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue), maxWidth: true)
                     }
-                    if (viewModel.canStartGame()) {
+                    if (viewModel.canStartGame) {
                         ActionButton(label: "START GAME", action: {
                             do {
-                                try await viewModel.startGame(gameId: gameId!)
+                                try await viewModel.startGame(gameId: gameId)
                             } catch {
                                 print("DEBUG :: Error starting game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)

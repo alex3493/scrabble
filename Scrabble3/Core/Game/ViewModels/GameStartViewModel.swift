@@ -16,13 +16,13 @@ final class GameStartViewModel: ObservableObject {
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
-    func isMeGameCreator() -> Bool {
+    var isMeGameCreator: Bool {
         guard let game = game else { return false }
         
         return game.creatorUser.userId == currentUser?.userId
     }
     
-    func isMeGamePlayer() -> Bool {
+    var isMeGamePlayer: Bool {
         guard let game = game else { return false }
         
         return game.users.contains(where: { user in
@@ -30,10 +30,10 @@ final class GameStartViewModel: ObservableObject {
         })
     }
     
-    func canStartGame() -> Bool {
+    var canStartGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGamePlayer() && game.users.count >= 2
+        return isMeGamePlayer && game.users.count >= 2
     }
     
     var isGameRunning: Bool {
