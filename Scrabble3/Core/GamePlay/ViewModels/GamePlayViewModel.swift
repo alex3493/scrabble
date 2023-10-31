@@ -156,6 +156,10 @@ class GamePlayViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func removeListenerForMoves() {
+        MoveManager.shared.removeListenerForMoves()
+    }
+    
     func getExistingWords(moves: [MoveModel]) {
         
         var words = [WordModel]()
