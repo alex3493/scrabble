@@ -32,6 +32,18 @@ final class MoveManager {
         try document.setData(from: move, merge: false, encoder: encoder)
     }
     
+    func deleteMoves(gameId: String) {
+        getGameMoves(gameId: gameId).getDocuments() { (querySnapshot, err) in
+            guard let documents = querySnapshot?.documents else {
+                print("No documents to delete")
+                return
+            }
+            for document in documents {
+                document.reference.delete()
+            }
+        }
+    }
+    
     private let encoder: Firestore.Encoder = {
         let encoder = Firestore.Encoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase

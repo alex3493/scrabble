@@ -92,5 +92,6 @@ final class GameStartViewModel: ObservableObject {
     
     func deleteGame(gameId: String) async throws {
         try await GameManager.shared.deleteGame(gameId: gameId)
+        MoveManager.shared.deleteMoves(gameId: gameId)
     }
 }
