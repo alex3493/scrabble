@@ -11,6 +11,8 @@ struct GamePlayView: View {
     
     let gameId: String?
     
+    var game: GameModel? = nil
+    
     @StateObject private var viewModel = GamePlayViewModel.shared
     
     var body: some View {
@@ -38,6 +40,9 @@ struct GamePlayView: View {
             }
             .task {
                 viewModel.addListenerForMoves(gameId: gameId)
+            }
+            .onDisappear() {
+                viewModel.removeListenerForMoves()
             }
         }
     }
