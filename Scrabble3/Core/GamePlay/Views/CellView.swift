@@ -11,6 +11,8 @@ struct CellView: View {
     
     var cell: CellModel
     
+    var boardIsLocked: Bool = false
+    
     @StateObject private var board = BoardViewModel.shared
     @StateObject private var rack = RackViewModel.shared
     
@@ -23,36 +25,39 @@ struct CellView: View {
                  : " "
             ).colorInvert()
         }
-        
-        if (cell.cellStatus == .empty) {
-            cellPiece
-                .dropDestination(for: CellModel.self) { items, location in
-                    let cell = items.first ?? nil
-                    if (cell != nil) {
-                        moveCell(drag: cell!, drop: self.cell)
+        if !boardIsLocked {
+            if (cell.cellStatus == .empty) {
+                cellPiece
+                    .dropDestination(for: CellModel.self) { items, location in
+                        let cell = items.first ?? nil
+                        if (cell != nil) {
+                            moveCell(drag: cell!, drop: self.cell)
+                        }
+                        return true
                     }
-                    return true
-                }
-        } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
-            cellPiece
-                .draggable(cell)
-                .dropDestination(for: CellModel.self) { items, location in
-                    let cell = items.first ?? nil
-                    if (cell != nil) {
-                        moveCell(drag: cell!, drop: self.cell)
+            } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
+                cellPiece
+                    .draggable(cell)
+                    .dropDestination(for: CellModel.self) { items, location in
+                        let cell = items.first ?? nil
+                        if (cell != nil) {
+                            moveCell(drag: cell!, drop: self.cell)
+                        }
+                        return true
                     }
-                    return true
-                }
-        } else if (isCellReadyForLetterChange) {
-            cellPiece
-                .onTapGesture {
-                    rack.setCellStatusByPosition(
-                        pos: cell.pos,
-                        status: cell.cellStatus == .checkedForLetterChange
-                        ? .currentMove
-                        : .checkedForLetterChange
-                    )
-                }
+            } else if (isCellReadyForLetterChange) {
+                cellPiece
+                    .onTapGesture {
+                        rack.setCellStatusByPosition(
+                            pos: cell.pos,
+                            status: cell.cellStatus == .checkedForLetterChange
+                            ? .currentMove
+                            : .checkedForLetterChange
+                        )
+                    }
+            } else {
+                cellPiece
+            }
         } else {
             cellPiece
         }

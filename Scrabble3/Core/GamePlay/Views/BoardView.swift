@@ -14,13 +14,15 @@ struct BoardView: View {
     @StateObject private var boardViewModel = BoardViewModel.shared
     @StateObject private var rackViewModel = RackViewModel.shared
     
+    let boardIsLocked: Bool
+    
     var body: some View {
         VStack(spacing: 1) {
             ForEach(0...boardViewModel.rows - 1, id: \.self) { row in
                 HStack(spacing: 1) {
                     ForEach(0...boardViewModel.cols - 1, id: \.self) { col in
                         let cell = boardViewModel.cellByPosition(row: row, col: col)
-                        CellView(cell: cell)
+                        CellView(cell: cell, boardIsLocked: boardIsLocked)
                             .frame(width: idealCellSize, height: idealCellSize)
                     }
                 }
@@ -36,5 +38,5 @@ struct BoardView: View {
 }
 
 #Preview {
-    BoardView()
+    BoardView(boardIsLocked: false)
 }
