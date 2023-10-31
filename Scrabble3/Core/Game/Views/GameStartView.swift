@@ -20,8 +20,8 @@ struct GameStartView: View {
     let errorStore = ErrorStore.shared
     
     var body: some View {
-        if (viewModel.isGameRunning()) {
-            GamePlayView(gameId: gameId, game: viewModel.game!)
+        if (viewModel.isGameRunning) {
+            GamePlayView(game: viewModel.game!)
         } else {
             VStack {
                 if viewModel.game != nil && gameId != nil {

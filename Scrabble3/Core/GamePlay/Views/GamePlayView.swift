@@ -9,41 +9,37 @@ import SwiftUI
 
 struct GamePlayView: View {
     
-    let gameId: String?
-    
     let game: GameModel
     
     @StateObject private var viewModel = GamePlayViewModel.shared
     
     var body: some View {
-        if let gameId = gameId {
-            GeometryReader { proxy in
-                if (isLandscape(proxy.size)) {
-                    HStack {
-                        BoardView(boardIsLocked: !hasTurn)
-                            .environment(\.mainWindowSize, proxy.size)
-                        RackView()
-                            .environment(\.mainWindowSize, proxy.size)
-                        CommandView(gameId: gameId)
-                            .environment(\.mainWindowSize, proxy.size)
-                    }
-                } else {
-                    VStack {
-                        BoardView(boardIsLocked: !hasTurn)
-                            .environment(\.mainWindowSize, proxy.size)
-                        RackView()
-                            .environment(\.mainWindowSize, proxy.size)
-                        CommandView(gameId: gameId)
-                            .environment(\.mainWindowSize, proxy.size)
-                    }
+        GeometryReader { proxy in
+            if (isLandscape(proxy.size)) {
+                HStack {
+                    BoardView(boardIsLocked: !hasTurn)
+                        .environment(\.mainWindowSize, proxy.size)
+                    RackView()
+                        .environment(\.mainWindowSize, proxy.size)
+                    CommandView(gameId: game.id)
+                        .environment(\.mainWindowSize, proxy.size)
+                }
+            } else {
+                VStack {
+                    BoardView(boardIsLocked: !hasTurn)
+                        .environment(\.mainWindowSize, proxy.size)
+                    RackView()
+                        .environment(\.mainWindowSize, proxy.size)
+                    CommandView(gameId: game.id)
+                        .environment(\.mainWindowSize, proxy.size)
                 }
             }
-            .task {
-                viewModel.addListenerForMoves(gameId: gameId)
-            }
-            .onDisappear() {
-                viewModel.removeListenerForMoves()
-            }
+        }
+        .task {
+            viewModel.addListenerForMoves(gameId: game.id)
+        }
+        .onDisappear() {
+            viewModel.removeListenerForMoves()
         }
     }
     
@@ -67,7 +63,7 @@ struct CommandView_Previews: PreviewProvider {
     static var previews: some View {
         let uuid = UUID().uuidString
         let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
-        GamePlayView(gameId: uuid, game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, users: [user], turn: 0, scores: [0]))
+        GamePlayView(game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, users: [user], turn: 0, scores: [0]))
     }
 }
 

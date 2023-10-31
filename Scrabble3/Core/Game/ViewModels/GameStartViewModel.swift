@@ -36,7 +36,7 @@ final class GameStartViewModel: ObservableObject {
         return isMeGamePlayer() && game.users.count >= 2
     }
     
-    func isGameRunning() -> Bool {
+    var isGameRunning: Bool {
         guard let game = game else { return false }
         
         return game.gameStatus == .running
