@@ -12,6 +12,10 @@ class BoardViewModel: LetterStoreBase {
     
     static var shared = BoardViewModel()
     
+    @Published var asteriskDialogPresented: Bool = false
+    @Published var asteriskRow: Int? = nil
+    @Published var asteriskCol: Int? = nil
+    
     private override init() {
         super.init()
         let numCells: Int = rows * cols;
@@ -49,6 +53,13 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func setLetterTileByPosition(row: Int, col: Int, letterTile: LetterTile?) {
+        if letterTile != nil && letterTile!.char == "*" {
+            print("Putting asterisk to board: \(String(describing: letterTile))")
+            asteriskDialogPresented = true
+            asteriskRow = row
+            asteriskCol = col
+        }
+        
         let index = row * cols + col
         cells[index].setTile(tile: letterTile)
         cells[index].setCellStatus(status: !cells[index].isEmpty ? .currentMove : .empty)

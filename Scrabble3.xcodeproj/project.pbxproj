@@ -18,6 +18,7 @@
 		FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */; };
 		FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C662ADBDEA500BAFF8F /* GameStartView.swift */; };
 		FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */; };
+		FA6483262AF24C0900A9DBAA /* AsteriskDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */; };
 		FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545752AEA549200B58EFC /* MoveManager.swift */; };
 		FA7545792AEA584100B58EFC /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545782AEA584100B58EFC /* GameModel.swift */; };
 		FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75457A2AEA589000B58EFC /* WordModel.swift */; };
@@ -87,6 +88,7 @@
 		FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListViewModel.swift; sourceTree = "<group>"; };
 		FA592C662ADBDEA500BAFF8F /* GameStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStartView.swift; sourceTree = "<group>"; };
 		FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStartViewModel.swift; sourceTree = "<group>"; };
+		FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsteriskDialogView.swift; sourceTree = "<group>"; };
 		FA7545752AEA549200B58EFC /* MoveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveManager.swift; sourceTree = "<group>"; };
 		FA7545782AEA584100B58EFC /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		FA75457A2AEA589000B58EFC /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 				FA7545842AEC048D00B58EFC /* RackView.swift */,
 				FA7545862AEC04B400B58EFC /* CommandView.swift */,
 				FA75459B2AEE491100B58EFC /* CellView.swift */,
+				FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -561,6 +564,7 @@
 				FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FA75459C2AEE491100B58EFC /* CellView.swift in Sources */,
+				FA6483262AF24C0900A9DBAA /* AsteriskDialogView.swift in Sources */,
 				FAC114BD2AD1AC65001152D8 /* TextInputView.swift in Sources */,
 				FA7545812AEACFE600B58EFC /* LetterTileModel.swift in Sources */,
 				FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */,
