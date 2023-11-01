@@ -107,15 +107,15 @@ struct CommandView: View {
                                     }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemBlue), maxWidth: false)
                                 }
                             }
-                            
-                            ActionButton(label: "STOP GAME", action: {
-                                do {
-                                    try await viewModel.stopGame(gameId: game.id)
-                                } catch {
-                                    print("DEBUG :: Error leaving game: \(error.localizedDescription)")
-                                }
-                            }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
                         }
+                        
+                        ActionButton(label: "STOP GAME", action: {
+                            do {
+                                try await viewModel.stopGame(gameId: game.id)
+                            } catch {
+                                print("DEBUG :: Error leaving game: \(error.localizedDescription)")
+                            }
+                        }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: false)
                     }
                     .padding()
                 }
