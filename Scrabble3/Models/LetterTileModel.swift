@@ -28,6 +28,11 @@ struct LetterTile: Codable, Hashable {
         case isAsterisk = "is_asterisk"
         case lang
     }
+    
+    var hasAsteriskChar: Bool {
+        return char == "*" && isAsterisk
+    }
+    
 }
 
 struct LetterTileBank {

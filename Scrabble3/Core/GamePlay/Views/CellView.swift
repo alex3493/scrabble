@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CellView: View {
     
+    @Environment(\.mainWindowSize) var mainWindowSize
+    
     var cell: CellModel
     
     var boardIsLocked: Bool = false
@@ -20,10 +22,39 @@ struct CellView: View {
         let cellPiece = ZStack {
             RoundedRectangle(cornerRadius: 5)
                 .fill(getCellFill())
-            Text(!cell.isEmpty
-                 ? cell.letterTile!.char
-                 : " "
-            ).colorInvert()
+            if showAsterisk {
+                ZStack {
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Text("*")
+                                .padding(.top, 2)
+                                .padding(.trailing, 2)
+                            Spacer()
+                        }
+                    }
+                    HStack {
+                        Text(!cell.isEmpty
+                             ? cell.letterTile!.char
+                             : " "
+                        )
+                        .padding(.leading, 2)
+                        .padding(.bottom, 2)
+                        Spacer()
+                    }
+                }
+                .colorInvert()
+                .font(.system(size: idealCellSize / 2))
+                // TODO: Make it better!
+                .frame(width: idealCellSize, height: idealCellSize)
+            } else {
+                Text(!cell.isEmpty
+                     ? cell.letterTile!.char
+                     : " "
+                )
+                .font(.system(size: idealCellSize / 2))
+                .colorInvert()
+            }
         }
         if !boardIsLocked {
             if (cell.cellStatus == .empty) {
@@ -126,6 +157,16 @@ struct CellView: View {
     
     private var isCellReadyForLetterChange: Bool {
         return rack.changeLettersMode && cell.role == .rack && !cell.isEmpty
+    }
+    
+    private var showAsterisk: Bool {
+        guard let tile = cell.letterTile else { return false }
+        
+        return tile.isAsterisk && !tile.hasAsteriskChar
+    }
+    
+    var idealCellSize: CGFloat {
+        return (min(mainWindowSize.width, mainWindowSize.height) - 40) / 15
     }
 }
 
