@@ -40,8 +40,9 @@ class GamePlayViewModel: ObservableObject {
     }
     
     func validateMove() async throws {
-        boardViewModel.resetCellsStatus()
         let words = try boardViewModel.getMoveWords()
+        
+        boardViewModel.resetCellsStatus()
         
         let hanging = boardViewModel.checkWordsConnection(words: words)
         if (hanging.count > 0) {
@@ -140,7 +141,7 @@ class GamePlayViewModel: ObservableObject {
     }
     
     func resetMove() {
-        let moveCells = boardViewModel.getCurrentMoveCells()
+        let moveCells = boardViewModel.currentMoveCells
         
         for cell in moveCells {
             rackViewModel.insertLetterTileByPos(pos: 0, letterTile: cell.letterTile!, emptyPromisePos: nil)

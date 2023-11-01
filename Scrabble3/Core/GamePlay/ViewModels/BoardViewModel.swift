@@ -31,6 +31,12 @@ class BoardViewModel: LetterStoreBase {
         }
     }
     
+    var currentMoveCells: [CellModel] {
+        return cells.filter({ cell in
+            return cell.isCurrentMove
+        })
+    }
+    
     func clearBoard() {
         for idx in cells.indices {
             cells[idx].emptyCell()
@@ -64,12 +70,6 @@ class BoardViewModel: LetterStoreBase {
         return CellModel.Bonus.none
     }
     
-    func getCurrentMoveCells() -> [CellModel] {
-        return cells.filter({ cell in
-            return cell.isCurrentMove
-        })
-    }
-    
     func highlightCell(cell: CellModel) {
         setCellStatusByPosition(row: cell.row, col: cell.col)
     }
@@ -86,7 +86,7 @@ class BoardViewModel: LetterStoreBase {
     func getMoveWords() throws -> [WordModel] {
         var words = [WordModel]()
         
-        for cell in getCurrentMoveCells() {
+        for cell in currentMoveCells {
             var word: WordModel
             var wordBonusK: Int
             var cellConnected = 2
@@ -235,7 +235,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func confirmMove() {
-        for cell in getCurrentMoveCells() {
+        for cell in currentMoveCells {
             let index = cell.row * cols + cell.col
             cells[index].setCellStatus(status: .immutable)
             cells[index].isImmutable = true
