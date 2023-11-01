@@ -25,23 +25,19 @@ struct CellView: View {
             if showAsterisk {
                 ZStack {
                     HStack {
+                        // Push asterisk to right.
                         Spacer()
                         VStack {
                             Text("*")
-                                .padding(.top, 2)
-                                .padding(.trailing, 2)
+                                .padding(.trailing, 4)
+                            // Push asterisk to top.
                             Spacer()
                         }
                     }
-                    HStack {
-                        Text(!cell.isEmpty
-                             ? cell.letterTile!.char
-                             : " "
-                        )
-                        .padding(.leading, 2)
-                        .padding(.bottom, 2)
-                        Spacer()
-                    }
+                    Text(!cell.isEmpty
+                         ? cell.letterTile!.char
+                         : " "
+                    )
                 }
                 .colorInvert()
                 .font(.system(size: idealCellSize / 2))
