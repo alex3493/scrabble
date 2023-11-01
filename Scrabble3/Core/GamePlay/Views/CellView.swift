@@ -76,6 +76,15 @@ struct CellView: View {
                         }
                         return true
                     }
+            } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
+                cellPiece
+                    .dropDestination(for: CellModel.self) { items, location in
+                        let cell = items.first ?? nil
+                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
+                            moveCell(drag: cell!, drop: self.cell)
+                        }
+                        return true
+                    }
             } else if (isCellReadyForLetterChange) {
                 cellPiece
                     .onTapGesture {
