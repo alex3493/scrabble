@@ -24,16 +24,15 @@ struct ActionButton: View {
                 Group {
                     Text(label)
                         .fontWeight(.semibold)
+                        .font(.system(size: 10))
                     Image(systemName: buttonSystemImage)
                 }
-                // TODO: how to make button use available width (with padding)?
-//                .frame(maxWidth: .infinity)
-//                .padding()
             }
             .foregroundColor(.white)
             // TODO: UIScreen doesn't work when screen is rotated.
-            .frame(/* width: maxWidth ? UIScreen.main.bounds.width - 32 : nil,*/ height: 48)
-            .padding()
+            // .frame(/* width: maxWidth ? UIScreen.main.bounds.width - 32 : nil,*/ height: 24)
+            .padding(.all, 4)
+            .padding(.horizontal, 6)
         }
         .background(backGroundColor)
         .cornerRadius(10)
