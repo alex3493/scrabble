@@ -36,6 +36,12 @@ final class GameStartViewModel: ObservableObject {
         return isMeGamePlayer && game.users.count >= 2
     }
     
+    var canJoinGame: Bool {
+        guard let game = game else { return false }
+        
+        return !isMeGamePlayer && game.gameStatus == .waiting
+    }
+    
     var isGameRunning: Bool {
         guard let game = game else { return false }
         

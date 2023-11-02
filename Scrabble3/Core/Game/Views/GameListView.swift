@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct GameListView: View {
     
@@ -21,6 +22,7 @@ struct GameListView: View {
                             .navigationBarBackButtonHidden()
                     } label: {
                         Text(item.creatorUser.name ?? "")
+                        Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
                     }
                 }
             }
@@ -50,6 +52,7 @@ struct GameListView: View {
             }
         }
     }
+    
 }
 
 #Preview {

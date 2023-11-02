@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct GameStartView: View {
     
@@ -27,8 +28,8 @@ struct GameStartView: View {
                 if let game = viewModel.game, let gameId = gameId {
                     List {
                         Section("Game") {
-                            Text("Current game creator: \(game.creatorUser.name!)")
-                            Text("Current game ID: \(game.id)")
+                            Text("\(game.creatorUser.name!): \(Utils.formatTransactionTimestamp(game.createdAt))")
+                            // Text("Current game ID: \(game.id)")
                             Text("Current game status: \(game.gameStatus.rawValue)")
                         }
                         
@@ -39,7 +40,7 @@ struct GameStartView: View {
                                     // Image(systemName: game.turn == index ? "person.fill" : "person")
                                     Text(item.name!)
                                     Spacer()
-                                    // Text("\(game.scores[index])")
+                                    Text("\(game.scores[index])")
                                 }
                             }
 //                            ForEach(viewModel.players, id: \.self) { player in
@@ -68,7 +69,7 @@ struct GameStartView: View {
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: true)
-                    } else {
+                    } else if viewModel.canJoinGame {
                         ActionButton(label: "JOIN GAME", action: {
                             do {
                                 try await viewModel.joinGame(gameId: gameId)

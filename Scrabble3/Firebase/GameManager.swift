@@ -58,11 +58,16 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
-        guard let game = try? await getGame(gameId: gameId) else { return }
+        guard var game = try? await getGame(gameId: gameId) else { return }
+        
+        // Never join running or stopped game.
+        guard game.gameStatus == .waiting else { return }
+        
+        game.scores.append(0)
         
         let dict: [String:Any] = [
             GameModel.CodingKeys.users.rawValue : FieldValue.arrayUnion([data]),
-            GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count + 1)
+            GameModel.CodingKeys.scores.rawValue : game.scores
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -73,12 +78,24 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
-        guard let game = try? await getGame(gameId: gameId) else { return }
+        guard var game = try? await getGame(gameId: gameId) else { return }
         
-        // TODO: smart remove - remove score for the user being removed, keep other scores.
+        if let userIndex = game.users.firstIndex(of: user) {
+            game.scores.remove(at: userIndex)
+            // TODO: check if we need it.
+            game.users.remove(at: userIndex)
+            
+            if game.turn >= game.users.count {
+                game.turn = 0
+            }
+        } else {
+            print("DEBUG :: Leave Game :: Error - user not found")
+        }
+        
         let dict: [String:Any] = [
             GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data]),
-            GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count - 1)
+            GameModel.CodingKeys.scores.rawValue : game.scores,
+            GameModel.CodingKeys.turn.rawValue : game.turn
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
