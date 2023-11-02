@@ -30,6 +30,9 @@ struct BoardView: View {
         }
         .padding()
         .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+        .sheet(isPresented: $boardViewModel.asteriskDialogPresented) {
+            AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!)
+        }
     }
     
     var idealCellSize: CGFloat {

@@ -29,7 +29,13 @@ class RackViewModel: LetterStoreBase {
     
     func setLetterTileByPosition(pos: Int, letterTile: LetterTile?) {
         var cell = cells[pos]
-        cell.letterTile = letterTile
+        if letterTile != nil && letterTile!.isAsterisk {
+            // If we have asterisk exchange we should reset tile to pure asterisk before putting to rack.
+            cell.letterTile = LetterTile(char: "*", score: 0, probability: letterTile!.probability, isAsterisk: true, lang: letterTile!.lang)
+        } else {
+            // Normal flow.
+            cell.letterTile = letterTile
+        }
         cell.role = .rack
         cell.cellStatus = !cell.isEmpty ? .currentMove : .empty
         cells[pos] = cell
@@ -131,7 +137,13 @@ class RackViewModel: LetterStoreBase {
                     setLetterTileByPosition(pos: i + 1, letterTile: cells[i].letterTile)
                 }
             }
-            setLetterTileByPosition(pos: pos, letterTile: letterTile)
+            if letterTile.isAsterisk {
+                print("Putting asterisk back to rack: \(String(describing: letterTile))")
+                let letterTile = LetterTile(char: "*", score: 0, probability: letterTile.probability, isAsterisk: true, lang: letterTile.lang)
+                setLetterTileByPosition(pos: pos, letterTile: letterTile)
+            } else {
+                setLetterTileByPosition(pos: pos, letterTile: letterTile)
+            }
         }
     }
     

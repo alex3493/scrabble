@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CellView: View {
     
+    @Environment(\.mainWindowSize) var mainWindowSize
+    
     var cell: CellModel
     
     var boardIsLocked: Bool = false
@@ -20,10 +22,35 @@ struct CellView: View {
         let cellPiece = ZStack {
             RoundedRectangle(cornerRadius: 5)
                 .fill(getCellFill())
-            Text(!cell.isEmpty
-                 ? cell.letterTile!.char
-                 : " "
-            ).colorInvert()
+            if showAsterisk {
+                ZStack {
+                    HStack {
+                        // Push asterisk to right.
+                        Spacer()
+                        VStack {
+                            Text("*")
+                                .padding(.trailing, 4)
+                            // Push asterisk to top.
+                            Spacer()
+                        }
+                    }
+                    Text(!cell.isEmpty
+                         ? cell.letterTile!.char
+                         : " "
+                    )
+                }
+                .colorInvert()
+                .font(.system(size: idealCellSize / 2))
+                // TODO: Make it better!
+                .frame(width: idealCellSize, height: idealCellSize)
+            } else {
+                Text(!cell.isEmpty
+                     ? cell.letterTile!.char
+                     : " "
+                )
+                .font(.system(size: idealCellSize / 2))
+                .colorInvert()
+            }
         }
         if !boardIsLocked {
             if (cell.cellStatus == .empty) {
@@ -41,6 +68,15 @@ struct CellView: View {
                     .dropDestination(for: CellModel.self) { items, location in
                         let cell = items.first ?? nil
                         if (cell != nil) {
+                            moveCell(drag: cell!, drop: self.cell)
+                        }
+                        return true
+                    }
+            } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
+                cellPiece
+                    .dropDestination(for: CellModel.self) { items, location in
+                        let cell = items.first ?? nil
+                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
                             moveCell(drag: cell!, drop: self.cell)
                         }
                         return true
@@ -126,6 +162,16 @@ struct CellView: View {
     
     private var isCellReadyForLetterChange: Bool {
         return rack.changeLettersMode && cell.role == .rack && !cell.isEmpty
+    }
+    
+    private var showAsterisk: Bool {
+        guard let tile = cell.letterTile else { return false }
+        
+        return tile.isAsterisk && !tile.hasAsteriskChar
+    }
+    
+    var idealCellSize: CGFloat {
+        return (min(mainWindowSize.width, mainWindowSize.height) - 40) / 15
     }
 }
 
