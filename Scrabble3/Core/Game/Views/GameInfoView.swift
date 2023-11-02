@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import Firebase
 
-struct GameStartView: View {
+struct GameInfoView: View {
     
     @State var gameId: String? = nil
     
-    @StateObject private var viewModel = GameStartViewModel()
+    @StateObject private var viewModel = GameInfoViewModel()
     
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
@@ -20,15 +21,15 @@ struct GameStartView: View {
     let errorStore = ErrorStore.shared
     
     var body: some View {
-        if viewModel.isGameRunning, let game = viewModel.game {
+        if viewModel.isGameRunning, let game = viewModel.game, viewModel.isMeGamePlayer {
             GamePlayView(game: game)
         } else {
             VStack {
                 if let game = viewModel.game, let gameId = gameId {
                     List {
                         Section("Game") {
-                            Text("Current game creator: \(game.creatorUser.name!)")
-                            Text("Current game ID: \(game.id)")
+                            Text("\(game.creatorUser.name!): \(Utils.formatTransactionTimestamp(game.createdAt))")
+                            // Text("Current game ID: \(game.id)")
                             Text("Current game status: \(game.gameStatus.rawValue)")
                         }
                         
@@ -39,12 +40,12 @@ struct GameStartView: View {
                                     // Image(systemName: game.turn == index ? "person.fill" : "person")
                                     Text(item.name!)
                                     Spacer()
-                                    // Text("\(game.scores[index])")
+                                    // TODO: check why we have to use this workaround.
+                                    if game.scores.indices.contains(index) {
+                                        Text("\(game.scores[index])")
+                                    }
                                 }
                             }
-//                            ForEach(viewModel.players, id: \.self) { player in
-//                                Text(player.name!)
-//                            }
                         }
                     }
                     
@@ -58,7 +59,7 @@ struct GameStartView: View {
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
-                    } else if viewModel.isMeGamePlayer {
+                    } else if viewModel.canLeaveGame {
                         ActionButton(label: "LEAVE GAME", action: {
                             do {
                                 try await viewModel.leaveGame(gameId: gameId)
@@ -68,7 +69,7 @@ struct GameStartView: View {
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: true)
-                    } else {
+                    } else if viewModel.canJoinGame {
                         ActionButton(label: "JOIN GAME", action: {
                             do {
                                 try await viewModel.joinGame(gameId: gameId)
@@ -80,6 +81,16 @@ struct GameStartView: View {
                     }
                     if (viewModel.canStartGame) {
                         ActionButton(label: "START GAME", action: {
+                            do {
+                                try await viewModel.startGame(gameId: gameId)
+                            } catch {
+                                print("DEBUG :: Error starting game: \(error.localizedDescription)")
+                                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                            }
+                        }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
+                    }
+                    if (viewModel.canResumeGame) {
+                        ActionButton(label: "RESUME GAME", action: {
                             do {
                                 try await viewModel.startGame(gameId: gameId)
                             } catch {
@@ -108,11 +119,11 @@ struct GameStartView: View {
                 if (gameId == nil) {
                     do {
                         try await createGame()
+                        viewModel.addListenerForGame()
                     } catch {
                         print("DEBUG :: Error creating game: \(error.localizedDescription)")
                         errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                     }
-                    viewModel.addListenerForGame()
                 } else {
                     guard let gameId = gameId else { return }
                     await viewModel.loadGame(gameId: gameId)
@@ -133,5 +144,5 @@ struct GameStartView: View {
 }
 
 #Preview {
-    GameStartView()
+    GameInfoView()
 }

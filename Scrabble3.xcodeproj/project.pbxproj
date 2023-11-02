@@ -16,9 +16,10 @@
 		FA592C602ADB39A800BAFF8F /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C5F2ADB39A700BAFF8F /* GameManager.swift */; };
 		FA592C632ADBB15C00BAFF8F /* Query+EXT.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C622ADBB15C00BAFF8F /* Query+EXT.swift */; };
 		FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */; };
-		FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C662ADBDEA500BAFF8F /* GameStartView.swift */; };
-		FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */; };
+		FA592C672ADBDEA600BAFF8F /* GameInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C662ADBDEA500BAFF8F /* GameInfoView.swift */; };
+		FA592C692ADBDFB800BAFF8F /* GameInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C682ADBDFB800BAFF8F /* GameInfoViewModel.swift */; };
 		FA6483262AF24C0900A9DBAA /* AsteriskDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */; };
+		FA6483282AF39CA100A9DBAA /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483272AF39CA100A9DBAA /* Utils.swift */; };
 		FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545752AEA549200B58EFC /* MoveManager.swift */; };
 		FA7545792AEA584100B58EFC /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545782AEA584100B58EFC /* GameModel.swift */; };
 		FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75457A2AEA589000B58EFC /* WordModel.swift */; };
@@ -86,9 +87,10 @@
 		FA592C5F2ADB39A700BAFF8F /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		FA592C622ADBB15C00BAFF8F /* Query+EXT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+EXT.swift"; sourceTree = "<group>"; };
 		FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListViewModel.swift; sourceTree = "<group>"; };
-		FA592C662ADBDEA500BAFF8F /* GameStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStartView.swift; sourceTree = "<group>"; };
-		FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStartViewModel.swift; sourceTree = "<group>"; };
+		FA592C662ADBDEA500BAFF8F /* GameInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInfoView.swift; sourceTree = "<group>"; };
+		FA592C682ADBDFB800BAFF8F /* GameInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInfoViewModel.swift; sourceTree = "<group>"; };
 		FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsteriskDialogView.swift; sourceTree = "<group>"; };
+		FA6483272AF39CA100A9DBAA /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		FA7545752AEA549200B58EFC /* MoveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveManager.swift; sourceTree = "<group>"; };
 		FA7545782AEA584100B58EFC /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		FA75457A2AEA589000B58EFC /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */,
 				FA7545882AEC05F100B58EFC /* DeviceEnvironment.swift */,
 				FA75459E2AEE808800B58EFC /* BackenService.swift */,
+				FA6483272AF39CA100A9DBAA /* Utils.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -185,7 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				FA592C642ADBB26800BAFF8F /* GameListViewModel.swift */,
-				FA592C682ADBDFB800BAFF8F /* GameStartViewModel.swift */,
+				FA592C682ADBDFB800BAFF8F /* GameInfoViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -194,7 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				FA592C5A2ADB144B00BAFF8F /* GameListView.swift */,
-				FA592C662ADBDEA500BAFF8F /* GameStartView.swift */,
+				FA592C662ADBDEA500BAFF8F /* GameInfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -546,7 +549,7 @@
 			files = (
 				FA592C632ADBB15C00BAFF8F /* Query+EXT.swift in Sources */,
 				FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */,
-				FA592C672ADBDEA600BAFF8F /* GameStartView.swift in Sources */,
+				FA592C672ADBDEA600BAFF8F /* GameInfoView.swift in Sources */,
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
 				FA7545902AED566A00B58EFC /* LetterStoreBase.swift in Sources */,
 				FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */,
@@ -559,6 +562,7 @@
 				FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */,
 				FA592C602ADB39A800BAFF8F /* GameManager.swift in Sources */,
 				FA7545792AEA584100B58EFC /* GameModel.swift in Sources */,
+				FA6483282AF39CA100A9DBAA /* Utils.swift in Sources */,
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
 				FA7545892AEC05F100B58EFC /* DeviceEnvironment.swift in Sources */,
 				FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */,
@@ -578,7 +582,7 @@
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,
 				FA7545832AEC046C00B58EFC /* BoardView.swift in Sources */,
 				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
-				FA592C692ADBDFB800BAFF8F /* GameStartViewModel.swift in Sources */,
+				FA592C692ADBDFB800BAFF8F /* GameInfoViewModel.swift in Sources */,
 				FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */,
 				FA75458E2AECF23C00B58EFC /* CommandViewModel.swift in Sources */,
 				FA75457F2AEA58AA00B58EFC /* CellModel.swift in Sources */,

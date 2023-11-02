@@ -58,11 +58,16 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
-        guard let game = try? await getGame(gameId: gameId) else { return }
+        guard var game = try? await getGame(gameId: gameId) else { return }
+        
+        // Never join running or stopped game.
+        guard game.gameStatus == .waiting else { return }
+        
+        game.scores.append(0)
         
         let dict: [String:Any] = [
             GameModel.CodingKeys.users.rawValue : FieldValue.arrayUnion([data]),
-            GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count + 1)
+            GameModel.CodingKeys.scores.rawValue : game.scores
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -73,12 +78,16 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
-        guard let game = try? await getGame(gameId: gameId) else { return }
+        guard var game = try? await getGame(gameId: gameId) else { return }
         
-        // TODO: smart remove - remove score for the user being removed, keep other scores.
+        // Never leave running or stopped game.
+        guard game.gameStatus == .waiting else { return }
+        
+        game.scores.removeLast()
+        
         let dict: [String:Any] = [
             GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data]),
-            GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count - 1)
+            GameModel.CodingKeys.scores.rawValue : game.scores
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -99,9 +108,9 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
-    func stopGame(gameId: String) async throws {
+    func suspendGame(gameId: String, abort: Bool) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
-        game.gameStatus = .finished
+        game.gameStatus = abort ? .aborted : .suspended
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)
@@ -116,7 +125,7 @@ final class GameManager {
         
         if let maxScore = game.scores.max() {
             print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
-            if (game.turn == 0 && maxScore >= 100) {
+            if (game.turn == 0 && maxScore >= 200) {
                 // Game finished!
                 var winners = [DBUser]()
                 for (index, score) in game.scores.enumerated() {

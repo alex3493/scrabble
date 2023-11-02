@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 @MainActor
-final class GameStartViewModel: ObservableObject {
+final class GameInfoViewModel: ObservableObject {
     
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
@@ -33,7 +33,25 @@ final class GameStartViewModel: ObservableObject {
     var canStartGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGamePlayer && game.users.count >= 2
+        return isMeGamePlayer && game.gameStatus == .waiting && game.users.count >= 2
+    }
+    
+    var canResumeGame: Bool {
+        guard let game = game else { return false }
+        
+        return isMeGamePlayer && game.gameStatus == .suspended && game.users.count >= 2
+    }
+    
+    var canJoinGame: Bool {
+        guard let game = game else { return false }
+        
+        return !isMeGamePlayer && game.gameStatus == .waiting
+    }
+    
+    var canLeaveGame: Bool {
+        guard let game = game else { return false }
+        
+        return isMeGamePlayer && game.gameStatus == .waiting
     }
     
     var isGameRunning: Bool {
@@ -60,14 +78,13 @@ final class GameStartViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    //    func removeListenerForGame() {
-    //        GameManager.shared.removeListenerForGame()
-    //    }
+    // TODO: check if we have to call this function...
+//    func removeListenerForGame() {
+//        GameManager.shared.removeListenerForGame()
+//    }
     
     func createGame(byUser user: DBUser) async throws -> String? {
         self.game = try await GameManager.shared.createNewGame(creatorUser: user)
-        
-        addListenerForGame()
         
         return self.game?.id
     }

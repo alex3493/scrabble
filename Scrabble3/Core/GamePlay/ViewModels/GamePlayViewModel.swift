@@ -135,11 +135,6 @@ class GamePlayViewModel: ObservableObject {
         rackViewModel.fillRack()
     }
     
-    func stopGame() {
-        // Show winner.
-        // Change game status.
-    }
-    
     func resetMove() {
         let moveCells = boardViewModel.currentMoveCells
         

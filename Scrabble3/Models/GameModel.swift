@@ -30,9 +30,11 @@ struct GameModel: Identifiable, Codable {
     }
     
     enum GameStatus: String, Codable {
-        case waiting
-        case running
-        case finished
+        case waiting    // Waiting for players to join and start game. Once game is running we never return to this status.
+        case running    // Normal game progress.
+        case suspended  // Not sure: one of the users have left game play view. We may show a notice to remaining users. We also support resume game.
+        case finished   // Normal game finish - with winner(s).
+        case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
     init(id: String, createdAt: Timestamp, creatorUser: DBUser, users: [DBUser], turn: Int, scores: [Int], gameStatus: GameStatus = .waiting) {

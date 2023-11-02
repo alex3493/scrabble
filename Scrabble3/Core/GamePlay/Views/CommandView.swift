@@ -60,13 +60,21 @@ struct CommandView: View {
                         }
                         
                         if !isInChangeLetterMode {
-                            ActionButton(label: "STOP GAME", action: {
+                            ActionButton(label: "SUSPEND GAME", action: {
                                 do {
-                                    try await viewModel.stopGame(gameId: game.id)
+                                    try await viewModel.suspendGame(gameId: game.id, abort: false)
+                                } catch {
+                                    print("DEBUG :: Error suspending game: \(error.localizedDescription)")
+                                }
+                            }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                            
+                            ActionButton(label: "LEAVE GAME", action: {
+                                do {
+                                    try await viewModel.suspendGame(gameId: game.id, abort: true)
                                 } catch {
                                     print("DEBUG :: Error leaving game: \(error.localizedDescription)")
                                 }
-                            }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemRed), maxWidth: false)
+                            }, buttonSystemImage: "xmark.bin", backGroundColor: Color(.systemRed), maxWidth: false)
                         }
                     }
                     .padding()
@@ -111,13 +119,21 @@ struct CommandView: View {
                             }
                             
                             if !isInChangeLetterMode {
-                                ActionButton(label: "STOP GAME", action: {
+                                ActionButton(label: "SUSPEND GAME", action: {
                                     do {
-                                        try await viewModel.stopGame(gameId: game.id)
+                                        try await viewModel.suspendGame(gameId: game.id, abort: false)
+                                    } catch {
+                                        print("DEBUG :: Error suspending game: \(error.localizedDescription)")
+                                    }
+                                }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                                
+                                ActionButton(label: "LEAVE GAME", action: {
+                                    do {
+                                        try await viewModel.suspendGame(gameId: game.id, abort: true)
                                     } catch {
                                         print("DEBUG :: Error leaving game: \(error.localizedDescription)")
                                     }
-                                }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemRed), maxWidth: false)
+                                }, buttonSystemImage: "xmark.bin", backGroundColor: Color(.systemRed), maxWidth: false)
                             }
                         }
                     }
