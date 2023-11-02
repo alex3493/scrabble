@@ -33,9 +33,18 @@ struct GameStartView: View {
                         }
                         
                         Section("Players") {
-                            ForEach(viewModel.players, id: \.self) { player in
-                                Text(player.name!)
+                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                                HStack(spacing: 12) {
+                                    // TODO: issue here - when user leaves game we have index-out-of range error!
+                                    // Image(systemName: game.turn == index ? "person.fill" : "person")
+                                    Text(item.name!)
+                                    Spacer()
+                                    // Text("\(game.scores[index])")
+                                }
                             }
+//                            ForEach(viewModel.players, id: \.self) { player in
+//                                Text(player.name!)
+//                            }
                         }
                     }
                     

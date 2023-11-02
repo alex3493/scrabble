@@ -75,6 +75,7 @@ final class GameManager {
         
         guard let game = try? await getGame(gameId: gameId) else { return }
         
+        // TODO: smart remove - remove score for the user being removed, keep other scores.
         let dict: [String:Any] = [
             GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data]),
             GameModel.CodingKeys.scores.rawValue : [Int](repeating: 0, count: game.users.count - 1)
@@ -112,6 +113,22 @@ final class GameManager {
     func nextTurn(gameId: String, score: Int) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
         game.nextTurn(score: score)
+        
+        if let maxScore = game.scores.max() {
+            print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
+            if (game.turn == 0 && maxScore >= 100) {
+                // Game finished!
+                var winners = [DBUser]()
+                for (index, score) in game.scores.enumerated() {
+                    if score >= maxScore {
+                        winners.append(game.users[index])
+                    }
+                }
+                
+                print("Game winners: \(winners)")
+                game.gameStatus = .finished
+            }
+        }
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)
