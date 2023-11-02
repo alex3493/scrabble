@@ -19,8 +19,8 @@ final class CommandViewModel: ObservableObject {
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
-    func stopGame(gameId: String) async throws {
-        try await GameManager.shared.stopGame(gameId: gameId)
+    func suspendGame(gameId: String, abort: Bool) async throws {
+        try await GameManager.shared.suspendGame(gameId: gameId, abort: abort)
     }
     
     func setChangeLettersMode(mode: Bool) {

@@ -80,22 +80,14 @@ final class GameManager {
         
         guard var game = try? await getGame(gameId: gameId) else { return }
         
-        if let userIndex = game.users.firstIndex(of: user) {
-            game.scores.remove(at: userIndex)
-            // TODO: check if we need it.
-            game.users.remove(at: userIndex)
-            
-            if game.turn >= game.users.count {
-                game.turn = 0
-            }
-        } else {
-            print("DEBUG :: Leave Game :: Error - user not found")
-        }
+        // Never leave running or stopped game.
+        guard game.gameStatus == .waiting else { return }
+        
+        game.scores.removeLast()
         
         let dict: [String:Any] = [
             GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data]),
-            GameModel.CodingKeys.scores.rawValue : game.scores,
-            GameModel.CodingKeys.turn.rawValue : game.turn
+            GameModel.CodingKeys.scores.rawValue : game.scores
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -116,9 +108,9 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
-    func stopGame(gameId: String) async throws {
+    func suspendGame(gameId: String, abort: Bool) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
-        game.gameStatus = .finished
+        game.gameStatus = abort ? .aborted : .suspended
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)
@@ -133,7 +125,7 @@ final class GameManager {
         
         if let maxScore = game.scores.max() {
             print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
-            if (game.turn == 0 && maxScore >= 100) {
+            if (game.turn == 0 && maxScore >= 200) {
                 // Game finished!
                 var winners = [DBUser]()
                 for (index, score) in game.scores.enumerated() {

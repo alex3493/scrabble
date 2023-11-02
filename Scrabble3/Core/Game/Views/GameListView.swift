@@ -18,7 +18,7 @@ struct GameListView: View {
             List {
                 ForEach(viewModel.games, id: \.id.self) { item in
                     NavigationLink {
-                        GameStartView(gameId: item.id)
+                        GameInfoView(gameId: item.id)
                             .navigationBarBackButtonHidden()
                     } label: {
                         Text(item.creatorUser.name ?? "")
@@ -34,7 +34,7 @@ struct GameListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading, content: {
                     NavigationLink {
-                        GameStartView()
+                        GameInfoView()
                             .navigationBarBackButtonHidden()
                     } label: {
                         Image(systemName: "plus")
