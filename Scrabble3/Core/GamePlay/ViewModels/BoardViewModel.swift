@@ -16,6 +16,10 @@ class BoardViewModel: LetterStoreBase {
     @Published var asteriskRow: Int? = nil
     @Published var asteriskCol: Int? = nil
     
+    @Published var moveInfoDialogPresented: Bool = false
+    /* @Published */ var moveWordsSummary: [(String, Int)] = []
+    /* @Published */ var moveTotalScore: Int = 0
+    
     private override init() {
         super.init()
         let numCells: Int = rows * cols;
@@ -171,7 +175,7 @@ class BoardViewModel: LetterStoreBase {
             
             if (cellConnected == 0) {
                 highlightCell(cell: cell)
-                throw ValidationError.invalidLetterTilePosition(cell: cell)
+                throw ValidationError.invalidLetterTilePosition(cell: cell.letterTile!.char)
             }
         }
         

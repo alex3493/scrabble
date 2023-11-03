@@ -15,6 +15,8 @@ enum AppError: LocalizedError {
     
     case gameSetupError(message: String?)
     
+    case moveValidationError(errorType: ValidationError)
+    
     var errorDescription: String? {
         switch self {
         case .loginError:
@@ -23,18 +25,37 @@ enum AppError: LocalizedError {
             return "Failed registering new account"
         case .gameSetupError:
             return "Error setting up game"
+        case .moveValidationError:
+            return "Invalid words"
         }
     }
     
     var failureReason: String? {
         switch self {
+            
         case .loginError(let message):
             return message ?? "Entered email or password were incorrect"
         case .registrationError(let message):
             return message ?? "Email address is already in use"
         case .gameSetupError(let message):
             return message ?? "Error trying to create, join, leave, remove or start game"
+        case .moveValidationError(let errorType):
+            switch errorType {
+                
+            case .invalidLetterTilePosition(cell: let cell):
+                return "Invalid letter position: \(cell)"
+            case .hangingWords(words: let words):
+                let words = words.joined(separator: ", ")
+                return "Words not placed correctly: \(words)"
+            case .invalidWords(words: let words):
+                let words = words.joined(separator: ", ")
+                return "Words not found in dictionary: \(words)"
+            case .repeatedWords(words: let words):
+                let words = words.joined(separator: ", ")
+                return "Words already used: \(words)"
+            }
         }
+        
     }
     
 }
@@ -67,6 +88,9 @@ final class ErrorStore: ObservableObject {
         activeError = AppError.gameSetupError(message: message)
     }
     
+    func showMoveValidationErrorAlert(errorType: ValidationError) {
+        activeError = AppError.moveValidationError(errorType: errorType)
+    }
     
 }
 

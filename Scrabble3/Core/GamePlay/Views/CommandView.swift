@@ -42,6 +42,7 @@ struct CommandView: View {
                                         print("DEBUG :: Error changing letter: \(error.localizedDescription)")
                                     }
                                 }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                                
                                 ActionButton(label: "CANCEL", action: {
                                     viewModel.setChangeLettersMode(mode: false)
                                 }, buttonSystemImage: "arrow.circlepath", backGroundColor: Color(.systemBlue), maxWidth: false)
@@ -49,6 +50,7 @@ struct CommandView: View {
                                 ActionButton(label: "CHANGE LETTERS", action: {
                                     viewModel.setChangeLettersMode(mode: true)
                                 }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                                
                                 ActionButton(label: "SUBMIT", action: {
                                     do {
                                         try await viewModel.submitMove(gameId: game.id)
@@ -56,6 +58,14 @@ struct CommandView: View {
                                         print("DEBUG :: Error submitting move: \(error.localizedDescription)")
                                     }
                                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemBlue), maxWidth: false)
+                                
+                                ActionButton(label: "VALIDATE", action: {
+                                    do {
+                                        try await viewModel.validateMove(gameId: game.id)
+                                    } catch {
+                                        print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                    }
+                                }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
                             }
                         }
                         
@@ -101,6 +111,7 @@ struct CommandView: View {
                                             print("DEBUG :: Error changing letter: \(error.localizedDescription)")
                                         }
                                     }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                                    
                                     ActionButton(label: "CANCEL", action: {
                                         viewModel.setChangeLettersMode(mode: false)
                                     }, buttonSystemImage: "arrow.circlepath", backGroundColor: Color(.systemBlue), maxWidth: false)
@@ -108,6 +119,7 @@ struct CommandView: View {
                                     ActionButton(label: "CHANGE LETTERS", action: {
                                         viewModel.setChangeLettersMode(mode: true)
                                     }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                                    
                                     ActionButton(label: "SUBMIT", action: {
                                         do {
                                             try await viewModel.submitMove(gameId: game.id)
@@ -115,6 +127,14 @@ struct CommandView: View {
                                             print("DEBUG :: Error submitting move: \(error.localizedDescription)")
                                         }
                                     }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemBlue), maxWidth: false)
+                                    
+                                    ActionButton(label: "VALIDATE", action: {
+                                        do {
+                                            try await viewModel.validateMove(gameId: game.id)
+                                        } catch {
+                                            print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                        }
+                                    }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
                                 }
                             }
                             

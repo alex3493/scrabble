@@ -8,13 +8,15 @@
 import Foundation
 import Combine
 
-@MainActor
-struct Player {
-    let id: String
-    let name: String
+struct Player: Codable, Identifiable {
+    var id: String {
+        return user.userId
+    }
+    
+    let user: DBUser
     let score: Int
     let hasTurn: Bool
-    
+    let letterRack: [CellModel]
 }
 
 @MainActor
@@ -34,11 +36,6 @@ class GamePlayViewModel: ObservableObject {
     
     private init() { }
     
-    func newGame() {
-        // Clean move storage.
-        
-    }
-    
     func validateMove() async throws {
         let words = try boardViewModel.getMoveWords()
         
@@ -47,7 +44,7 @@ class GamePlayViewModel: ObservableObject {
         let hanging = boardViewModel.checkWordsConnection(words: words)
         if (hanging.count > 0) {
             boardViewModel.highlightWords(words: hanging, status: .error)
-            throw ValidationError.hangingWords(words: hanging)
+            throw ValidationError.hangingWords(words: hanging.map { $0.word })
         }
         
         var invalidWords = [WordModel]()
@@ -60,7 +57,7 @@ class GamePlayViewModel: ObservableObject {
         
         if (invalidWords.count > 0) {
             boardViewModel.highlightWords(words: invalidWords, status: .error)
-            throw ValidationError.invalidWords(words: invalidWords)
+            throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
         }
         
         // Check for repeated words.
@@ -90,7 +87,7 @@ class GamePlayViewModel: ObservableObject {
         
         if (repeatedWords.count > 0) {
             boardViewModel.highlightWords(words: repeatedWords, status: .error)
-            throw ValidationError.repeatedWords(words: repeatedWords)
+            throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
         }
     }
     
@@ -98,17 +95,17 @@ class GamePlayViewModel: ObservableObject {
         do {
             try await validateMove()
             return true
-        } catch(ValidationError.hangingWords /* (let words) */) {
-            // TODO: show error message.
+        } catch(ValidationError.hangingWords (let words)) {
+            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
             return false
-        } catch(ValidationError.invalidWords /* (let words) */) {
-            // TODO: show error message.
+        } catch(ValidationError.invalidWords (let words)) {
+            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
             return false
-        } catch(ValidationError.repeatedWords /* (let words) */) {
-            // TODO: show error message.
+        } catch(ValidationError.repeatedWords (let words)) {
+            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
             return false
-        } catch(ValidationError.invalidLetterTilePosition) {
-            // TODO: show error message.
+        } catch(ValidationError.invalidLetterTilePosition (let char)) {
+            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: char))
             return false
         } catch {
             // Unknown error.

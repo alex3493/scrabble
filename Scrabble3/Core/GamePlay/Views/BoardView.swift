@@ -30,8 +30,11 @@ struct BoardView: View {
         }
         .padding()
         .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-        .sheet(isPresented: $boardViewModel.asteriskDialogPresented) {
+        .fullScreenCover(isPresented: $boardViewModel.asteriskDialogPresented) {
             AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!)
+        }
+        .sheet(isPresented: $boardViewModel.moveInfoDialogPresented) {
+            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, isPresented: $boardViewModel.moveInfoDialogPresented)
         }
     }
     
