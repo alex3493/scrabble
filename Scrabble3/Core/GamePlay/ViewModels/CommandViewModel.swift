@@ -11,6 +11,7 @@ import Combine
 @MainActor
 final class CommandViewModel: ObservableObject {
     
+    private var boardViewModel = BoardViewModel.shared
     private var rackViewModel = RackViewModel.shared
     private var gameViewModel = GamePlayViewModel.shared
     
@@ -34,6 +35,23 @@ final class CommandViewModel: ObservableObject {
             try await gameViewModel.nextTurn(gameId: gameId)
         }
         rackViewModel.setChangeLettersMode(mode: false)
+    }
+    
+    func validateMove(gameId: String) async {
+        do {
+            if await gameViewModel.submitMove() {
+                
+                // TODO: display info alert here.
+                let moveWords = try boardViewModel.getMoveWords()
+                
+                let wordsSummary = moveWords.map { ($0.word, $0.score) }
+                
+                let totalScore = moveWords.reduce(0) { $0 + $1.score }
+            }
+        } catch {
+            print("DEBUG :: Warning: \(error.localizedDescription)")
+            // TODO: interpret exception.
+        }
     }
     
     func submitMove(gameId: String) async throws {

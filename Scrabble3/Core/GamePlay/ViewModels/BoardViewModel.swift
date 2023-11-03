@@ -171,7 +171,7 @@ class BoardViewModel: LetterStoreBase {
             
             if (cellConnected == 0) {
                 highlightCell(cell: cell)
-                throw ValidationError.invalidLetterTilePosition(cell: cell)
+                throw ValidationError.invalidLetterTilePosition(cell: cell.letterTile!.char)
             }
         }
         
