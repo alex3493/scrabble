@@ -21,6 +21,7 @@ final class CommandViewModel: ObservableObject {
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
     func suspendGame(gameId: String, abort: Bool) async throws {
+        gameViewModel.resetMove()
         try await GameManager.shared.suspendGame(gameId: gameId, abort: abort)
     }
     
@@ -47,6 +48,11 @@ final class CommandViewModel: ObservableObject {
                 let wordsSummary = moveWords.map { ($0.word, $0.score) }
                 
                 let totalScore = moveWords.reduce(0) { $0 + $1.score }
+                
+                boardViewModel.moveWordsSummary = wordsSummary
+                boardViewModel.moveTotalScore = totalScore
+                
+                boardViewModel.moveInfoDialogPresented = true
             }
         } catch {
             print("DEBUG :: Warning: \(error.localizedDescription)")
