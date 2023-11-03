@@ -41,8 +41,6 @@ final class CommandViewModel: ObservableObject {
     func validateMove(gameId: String) async {
         do {
             if await gameViewModel.submitMove() {
-                
-                // TODO: display info alert here.
                 let moveWords = try boardViewModel.getMoveWords()
                 
                 let wordsSummary = moveWords.map { ($0.word, $0.score) }

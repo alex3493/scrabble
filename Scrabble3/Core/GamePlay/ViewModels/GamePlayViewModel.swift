@@ -8,13 +8,15 @@
 import Foundation
 import Combine
 
-@MainActor
-struct Player {
-    let id: String
-    let name: String
+struct Player: Codable, Identifiable {
+    var id: String {
+        return user.userId
+    }
+    
+    let user: DBUser
     let score: Int
     let hasTurn: Bool
-    
+    let letterRack: [CellModel]
 }
 
 @MainActor
