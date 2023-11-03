@@ -15,12 +15,17 @@ class RackViewModel: LetterStoreBase {
     
     private override init() {
         super.init()
-        for i in 0...self.size - 1 {
+        for i in 0..<LetterStoreBase.size {
             let cell = CellModel(row: -1, col: -1, pos: Int(i), letterTile: nil, cellStatus: .empty, role: .rack)
             cells.append(cell)
         }
-        // TODO: just testing...
-        fillRack()
+        // TODO: we have to fill rack on game start and save it to DB.
+        // On any subsequent turn we have to read rack from DB.
+        // fillRack()
+    }
+    
+    func setRack(cells: [CellModel]) {
+        self.cells = cells
     }
     
     func cellByPosition(pos: Int) -> CellModel {

@@ -73,6 +73,8 @@ final class CommandViewModel: ObservableObject {
             } receiveValue: { [weak self] game in
                 print("Game ID: \(game.id) updated")
                 self?.game = game
+                
+                self?.updatePlayerLetterRack()
             }
             .store(in: &cancellables)
     }
@@ -80,6 +82,16 @@ final class CommandViewModel: ObservableObject {
     func loadGame(gameId: String?) async {
         guard let gameId = gameId else { return }
         self.game = try? await GameManager.shared.getGame(gameId: gameId)
+    }
+    
+    func updatePlayerLetterRack() {
+        guard let game = game, let user = currentUser else { return }
+        
+        let player = game.players.first { $0.id == user.userId }
+        
+        guard let player = player else { return }
+        
+        rackViewModel.setRack(cells: player.letterRack)
     }
     
 }

@@ -112,13 +112,15 @@ class GamePlayViewModel: ObservableObject {
         
         try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore)
         
-        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore)
-        
-        boardViewModel.confirmMove()
-        
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
         rackViewModel.fillRack()
+        
+        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells)
+        
+        boardViewModel.confirmMove()
+        
+        // TODO: save rack to DB here...
     }
     
     func resetMove() {

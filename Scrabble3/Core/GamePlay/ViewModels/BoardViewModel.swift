@@ -13,12 +13,12 @@ class BoardViewModel: LetterStoreBase {
     static var shared = BoardViewModel()
     
     @Published var asteriskDialogPresented: Bool = false
-    @Published var asteriskRow: Int? = nil
-    @Published var asteriskCol: Int? = nil
+    var asteriskRow: Int? = nil
+    var asteriskCol: Int? = nil
     
     @Published var moveInfoDialogPresented: Bool = false
-    /* @Published */ var moveWordsSummary: [(String, Int)] = []
-    /* @Published */ var moveTotalScore: Int = 0
+    var moveWordsSummary: [(String, Int)] = []
+    var moveTotalScore: Int = 0
     
     private override init() {
         super.init()

@@ -15,30 +15,32 @@ struct RackView: View {
     @StateObject private var boardViewModel = BoardViewModel.shared
     
     var body: some View {
-        if (isLandscape) {
-            VStack() {
-                Group {
-                    ForEach(0...rackViewModel.size - 1, id: \.self) { pos in
-                        let cell = rackViewModel.cellByPosition(pos: pos)
-                        CellView(cell: cell)
-                            .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                            .frame(width: idealCellSize)
+        if rackViewModel.cells.count > 0 {
+            if (isLandscape) {
+                VStack() {
+                    Group {
+                        ForEach(0...LetterStoreBase.size - 1, id: \.self) { pos in
+                            let cell = rackViewModel.cellByPosition(pos: pos)
+                            CellView(cell: cell)
+                                .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                .frame(width: idealCellSize)
+                        }
                     }
                 }
-            }
-            .padding()
-        } else {
-            HStack() {
-                Group {
-                    ForEach(0...rackViewModel.size - 1, id: \.self) { pos in
-                        let cell = rackViewModel.cellByPosition(pos: pos)
-                        CellView(cell: cell)
-                            .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                            .frame(width: idealCellSize)
+                .padding()
+            } else {
+                HStack() {
+                    Group {
+                        ForEach(0...LetterStoreBase.size - 1, id: \.self) { pos in
+                            let cell = rackViewModel.cellByPosition(pos: pos)
+                            CellView(cell: cell)
+                                .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                .frame(width: idealCellSize)
+                        }
                     }
                 }
+                .padding()
             }
-            .padding()
         }
     }
     

@@ -92,9 +92,9 @@ struct GameInfoView: View {
                     if (viewModel.canResumeGame) {
                         ActionButton(label: "RESUME GAME", action: {
                             do {
-                                try await viewModel.startGame(gameId: gameId)
+                                try await viewModel.resumeGame(gameId: gameId)
                             } catch {
-                                print("DEBUG :: Error starting game: \(error.localizedDescription)")
+                                print("DEBUG :: Error resuming game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)

@@ -16,6 +16,8 @@ final class GameInfoViewModel: ObservableObject {
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
+    let rackViewModel = RackViewModel.shared
+    
     var isMeGameCreator: Bool {
         guard let game = game else { return false }
         
@@ -95,6 +97,10 @@ final class GameInfoViewModel: ObservableObject {
     
     func startGame (gameId: String) async throws {
         try await GameManager.shared.startGame(gameId: gameId)
+    }
+    
+    func resumeGame (gameId: String) async throws {
+        try await GameManager.shared.resumeGame(gameId: gameId)
     }
     
     func joinGame(gameId: String) async throws {

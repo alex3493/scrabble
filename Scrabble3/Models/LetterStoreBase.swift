@@ -13,6 +13,6 @@ class LetterStoreBase: ObservableObject {
     
     let rows: Int = 15
     let cols: Int = 15
-    let size: Int = 8
+    static let size: Int = 8
     
 }

@@ -15,7 +15,7 @@ struct Player: Codable, Identifiable {
     let user: DBUser
     let score: Int
     let hasTurn: Bool
-    let letterRack: [CellModel]
+    var letterRack: [CellModel]
     
     enum CodingKeys: String, CodingKey {
         case user

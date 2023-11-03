@@ -81,7 +81,7 @@ final class GameManager {
         guard var game = try? await getGame(gameId: gameId) else { return }
         
         let player = game.players.first {
-            $0.user.userId == user.userId
+            $0.id == user.userId
         }
         
         guard let data = try? encoder.encode(player) else {
@@ -107,6 +107,28 @@ final class GameManager {
     
     func startGame(gameId: String) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
+        
+        guard game.gameStatus == .waiting else { return }
+        
+        game.gameStatus = .running
+        
+        // Set letter racks for each player.
+        for playerIndex in game.players.indices {
+            game.players[playerIndex].letterRack = initRack()
+        }
+        
+        guard let data = try? encoder.encode(game) else {
+            throw URLError(.cannotDecodeRawData)
+        }
+        
+        try await gameDocument(gameId: gameId).updateData(data)
+    }
+    
+    func resumeGame(gameId: String) async throws {
+        var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
+        
+        guard game.gameStatus == .suspended else { return }
+        
         game.gameStatus = .running
         
         guard let data = try? encoder.encode(game) else {
@@ -127,9 +149,14 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
-    func nextTurn(gameId: String, score: Int) async throws {
+    func nextTurn(gameId: String, score: Int, user: DBUser, userLetterRack: [CellModel]) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
         game.nextTurn(score: score)
+        
+        // Save current player letter rack.
+        let playerIndex = game.players.firstIndex { $0.id == user.userId }
+        guard let playerIndex = playerIndex else { return }
+        game.players[playerIndex].letterRack = userLetterRack
         
         if let maxScore = game.scores.max() {
             print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
@@ -178,6 +205,15 @@ final class GameManager {
         gameListener?.remove()
     }
     
-    
+    func initRack() -> [CellModel] {
+        let letterBank = LetterBank.getAllTilesShuffled()
+        
+        var rack = [CellModel]()
+        for pos in 0..<LetterStoreBase.size {
+            rack.append(CellModel(row: -1, col: -1, pos: pos, letterTile: letterBank[pos], cellStatus: .currentMove, role: .rack))
+        }
+        
+        return rack
+    }
 }
 
