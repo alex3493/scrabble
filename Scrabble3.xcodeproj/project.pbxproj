@@ -21,6 +21,7 @@
 		FA6483262AF24C0900A9DBAA /* AsteriskDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */; };
 		FA6483282AF39CA100A9DBAA /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483272AF39CA100A9DBAA /* Utils.swift */; };
 		FA64832A2AF4FA4500A9DBAA /* MoveInfoDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483292AF4FA4500A9DBAA /* MoveInfoDialogView.swift */; };
+		FA64832C2AF5282100A9DBAA /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA64832B2AF5282100A9DBAA /* PlayerModel.swift */; };
 		FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545752AEA549200B58EFC /* MoveManager.swift */; };
 		FA7545792AEA584100B58EFC /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545782AEA584100B58EFC /* GameModel.swift */; };
 		FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75457A2AEA589000B58EFC /* WordModel.swift */; };
@@ -93,6 +94,7 @@
 		FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsteriskDialogView.swift; sourceTree = "<group>"; };
 		FA6483272AF39CA100A9DBAA /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		FA6483292AF4FA4500A9DBAA /* MoveInfoDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveInfoDialogView.swift; sourceTree = "<group>"; };
+		FA64832B2AF5282100A9DBAA /* PlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
 		FA7545752AEA549200B58EFC /* MoveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveManager.swift; sourceTree = "<group>"; };
 		FA7545782AEA584100B58EFC /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		FA75457A2AEA589000B58EFC /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 				FA7545802AEACFE600B58EFC /* LetterTileModel.swift */,
 				FA75458F2AED566A00B58EFC /* LetterStoreBase.swift */,
 				FA7545952AEE2C2200B58EFC /* ValidationError.swift */,
+				FA64832B2AF5282100A9DBAA /* PlayerModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -581,6 +584,7 @@
 				FA75459A2AEE39B600B58EFC /* RackViewModel.swift in Sources */,
 				FA7545982AEE36E900B58EFC /* BoardViewModel.swift in Sources */,
 				FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */,
+				FA64832C2AF5282100A9DBAA /* PlayerModel.swift in Sources */,
 				FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */,
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,

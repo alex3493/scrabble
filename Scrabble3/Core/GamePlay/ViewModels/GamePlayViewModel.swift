@@ -8,17 +8,6 @@
 import Foundation
 import Combine
 
-struct Player: Codable, Identifiable {
-    var id: String {
-        return user.userId
-    }
-    
-    let user: DBUser
-    let score: Int
-    let hasTurn: Bool
-    let letterRack: [CellModel]
-}
-
 @MainActor
 class GamePlayViewModel: ObservableObject {
     

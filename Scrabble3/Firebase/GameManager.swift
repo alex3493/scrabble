@@ -42,7 +42,9 @@ final class GameManager {
     func createNewGame(creatorUser: DBUser) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
-        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, users: [creatorUser], turn: 0, scores: [0])
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, players: [
+            Player(user: creatorUser, score: 0, hasTurn: true, letterRack: [])
+        ], turn: 0, scores: [0])
         
         try document.setData(from: game, merge: false, encoder: encoder)
         
@@ -54,7 +56,9 @@ final class GameManager {
     }
     
     func joinGame(gameId: String, user: DBUser) async throws {
-        guard let data = try? encoder.encode(user) else {
+        let player = Player(user: user, score: 0, hasTurn: false, letterRack: [])
+        
+        guard let data = try? encoder.encode(player) else {
             throw URLError(.cannotDecodeRawData)
         }
         
@@ -66,7 +70,7 @@ final class GameManager {
         game.scores.append(0)
         
         let dict: [String:Any] = [
-            GameModel.CodingKeys.users.rawValue : FieldValue.arrayUnion([data]),
+            GameModel.CodingKeys.players.rawValue : FieldValue.arrayUnion([data]),
             GameModel.CodingKeys.scores.rawValue : game.scores
         ]
         
@@ -74,11 +78,15 @@ final class GameManager {
     }
     
     func leaveGame(gameId: String, user: DBUser) async throws {
-        guard let data = try? encoder.encode(user) else {
-            throw URLError(.cannotDecodeRawData)
+        guard var game = try? await getGame(gameId: gameId) else { return }
+        
+        let player = game.players.first {
+            $0.user.userId == user.userId
         }
         
-        guard var game = try? await getGame(gameId: gameId) else { return }
+        guard let data = try? encoder.encode(player) else {
+            throw URLError(.cannotDecodeRawData)
+        }
         
         // Never leave running or stopped game.
         guard game.gameStatus == .waiting else { return }
@@ -86,7 +94,7 @@ final class GameManager {
         game.scores.removeLast()
         
         let dict: [String:Any] = [
-            GameModel.CodingKeys.users.rawValue : FieldValue.arrayRemove([data]),
+            GameModel.CodingKeys.players.rawValue : FieldValue.arrayRemove([data]),
             GameModel.CodingKeys.scores.rawValue : game.scores
         ]
         
@@ -127,10 +135,10 @@ final class GameManager {
             print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
             if (game.turn == 0 && maxScore >= 200) {
                 // Game finished!
-                var winners = [DBUser]()
+                var winners = [Player]()
                 for (index, score) in game.scores.enumerated() {
                     if score >= maxScore {
-                        winners.append(game.users[index])
+                        winners.append(game.players[index])
                     }
                 }
                 

@@ -23,10 +23,10 @@ struct CommandView: View {
                 if isLandscape {
                     VStack {
                         List {
-                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                            ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                                 HStack(spacing: 12) {
                                     Image(systemName: game.turn == index ? "person.fill" : "person")
-                                    Text(item.initials)
+                                    Text(item.user.initials)
                                     Spacer()
                                     Text("\(game.scores[index])")
                                 }
@@ -91,10 +91,10 @@ struct CommandView: View {
                 } else {
                     HStack {
                         List {
-                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                            ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                                 HStack(spacing: 12) {
                                     Image(systemName: game.turn == index ? "person.fill" : "person")
-                                    Text(item.initials)
+                                    Text(item.user.initials)
                                     Spacer()
                                     Text("\(game.scores[index])")
                                 }
@@ -178,7 +178,7 @@ struct CommandView: View {
     var hasTurn: Bool {
         guard let game = viewModel.game, let user = viewModel.currentUser else { return false }
         
-        let userIndex = game.users.firstIndex { $0.userId == user.userId }
+        let userIndex = game.players.firstIndex { $0.user.userId == user.userId }
         
         return game.turn == userIndex
     }

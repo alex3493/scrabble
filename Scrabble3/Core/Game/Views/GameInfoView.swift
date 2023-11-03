@@ -34,11 +34,11 @@ struct GameInfoView: View {
                         }
                         
                         Section("Players") {
-                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                            ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                                 HStack(spacing: 12) {
                                     // TODO: issue here - when user leaves game we have index-out-of range error!
                                     // Image(systemName: game.turn == index ? "person.fill" : "person")
-                                    Text(item.name!)
+                                    Text(item.user.name!)
                                     Spacer()
                                     // TODO: check why we have to use this workaround.
                                     if game.scores.indices.contains(index) {
