@@ -141,10 +141,7 @@ class GamePlayViewModel: ObservableObject {
             } receiveValue: { [weak self] moves in
                 print("Game ID \(gameId) moves updated count: \(moves.count)")
                 self?.gameMoves = moves
-                
-                if (self != nil) {
-                    self!.getExistingWords(moves: moves)
-                }
+                self?.getExistingWords(moves: moves)
             }
             .store(in: &cancellables)
     }
