@@ -28,7 +28,7 @@ struct CommandView: View {
                                     Image(systemName: game.turn == index ? "person.fill" : "person")
                                     Text(item.user.initials)
                                     Spacer()
-                                    Text("\(game.scores[index])")
+                                    Text("\(item.score)")
                                 }
                             }
                         }
@@ -96,7 +96,7 @@ struct CommandView: View {
                                     Image(systemName: game.turn == index ? "person.fill" : "person")
                                     Text(item.user.initials)
                                     Spacer()
-                                    Text("\(game.scores[index])")
+                                    Text("\(item.score)")
                                 }
                             }
                         }

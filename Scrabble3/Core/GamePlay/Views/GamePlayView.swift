@@ -65,7 +65,7 @@ struct CommandView_Previews: PreviewProvider {
         let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
         GamePlayView(game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, players: [
             Player(user: user, score: 0, letterRack: [])
-        ], turn: 0, scores: [0]))
+        ], turn: 0))
     }
 }
 

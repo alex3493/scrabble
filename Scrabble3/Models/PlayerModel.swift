@@ -13,7 +13,7 @@ struct Player: Codable, Identifiable {
     }
     
     let user: DBUser
-    let score: Int
+    var score: Int
     var letterRack: [CellModel]
     
     enum CodingKeys: String, CodingKey {

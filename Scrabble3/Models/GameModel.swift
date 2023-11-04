@@ -16,7 +16,6 @@ struct GameModel: Identifiable, Codable {
     let creatorUser: DBUser
     var players: [Player]
     var turn: Int = 0
-    var scores: [Int]
     var gameStatus: GameStatus = .waiting
     
     enum CodingKeys: String, CodingKey {
@@ -25,7 +24,6 @@ struct GameModel: Identifiable, Codable {
         case creatorUser = "creator_user"
         case players
         case turn
-        case scores
         case gameStatus = "game_status"
     }
     
@@ -37,18 +35,17 @@ struct GameModel: Identifiable, Codable {
         case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, players: [Player], turn: Int, scores: [Int], gameStatus: GameStatus = .waiting) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, players: [Player], turn: Int, gameStatus: GameStatus = .waiting) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
         self.players = players
         self.turn = turn
-        self.scores = scores
         self.gameStatus = gameStatus
     }
     
-    mutating func nextTurn(score: Int) {
-        scores[turn] = scores[turn] + score
+    mutating func nextTurn(score: Int, playerIndex: Int) {
+        players[playerIndex].score += score
         turn = turn + 1
         if turn >= players.count {
             turn = 0

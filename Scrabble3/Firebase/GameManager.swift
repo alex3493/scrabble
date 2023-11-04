@@ -44,7 +44,7 @@ final class GameManager {
         let documentId = document.documentID
         let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
-        ], turn: 0, scores: [0])
+        ], turn: 0)
         
         try document.setData(from: game, merge: false, encoder: encoder)
         
@@ -67,11 +67,8 @@ final class GameManager {
         // Never join running or stopped game.
         guard game.gameStatus == .waiting else { return }
         
-        game.scores.append(0)
-        
         let dict: [String:Any] = [
-            GameModel.CodingKeys.players.rawValue : FieldValue.arrayUnion([data]),
-            GameModel.CodingKeys.scores.rawValue : game.scores
+            GameModel.CodingKeys.players.rawValue : FieldValue.arrayUnion([data])
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -91,11 +88,8 @@ final class GameManager {
         // Never leave running or stopped game.
         guard game.gameStatus == .waiting else { return }
         
-        game.scores.removeLast()
-        
         let dict: [String:Any] = [
-            GameModel.CodingKeys.players.rawValue : FieldValue.arrayRemove([data]),
-            GameModel.CodingKeys.scores.rawValue : game.scores
+            GameModel.CodingKeys.players.rawValue : FieldValue.arrayRemove([data])
         ]
         
         try await gameDocument(gameId: gameId).updateData(dict)
@@ -152,25 +146,19 @@ final class GameManager {
     
     func nextTurn(gameId: String, score: Int, user: DBUser, userLetterRack: [CellModel]) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
-        game.nextTurn(score: score)
         
         // Save current player letter rack.
         let playerIndex = game.players.firstIndex { $0.id == user.userId }
         guard let playerIndex = playerIndex else { return }
         game.players[playerIndex].letterRack = userLetterRack
         
-        if let maxScore = game.scores.max() {
+        game.nextTurn(score: score, playerIndex: playerIndex)
+        
+        // TODO: refactor.
+        if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
             print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
             if (game.turn == 0 && maxScore >= 200) {
                 // Game finished!
-                var winners = [Player]()
-                for (index, score) in game.scores.enumerated() {
-                    if score >= maxScore {
-                        winners.append(game.players[index])
-                    }
-                }
-                
-                print("Game winners: \(winners)")
                 game.gameStatus = .finished
             }
         }

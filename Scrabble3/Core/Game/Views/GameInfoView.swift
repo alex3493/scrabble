@@ -40,10 +40,7 @@ struct GameInfoView: View {
                                     // Image(systemName: game.turn == index ? "person.fill" : "person")
                                     Text(item.user.name!)
                                     Spacer()
-                                    // TODO: check why we have to use this workaround.
-                                    if game.scores.indices.contains(index) {
-                                        Text("\(game.scores[index])")
-                                    }
+                                    Text("\(item.score)")
                                 }
                             }
                         }
