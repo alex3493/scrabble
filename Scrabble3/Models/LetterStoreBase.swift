@@ -11,8 +11,8 @@ import Foundation
 class LetterStoreBase: ObservableObject {
     @Published var cells = [CellModel]()
     
-    let rows: Int = 15
-    let cols: Int = 15
+    static let rows: Int = 15
+    static let cols: Int = 15
     static let size: Int = 8
     
 }

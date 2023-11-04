@@ -23,10 +23,10 @@ class BoardViewModel: LetterStoreBase {
     
     private override init() {
         super.init()
-        let numCells: Int = rows * cols;
+        let numCells: Int = LetterStoreBase.rows * LetterStoreBase.cols;
         for i in 0...numCells - 1 {
-            let row = i / rows
-            let col = i % rows
+            let row = i / LetterStoreBase.rows
+            let col = i % LetterStoreBase.rows
             
             cells.append(CellModel(
                 row: row,
@@ -53,7 +53,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func cellByPosition(row: Int, col: Int) -> CellModel {
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         return cells[index]
     }
     
@@ -64,13 +64,13 @@ class BoardViewModel: LetterStoreBase {
             asteriskCol = col
         }
         
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         cells[index].setTile(tile: letterTile)
         cells[index].setCellStatus(status: !cells[index].isEmpty ? .currentMove : .empty)
     }
     
     func setCellStatusByPosition(row: Int, col: Int, status: CellModel.CellStatus = .error) {
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         cells[index].setCellStatus(status: status)
     }
     
@@ -255,7 +255,7 @@ class BoardViewModel: LetterStoreBase {
     
     func confirmMove() {
         for cell in currentMoveCells() {
-            let index = cell.row * cols + cell.col
+            let index = cell.row * LetterStoreBase.cols + cell.col
             cells[index].setCellStatus(status: .immutable)
             cells[index].isImmutable = true
         }
@@ -273,7 +273,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func setCellByPosition(row: Int, col: Int, cell: CellModel) {
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         cells[index] = cell
     }
 }

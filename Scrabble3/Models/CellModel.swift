@@ -79,8 +79,7 @@ struct CellModel: Codable, Hashable {
     }
     
     var isCenterCell: Bool {
-        // TODO: make board size configurable.
-        return row == 7 && col == 7
+        return Int(ceil(Double(LetterStoreBase.rows / 2))) == row && Int(ceil(Double(LetterStoreBase.cols / 2))) == col
     }
     
     func getCellScore() -> Int {
