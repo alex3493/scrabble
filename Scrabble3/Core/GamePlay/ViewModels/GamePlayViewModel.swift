@@ -104,13 +104,18 @@ class GamePlayViewModel: ObservableObject {
     
     func nextTurn(gameId: String) async throws {
         
-        let moveScore = boardViewModel.getMoveScore()
+        var moveScore = boardViewModel.getMoveScore()
         
         let moveWords = try? boardViewModel.getMoveWords()
         
         guard let moveWords = moveWords, let currentUser = currentUser else { return }
         
-        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore)
+        if rackViewModel.isEmpty {
+            // TODO: move to settings.
+            moveScore += 15
+        }
+        
+        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore, hasBonus: rackViewModel.isEmpty)
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
@@ -119,8 +124,6 @@ class GamePlayViewModel: ObservableObject {
         try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells)
         
         boardViewModel.confirmMove()
-        
-        // TODO: save rack to DB here...
     }
     
     func resetMove() {

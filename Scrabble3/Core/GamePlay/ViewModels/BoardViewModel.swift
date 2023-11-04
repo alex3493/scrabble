@@ -20,6 +20,9 @@ class BoardViewModel: LetterStoreBase {
     var moveWordsSummary: [(String, Int)] = []
     var moveTotalScore: Int = 0
     
+    // TODO: how to use it?
+    // var moveSummary: MoveModel? = nil
+    
     private override init() {
         super.init()
         let numCells: Int = rows * cols;

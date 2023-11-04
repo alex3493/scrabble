@@ -24,6 +24,11 @@ class RackViewModel: LetterStoreBase {
         // fillRack()
     }
     
+    var isEmpty: Bool {
+        let nonEmpty = cells.first { $0.cellStatus != .empty }
+        return nonEmpty == nil
+    }
+    
     func setRack(cells: [CellModel]) {
         self.cells = cells
     }
