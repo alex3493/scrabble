@@ -59,7 +59,6 @@ class BoardViewModel: LetterStoreBase {
     
     func setLetterTileByPosition(row: Int, col: Int, letterTile: LetterTile?) {
         if letterTile != nil && letterTile!.hasAsteriskChar {
-            print("Putting asterisk to board: \(String(describing: letterTile))")
             asteriskDialogPresented = true
             asteriskRow = row
             asteriskCol = col

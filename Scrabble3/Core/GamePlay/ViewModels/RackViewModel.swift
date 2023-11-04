@@ -148,7 +148,6 @@ class RackViewModel: LetterStoreBase {
                 }
             }
             if letterTile.isAsterisk {
-                print("Putting asterisk back to rack: \(String(describing: letterTile))")
                 let letterTile = LetterTile(char: "*", score: 0, probability: letterTile.probability, isAsterisk: true, lang: letterTile.lang)
                 setLetterTileByPosition(pos: pos, letterTile: letterTile)
             } else {

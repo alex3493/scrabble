@@ -74,7 +74,7 @@ final class AuthWithEmailViewModel: ObservableObject {
             try AuthenticationManager.shared.signOut()
             clearUser()
         } catch {
-            print("Error signing out user: \(error.localizedDescription)")
+            print("DEBUG :: Error signing out user: \(error.localizedDescription)")
         }
     }
     

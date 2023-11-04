@@ -72,7 +72,7 @@ final class CommandViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] game in
-                print("Game ID: \(game.id) updated")
+                print("GAME LISTENER :: Game ID: \(game.id) updated")
                 self?.game = game
                 
                 self?.updatePlayerLetterRack()

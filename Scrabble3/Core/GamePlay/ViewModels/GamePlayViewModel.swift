@@ -140,7 +140,7 @@ class GamePlayViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] moves in
-                print("Game ID \(gameId) moves updated count: \(moves.count)")
+                print("MOVE LISTENER :: Game ID \(gameId) moves updated count: \(moves.count)")
                 self?.gameMoves = moves
                 self?.getExistingWords(moves: moves)
             }
@@ -158,7 +158,8 @@ class GamePlayViewModel: ObservableObject {
             words = words + move.words
         }
         existingWords = words
-        print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
+        
+        // print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
         
         boardViewModel.clearBoard()
         boardViewModel.setWordsToBoard(words: existingWords)

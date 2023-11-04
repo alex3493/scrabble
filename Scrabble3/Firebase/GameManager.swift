@@ -156,7 +156,7 @@ final class GameManager {
         
         // TODO: refactor.
         if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
-            print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
+            // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
             if (game.turn == 0 && maxScore >= 200) {
                 // Game finished!
                 game.gameStatus = .finished
