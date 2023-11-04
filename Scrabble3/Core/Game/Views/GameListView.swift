@@ -30,7 +30,7 @@ struct GameListView: View {
                 viewModel.addListenerForGames()
             }
             
-            .navigationTitle("Games")
+            .navigationTitle("Игры")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading, content: {
                     NavigationLink {

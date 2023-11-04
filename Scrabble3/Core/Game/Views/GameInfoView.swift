@@ -27,13 +27,13 @@ struct GameInfoView: View {
             VStack {
                 if let game = viewModel.game, let gameId = gameId {
                     List {
-                        Section("Game") {
+                        Section("Игра") {
                             Text("\(game.creatorUser.name!): \(Utils.formatTransactionTimestamp(game.createdAt))")
                             // Text("Current game ID: \(game.id)")
                             Text("Current game status: \(game.gameStatus.rawValue)")
                         }
                         
-                        Section("Players") {
+                        Section("Игроки") {
                             ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                                 HStack(spacing: 12) {
                                     // TODO: issue here - when user leaves game we have index-out-of range error!
@@ -47,7 +47,7 @@ struct GameInfoView: View {
                     }
                     
                     if (viewModel.isMeGameCreator) {
-                        ActionButton(label: "DELETE GAME", action: {
+                        ActionButton(label: "УДАЛИТЬ ИГРУ", action: {
                             do {
                                 try await viewModel.deleteGame(gameId: gameId)
                                 dismiss()
@@ -57,7 +57,7 @@ struct GameInfoView: View {
                             }
                         }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
                     } else if viewModel.canLeaveGame {
-                        ActionButton(label: "LEAVE GAME", action: {
+                        ActionButton(label: "ВЫЙТИ", action: {
                             do {
                                 try await viewModel.leaveGame(gameId: gameId)
                                 dismiss()
@@ -67,7 +67,7 @@ struct GameInfoView: View {
                             }
                         }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: true)
                     } else if viewModel.canJoinGame {
-                        ActionButton(label: "JOIN GAME", action: {
+                        ActionButton(label: "ПРИСОЕДИНИТЬСЯ", action: {
                             do {
                                 try await viewModel.joinGame(gameId: gameId)
                             } catch {
@@ -77,7 +77,7 @@ struct GameInfoView: View {
                         }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue), maxWidth: true)
                     }
                     if (viewModel.canStartGame) {
-                        ActionButton(label: "START GAME", action: {
+                        ActionButton(label: "НАЧАТЬ ИГРУ", action: {
                             do {
                                 try await viewModel.startGame(gameId: gameId)
                             } catch {
@@ -87,7 +87,7 @@ struct GameInfoView: View {
                         }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
                     }
                     if (viewModel.canResumeGame) {
-                        ActionButton(label: "RESUME GAME", action: {
+                        ActionButton(label: "ПРОДОЛЖИТЬ ИГРУ", action: {
                             do {
                                 try await viewModel.resumeGame(gameId: gameId)
                             } catch {
@@ -104,7 +104,7 @@ struct GameInfoView: View {
                     dismiss()
                 } label: {
                     HStack(spacing: 3) {
-                        Text("Return to game list")
+                        Text("Все игры")
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     }
                     .font(.system(size: 14))

@@ -35,7 +35,7 @@ struct CommandView: View {
                         
                         if hasTurn {
                             if isInChangeLetterMode {
-                                ActionButton(label: "SUBMIT", action: {
+                                ActionButton(label: "ПОМЕНЯТЬ", action: {
                                     do {
                                         try await viewModel.changeLetters(gameId: game.id, confirmed: true)
                                     } catch {
@@ -43,15 +43,15 @@ struct CommandView: View {
                                     }
                                 }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                                 
-                                ActionButton(label: "CANCEL", action: {
+                                ActionButton(label: "ОТМЕНИТЬ", action: {
                                     viewModel.setChangeLettersMode(mode: false)
                                 }, buttonSystemImage: "arrow.circlepath", backGroundColor: Color(.systemBlue), maxWidth: false)
                             } else {
-                                ActionButton(label: "CHANGE LETTERS", action: {
+                                ActionButton(label: "ПОМЕНЯТЬ БУКВЫ", action: {
                                     viewModel.setChangeLettersMode(mode: true)
                                 }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                                 
-                                ActionButton(label: "SUBMIT", action: {
+                                ActionButton(label: "ГОТОВО", action: {
                                     do {
                                         try await viewModel.submitMove(gameId: game.id)
                                     } catch {
@@ -59,18 +59,14 @@ struct CommandView: View {
                                     }
                                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemBlue), maxWidth: false)
                                 
-                                ActionButton(label: "VALIDATE", action: {
-                                    do {
-                                        try await viewModel.validateMove(gameId: game.id)
-                                    } catch {
-                                        print("DEBUG :: Error validating move: \(error.localizedDescription)")
-                                    }
+                                ActionButton(label: "ПРОВЕРКА", action: {
+                                    await viewModel.validateMove(gameId: game.id)
                                 }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
                             }
                         }
                         
                         if !isInChangeLetterMode {
-                            ActionButton(label: "SUSPEND GAME", action: {
+                            ActionButton(label: "ОТЛОЖИТЬ ИГРУ", action: {
                                 do {
                                     try await viewModel.suspendGame(gameId: game.id, abort: false)
                                 } catch {
@@ -78,7 +74,7 @@ struct CommandView: View {
                                 }
                             }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                             
-                            ActionButton(label: "LEAVE GAME", action: {
+                            ActionButton(label: "ВЫЙТИ ИЗ ИГРЫ", action: {
                                 do {
                                     try await viewModel.suspendGame(gameId: game.id, abort: true)
                                 } catch {
@@ -104,7 +100,7 @@ struct CommandView: View {
                         VStack {
                             if hasTurn {
                                 if isInChangeLetterMode {
-                                    ActionButton(label: "SUBMIT", action: {
+                                    ActionButton(label: "ПОМЕНЯТЬ", action: {
                                         do {
                                             try await viewModel.changeLetters(gameId: game.id, confirmed: true)
                                         } catch {
@@ -112,15 +108,15 @@ struct CommandView: View {
                                         }
                                     }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                                     
-                                    ActionButton(label: "CANCEL", action: {
+                                    ActionButton(label: "ОТМЕНИТЬ", action: {
                                         viewModel.setChangeLettersMode(mode: false)
                                     }, buttonSystemImage: "arrow.circlepath", backGroundColor: Color(.systemBlue), maxWidth: false)
                                 } else {
-                                    ActionButton(label: "CHANGE LETTERS", action: {
+                                    ActionButton(label: "ПОМЕНЯТЬ БУКВЫ", action: {
                                         viewModel.setChangeLettersMode(mode: true)
                                     }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                                     
-                                    ActionButton(label: "SUBMIT", action: {
+                                    ActionButton(label: "ГОТОВО", action: {
                                         do {
                                             try await viewModel.submitMove(gameId: game.id)
                                         } catch {
@@ -128,18 +124,14 @@ struct CommandView: View {
                                         }
                                     }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemBlue), maxWidth: false)
                                     
-                                    ActionButton(label: "VALIDATE", action: {
-                                        do {
-                                            try await viewModel.validateMove(gameId: game.id)
-                                        } catch {
-                                            print("DEBUG :: Error validating move: \(error.localizedDescription)")
-                                        }
+                                    ActionButton(label: "ПРОВЕРКА", action: {
+                                        await viewModel.validateMove(gameId: game.id)
                                     }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
                                 }
                             }
                             
                             if !isInChangeLetterMode {
-                                ActionButton(label: "SUSPEND GAME", action: {
+                                ActionButton(label: "ОТЛОЖИТЬ ИГРУ", action: {
                                     do {
                                         try await viewModel.suspendGame(gameId: game.id, abort: false)
                                     } catch {
@@ -147,7 +139,7 @@ struct CommandView: View {
                                     }
                                 }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                                 
-                                ActionButton(label: "LEAVE GAME", action: {
+                                ActionButton(label: "ВЫЙТИ ИЗ ИГРЫ", action: {
                                     do {
                                         try await viewModel.suspendGame(gameId: game.id, abort: true)
                                     } catch {

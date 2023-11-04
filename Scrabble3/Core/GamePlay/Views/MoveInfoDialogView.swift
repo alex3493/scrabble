@@ -27,14 +27,14 @@ struct MoveInfoDialogView: View {
                 }
                 if let bonus = bonus {
                     HStack {
-                        Text("Move bonus")
+                        Text("Премия")
                         Spacer()
                         Text("\(bonus)")
                     }
                     .fontWeight(.semibold)
                 }
                 HStack {
-                    Text("Total")
+                    Text("Всего")
                     Spacer()
                     Text("\(score + (bonus ?? 0))")
                 }
@@ -47,7 +47,7 @@ struct MoveInfoDialogView: View {
                 isPresented = false
             } label: {
                 HStack(spacing: 3) {
-                    Text("CLOSE")
+                    Text("ЗАКРЫТЬ")
                         .fontWeight(.bold)
                 }
                 .font(.system(size: 14))
