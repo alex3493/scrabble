@@ -8,17 +8,6 @@
 import Foundation
 import Combine
 
-struct Player: Codable, Identifiable {
-    var id: String {
-        return user.userId
-    }
-    
-    let user: DBUser
-    let score: Int
-    let hasTurn: Bool
-    let letterRack: [CellModel]
-}
-
 @MainActor
 class GamePlayViewModel: ObservableObject {
     
@@ -123,13 +112,15 @@ class GamePlayViewModel: ObservableObject {
         
         try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore)
         
-        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore)
-        
-        boardViewModel.confirmMove()
-        
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
         rackViewModel.fillRack()
+        
+        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells)
+        
+        boardViewModel.confirmMove()
+        
+        // TODO: save rack to DB here...
     }
     
     func resetMove() {
@@ -150,10 +141,7 @@ class GamePlayViewModel: ObservableObject {
             } receiveValue: { [weak self] moves in
                 print("Game ID \(gameId) moves updated count: \(moves.count)")
                 self?.gameMoves = moves
-                
-                if (self != nil) {
-                    self!.getExistingWords(moves: moves)
-                }
+                self?.getExistingWords(moves: moves)
             }
             .store(in: &cancellables)
     }

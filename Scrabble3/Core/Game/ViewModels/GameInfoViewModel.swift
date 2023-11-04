@@ -16,6 +16,8 @@ final class GameInfoViewModel: ObservableObject {
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
+    let rackViewModel = RackViewModel.shared
+    
     var isMeGameCreator: Bool {
         guard let game = game else { return false }
         
@@ -25,21 +27,21 @@ final class GameInfoViewModel: ObservableObject {
     var isMeGamePlayer: Bool {
         guard let game = game else { return false }
         
-        return game.users.contains(where: { user in
-            return user.userId == currentUser?.userId
+        return game.players.contains(where: { player in
+            return player.user.userId == currentUser?.userId
         })
     }
     
     var canStartGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGamePlayer && game.gameStatus == .waiting && game.users.count >= 2
+        return isMeGamePlayer && game.gameStatus == .waiting && game.players.count >= 2
     }
     
     var canResumeGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGamePlayer && game.gameStatus == .suspended && game.users.count >= 2
+        return isMeGamePlayer && game.gameStatus == .suspended && game.players.count >= 2
     }
     
     var canJoinGame: Bool {
@@ -60,9 +62,9 @@ final class GameInfoViewModel: ObservableObject {
         return game.gameStatus == .running
     }
     
-    var players: [DBUser] {
+    var players: [Player] {
         guard let game = game else { return [] }
-        return game.users
+        return game.players
     }
     
     func addListenerForGame() {
@@ -95,6 +97,10 @@ final class GameInfoViewModel: ObservableObject {
     
     func startGame (gameId: String) async throws {
         try await GameManager.shared.startGame(gameId: gameId)
+    }
+    
+    func resumeGame (gameId: String) async throws {
+        try await GameManager.shared.resumeGame(gameId: gameId)
     }
     
     func joinGame(gameId: String) async throws {

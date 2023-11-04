@@ -50,7 +50,7 @@ struct GamePlayView: View {
     var hasTurn: Bool {
         guard let user = viewModel.currentUser else { return false }
         
-        let userIndex = game.users.firstIndex { $0.userId == user.userId }
+        let userIndex = game.players.firstIndex { $0.user.userId == user.userId }
         
         return game.turn == userIndex
     }
@@ -63,7 +63,9 @@ struct CommandView_Previews: PreviewProvider {
     static var previews: some View {
         let uuid = UUID().uuidString
         let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
-        GamePlayView(game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, users: [user], turn: 0, scores: [0]))
+        GamePlayView(game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, players: [
+            Player(user: user, score: 0, letterRack: [])
+        ], turn: 0))
     }
 }
 

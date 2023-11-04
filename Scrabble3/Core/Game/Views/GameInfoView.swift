@@ -34,16 +34,13 @@ struct GameInfoView: View {
                         }
                         
                         Section("Players") {
-                            ForEach(Array(game.users.enumerated()), id: \.offset) { index, item in
+                            ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                                 HStack(spacing: 12) {
                                     // TODO: issue here - when user leaves game we have index-out-of range error!
                                     // Image(systemName: game.turn == index ? "person.fill" : "person")
-                                    Text(item.name!)
+                                    Text(item.user.name!)
                                     Spacer()
-                                    // TODO: check why we have to use this workaround.
-                                    if game.scores.indices.contains(index) {
-                                        Text("\(game.scores[index])")
-                                    }
+                                    Text("\(item.score)")
                                 }
                             }
                         }
@@ -92,9 +89,9 @@ struct GameInfoView: View {
                     if (viewModel.canResumeGame) {
                         ActionButton(label: "RESUME GAME", action: {
                             do {
-                                try await viewModel.startGame(gameId: gameId)
+                                try await viewModel.resumeGame(gameId: gameId)
                             } catch {
-                                print("DEBUG :: Error starting game: \(error.localizedDescription)")
+                                print("DEBUG :: Error resuming game: \(error.localizedDescription)")
                                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
