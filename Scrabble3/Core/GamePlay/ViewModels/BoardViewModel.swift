@@ -40,9 +40,9 @@ class BoardViewModel: LetterStoreBase {
         }
     }
     
-    var currentMoveCells: [CellModel] {
+    func currentMoveCells() -> [CellModel] {
         return cells.filter({ cell in
-            return cell.isCurrentMove
+            return cell.isCurrentMove()
         })
     }
     
@@ -100,13 +100,13 @@ class BoardViewModel: LetterStoreBase {
     }
     
     var getMoveBonus: Int? {
-        return currentMoveCells.count == LetterStoreBase.size ? 15 : nil
+        return currentMoveCells().count == LetterStoreBase.size ? 15 : nil
     }
     
     func getMoveWords() throws -> [WordModel] {
         var words = [WordModel]()
         
-        for cell in currentMoveCells {
+        for cell in currentMoveCells() {
             var word: WordModel
             var wordBonusK: Int
             var cellConnected = 2
@@ -132,7 +132,7 @@ class BoardViewModel: LetterStoreBase {
                     word.score += currentCell.getCellScore()
                     wordBonusK *= currentCell.getCellWordBonusK()
                     word.cells.append(currentCell)
-                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove)
+                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove())
                 }
             }
             
@@ -166,7 +166,7 @@ class BoardViewModel: LetterStoreBase {
                     word.score += currentCell.getCellScore()
                     wordBonusK *= currentCell.getCellWordBonusK()
                     word.cells.append(currentCell)
-                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove)
+                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove())
                 }
             }
             
@@ -255,7 +255,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func confirmMove() {
-        for cell in currentMoveCells {
+        for cell in currentMoveCells() {
             let index = cell.row * cols + cell.col
             cells[index].setCellStatus(status: .immutable)
             cells[index].isImmutable = true

@@ -127,9 +127,7 @@ class GamePlayViewModel: ObservableObject {
     }
     
     func resetMove() {
-        let moveCells = boardViewModel.currentMoveCells
-        
-        for cell in moveCells {
+        for cell in boardViewModel.currentMoveCells() {
             rackViewModel.insertLetterTileByPos(pos: 0, letterTile: cell.letterTile!, emptyPromisePos: nil)
             boardViewModel.setLetterTileByPosition(row: cell.row, col: cell.col, letterTile: nil)
         }

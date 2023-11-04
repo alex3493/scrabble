@@ -74,7 +74,7 @@ struct CellModel: Codable, Hashable {
         return letterTile == nil
     }
     
-    var isCurrentMove: Bool {
+    func isCurrentMove() -> Bool {
         return !isImmutable && cellStatus != .empty && role == .board
     }
     
@@ -88,7 +88,7 @@ struct CellModel: Codable, Hashable {
             return 0
         }
         
-        if (!isCurrentMove) {
+        if (!isCurrentMove()) {
             return letterTile!.score
         }
         
@@ -103,7 +103,7 @@ struct CellModel: Codable, Hashable {
     }
     
     func getCellWordBonusK() -> Int {
-        if (isEmpty || !isCurrentMove) {
+        if (isEmpty || !isCurrentMove()) {
             return 1
         }
         
