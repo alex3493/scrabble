@@ -43,7 +43,7 @@ final class GameManager {
         let document = gameCollection.document()
         let documentId = document.documentID
         let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, players: [
-            Player(user: creatorUser, score: 0, hasTurn: true, letterRack: [])
+            Player(user: creatorUser, score: 0, letterRack: [])
         ], turn: 0, scores: [0])
         
         try document.setData(from: game, merge: false, encoder: encoder)
@@ -56,7 +56,7 @@ final class GameManager {
     }
     
     func joinGame(gameId: String, user: DBUser) async throws {
-        let player = Player(user: user, score: 0, hasTurn: false, letterRack: [])
+        let player = Player(user: user, score: 0, letterRack: [])
         
         guard let data = try? encoder.encode(player) else {
             throw URLError(.cannotDecodeRawData)
@@ -112,6 +112,7 @@ final class GameManager {
         
         game.gameStatus = .running
         
+        // TODO: check if we need this!
         // Set letter racks for each player.
         for playerIndex in game.players.indices {
             game.players[playerIndex].letterRack = initRack()
