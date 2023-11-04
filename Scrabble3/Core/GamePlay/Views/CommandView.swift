@@ -63,7 +63,7 @@ struct CommandView: View {
                                     do {
                                         try await viewModel.validateMove(gameId: game.id)
                                     } catch {
-                                        print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                        print("DEBUG :: Error validating move: \(error.localizedDescription)")
                                     }
                                 }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
                             }
@@ -108,7 +108,7 @@ struct CommandView: View {
                                         do {
                                             try await viewModel.changeLetters(gameId: game.id, confirmed: true)
                                         } catch {
-                                            print("DEBUG :: Error changing letter: \(error.localizedDescription)")
+                                            print("DEBUG :: Error changing letters: \(error.localizedDescription)")
                                         }
                                     }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
                                     
@@ -132,7 +132,7 @@ struct CommandView: View {
                                         do {
                                             try await viewModel.validateMove(gameId: game.id)
                                         } catch {
-                                            print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                            print("DEBUG :: Error validating move: \(error.localizedDescription)")
                                         }
                                     }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
                                 }

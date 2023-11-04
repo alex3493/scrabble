@@ -24,6 +24,11 @@ class RackViewModel: LetterStoreBase {
         // fillRack()
     }
     
+    var isEmpty: Bool {
+        let nonEmpty = cells.first { $0.cellStatus != .empty }
+        return nonEmpty == nil
+    }
+    
     func setRack(cells: [CellModel]) {
         self.cells = cells
     }
@@ -143,7 +148,6 @@ class RackViewModel: LetterStoreBase {
                 }
             }
             if letterTile.isAsterisk {
-                print("Putting asterisk back to rack: \(String(describing: letterTile))")
                 let letterTile = LetterTile(char: "*", score: 0, probability: letterTile.probability, isAsterisk: true, lang: letterTile.lang)
                 setLetterTileByPosition(pos: pos, letterTile: letterTile)
             } else {

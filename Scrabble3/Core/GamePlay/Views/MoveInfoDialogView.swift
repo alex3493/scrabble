@@ -11,6 +11,7 @@ struct MoveInfoDialogView: View {
     
     let words: [(String, Int)]
     let score: Int
+    let bonus: Int?
     
     @Binding var isPresented: Bool
     
@@ -24,10 +25,18 @@ struct MoveInfoDialogView: View {
                         Text("\(word.1)")
                     }
                 }
+                if let bonus = bonus {
+                    HStack {
+                        Text("Move bonus")
+                        Spacer()
+                        Text("\(bonus)")
+                    }
+                    .fontWeight(.semibold)
+                }
                 HStack {
                     Text("Total")
                     Spacer()
-                    Text("\(score)")
+                    Text("\(score + (bonus ?? 0))")
                 }
                 .fontWeight(.bold)
             }
@@ -49,5 +58,5 @@ struct MoveInfoDialogView: View {
 }
 
 #Preview {
-    MoveInfoDialogView(words: [("Word", 10)], score: 10, isPresented: .constant(false))
+    MoveInfoDialogView(words: [("Word", 10)], score: 10, bonus: nil, isPresented: .constant(false))
 }

@@ -104,13 +104,18 @@ class GamePlayViewModel: ObservableObject {
     
     func nextTurn(gameId: String) async throws {
         
-        let moveScore = boardViewModel.getMoveScore()
+        var moveScore = boardViewModel.getMoveScore()
         
         let moveWords = try? boardViewModel.getMoveWords()
         
         guard let moveWords = moveWords, let currentUser = currentUser else { return }
         
-        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore)
+        if rackViewModel.isEmpty {
+            // TODO: move to settings.
+            moveScore += 15
+        }
+        
+        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore, hasBonus: rackViewModel.isEmpty)
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
@@ -119,14 +124,10 @@ class GamePlayViewModel: ObservableObject {
         try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells)
         
         boardViewModel.confirmMove()
-        
-        // TODO: save rack to DB here...
     }
     
     func resetMove() {
-        let moveCells = boardViewModel.currentMoveCells
-        
-        for cell in moveCells {
+        for cell in boardViewModel.currentMoveCells() {
             rackViewModel.insertLetterTileByPos(pos: 0, letterTile: cell.letterTile!, emptyPromisePos: nil)
             boardViewModel.setLetterTileByPosition(row: cell.row, col: cell.col, letterTile: nil)
         }
@@ -139,7 +140,7 @@ class GamePlayViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] moves in
-                print("Game ID \(gameId) moves updated count: \(moves.count)")
+                print("MOVE LISTENER :: Game ID \(gameId) moves updated count: \(moves.count)")
                 self?.gameMoves = moves
                 self?.getExistingWords(moves: moves)
             }
@@ -157,7 +158,8 @@ class GamePlayViewModel: ObservableObject {
             words = words + move.words
         }
         existingWords = words
-        print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
+        
+        // print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
         
         boardViewModel.clearBoard()
         boardViewModel.setWordsToBoard(words: existingWords)

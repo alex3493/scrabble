@@ -23,11 +23,11 @@ final class MoveManager {
         return moveCollection.whereField(MoveModel.CodingKeys.gameId.rawValue, isEqualTo: gameId)
     }
     
-    func addMove(gameId: String, user: DBUser, words: [WordModel], score: Int) throws {
+    func addMove(gameId: String, user: DBUser, words: [WordModel], score: Int, hasBonus: Bool) throws {
         let document = moveCollection.document()
         let documentId = document.documentID
         
-        let move = MoveModel(id: documentId, gameId: gameId, createdAt: Timestamp(), user: user, words: words, score: score)
+        let move = MoveModel(id: documentId, gameId: gameId, createdAt: Timestamp(), user: user, words: words, score: score, hasBonus: hasBonus)
         
         try document.setData(from: move, merge: false, encoder: encoder)
     }

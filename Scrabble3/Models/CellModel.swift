@@ -74,13 +74,12 @@ struct CellModel: Codable, Hashable {
         return letterTile == nil
     }
     
-    var isCurrentMove: Bool {
+    func isCurrentMove() -> Bool {
         return !isImmutable && cellStatus != .empty && role == .board
     }
     
     var isCenterCell: Bool {
-        // TODO: make board size configurable.
-        return row == 7 && col == 7
+        return Int(ceil(Double(LetterStoreBase.rows / 2))) == row && Int(ceil(Double(LetterStoreBase.cols / 2))) == col
     }
     
     func getCellScore() -> Int {
@@ -88,7 +87,7 @@ struct CellModel: Codable, Hashable {
             return 0
         }
         
-        if (!isCurrentMove) {
+        if (!isCurrentMove()) {
             return letterTile!.score
         }
         
@@ -103,7 +102,7 @@ struct CellModel: Codable, Hashable {
     }
     
     func getCellWordBonusK() -> Int {
-        if (isEmpty || !isCurrentMove) {
+        if (isEmpty || !isCurrentMove()) {
             return 1
         }
         

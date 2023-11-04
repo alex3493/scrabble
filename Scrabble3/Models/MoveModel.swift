@@ -16,6 +16,7 @@ struct MoveModel: Identifiable, Codable {
     let user: DBUser
     let words: [WordModel]
     let score: Int
+    let hasBonus: Bool
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -24,6 +25,7 @@ struct MoveModel: Identifiable, Codable {
         case user
         case words
         case score
+        case hasBonus = "has_bonus"
     }
 
 }

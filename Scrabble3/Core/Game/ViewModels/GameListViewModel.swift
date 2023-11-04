@@ -19,7 +19,7 @@ final class GameListViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] games in
-                print("Game list updated")
+                print("GAMES LISTENER :: Game list updated. Games count: \(games.count)")
                 self?.games = games
             }
             .store(in: &cancellables)

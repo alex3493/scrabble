@@ -18,9 +18,9 @@ struct BoardView: View {
     
     var body: some View {
         VStack(spacing: 1) {
-            ForEach(0...boardViewModel.rows - 1, id: \.self) { row in
+            ForEach(0...LetterStoreBase.rows - 1, id: \.self) { row in
                 HStack(spacing: 1) {
-                    ForEach(0...boardViewModel.cols - 1, id: \.self) { col in
+                    ForEach(0...LetterStoreBase.cols - 1, id: \.self) { col in
                         let cell = boardViewModel.cellByPosition(row: row, col: col)
                         CellView(cell: cell, boardIsLocked: boardIsLocked)
                             .frame(width: idealCellSize, height: idealCellSize)
@@ -34,7 +34,7 @@ struct BoardView: View {
             AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!)
         }
         .sheet(isPresented: $boardViewModel.moveInfoDialogPresented) {
-            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, isPresented: $boardViewModel.moveInfoDialogPresented)
+            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, bonus: boardViewModel.getMoveBonus, isPresented: $boardViewModel.moveInfoDialogPresented)
         }
     }
     

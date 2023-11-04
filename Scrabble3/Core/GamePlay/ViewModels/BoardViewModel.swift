@@ -19,13 +19,14 @@ class BoardViewModel: LetterStoreBase {
     @Published var moveInfoDialogPresented: Bool = false
     var moveWordsSummary: [(String, Int)] = []
     var moveTotalScore: Int = 0
+    var moveBonus: Int? = nil
     
     private override init() {
         super.init()
-        let numCells: Int = rows * cols;
+        let numCells: Int = LetterStoreBase.rows * LetterStoreBase.cols;
         for i in 0...numCells - 1 {
-            let row = i / rows
-            let col = i % rows
+            let row = i / LetterStoreBase.rows
+            let col = i % LetterStoreBase.rows
             
             cells.append(CellModel(
                 row: row,
@@ -39,9 +40,9 @@ class BoardViewModel: LetterStoreBase {
         }
     }
     
-    var currentMoveCells: [CellModel] {
+    func currentMoveCells() -> [CellModel] {
         return cells.filter({ cell in
-            return cell.isCurrentMove
+            return cell.isCurrentMove()
         })
     }
     
@@ -52,25 +53,24 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func cellByPosition(row: Int, col: Int) -> CellModel {
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         return cells[index]
     }
     
     func setLetterTileByPosition(row: Int, col: Int, letterTile: LetterTile?) {
         if letterTile != nil && letterTile!.hasAsteriskChar {
-            print("Putting asterisk to board: \(String(describing: letterTile))")
             asteriskDialogPresented = true
             asteriskRow = row
             asteriskCol = col
         }
         
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         cells[index].setTile(tile: letterTile)
         cells[index].setCellStatus(status: !cells[index].isEmpty ? .currentMove : .empty)
     }
     
     func setCellStatusByPosition(row: Int, col: Int, status: CellModel.CellStatus = .error) {
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         cells[index].setCellStatus(status: status)
     }
     
@@ -98,10 +98,14 @@ class BoardViewModel: LetterStoreBase {
         }
     }
     
+    var getMoveBonus: Int? {
+        return currentMoveCells().count == LetterStoreBase.size ? 15 : nil
+    }
+    
     func getMoveWords() throws -> [WordModel] {
         var words = [WordModel]()
         
-        for cell in currentMoveCells {
+        for cell in currentMoveCells() {
             var word: WordModel
             var wordBonusK: Int
             var cellConnected = 2
@@ -127,7 +131,7 @@ class BoardViewModel: LetterStoreBase {
                     word.score += currentCell.getCellScore()
                     wordBonusK *= currentCell.getCellWordBonusK()
                     word.cells.append(currentCell)
-                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove)
+                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove())
                 }
             }
             
@@ -161,7 +165,7 @@ class BoardViewModel: LetterStoreBase {
                     word.score += currentCell.getCellScore()
                     wordBonusK *= currentCell.getCellWordBonusK()
                     word.cells.append(currentCell)
-                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove)
+                    word.isConnectedToExisting = word.isConnectedToExisting || (currentCell.isCenterCell || !currentCell.isCurrentMove())
                 }
             }
             
@@ -250,8 +254,8 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func confirmMove() {
-        for cell in currentMoveCells {
-            let index = cell.row * cols + cell.col
+        for cell in currentMoveCells() {
+            let index = cell.row * LetterStoreBase.cols + cell.col
             cells[index].setCellStatus(status: .immutable)
             cells[index].isImmutable = true
         }
@@ -269,7 +273,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func setCellByPosition(row: Int, col: Int, cell: CellModel) {
-        let index = row * cols + col
+        let index = row * LetterStoreBase.cols + col
         cells[index] = cell
     }
 }
