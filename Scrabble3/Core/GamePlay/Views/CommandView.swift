@@ -83,7 +83,7 @@ struct CommandView: View {
                             }, buttonSystemImage: "xmark.bin", backGroundColor: Color(.systemRed), maxWidth: false)
                         }
                     }
-                    .padding()
+                    .padding(.bottom, 24)
                 } else {
                     HStack {
                         List {
@@ -149,7 +149,6 @@ struct CommandView: View {
                             }
                         }
                     }
-                    .padding()
                 }
             }
         }

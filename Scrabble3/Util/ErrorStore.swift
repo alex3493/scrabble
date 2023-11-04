@@ -26,7 +26,7 @@ enum AppError: LocalizedError {
         case .gameSetupError:
             return "Error setting up game"
         case .moveValidationError:
-            return "Invalid words"
+            return "ОШИБКА"
         }
     }
     
@@ -43,16 +43,16 @@ enum AppError: LocalizedError {
             switch errorType {
                 
             case .invalidLetterTilePosition(cell: let cell):
-                return "Invalid letter position: \(cell)"
+                return "Буква расположена неправильно: \(cell)"
             case .hangingWords(words: let words):
                 let words = words.joined(separator: ", ")
-                return "Words not placed correctly: \(words)"
+                return "Слова расположены неправильно: \(words)"
             case .invalidWords(words: let words):
                 let words = words.joined(separator: ", ")
-                return "Words not found in dictionary: \(words)"
+                return "Слова не найдены в словаре: \(words)"
             case .repeatedWords(words: let words):
                 let words = words.joined(separator: ", ")
-                return "Words already used: \(words)"
+                return "Слова уже использованы: \(words)"
             }
         }
         

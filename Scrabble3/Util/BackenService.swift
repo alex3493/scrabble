@@ -24,6 +24,7 @@ struct ValidationResponse: Codable {
 }
 
 struct Api {
+    @MainActor
     static func validateWord(word: String) async -> ValidationResponse? {
         let query = URLQueryItem(name: "word", value: word)
         guard var url = URL(string: "https://erugame.ru/dictionary/backend.php?mode=new") else {
