@@ -19,9 +19,7 @@ class BoardViewModel: LetterStoreBase {
     @Published var moveInfoDialogPresented: Bool = false
     var moveWordsSummary: [(String, Int)] = []
     var moveTotalScore: Int = 0
-    
-    // TODO: how to use it?
-    // var moveSummary: MoveModel? = nil
+    var moveBonus: Int? = nil
     
     private override init() {
         super.init()
@@ -99,6 +97,10 @@ class BoardViewModel: LetterStoreBase {
                 setCellStatusByPosition(row: cell.row, col: cell.col, status: status)
             }
         }
+    }
+    
+    var getMoveBonus: Int? {
+        return currentMoveCells.count == LetterStoreBase.size ? 15 : nil
     }
     
     func getMoveWords() throws -> [WordModel] {

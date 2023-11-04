@@ -49,6 +49,7 @@ final class CommandViewModel: ObservableObject {
                 
                 boardViewModel.moveWordsSummary = wordsSummary
                 boardViewModel.moveTotalScore = totalScore
+                boardViewModel.moveBonus = boardViewModel.getMoveBonus
                 
                 boardViewModel.moveInfoDialogPresented = true
             }

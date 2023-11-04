@@ -34,7 +34,7 @@ struct BoardView: View {
             AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!)
         }
         .sheet(isPresented: $boardViewModel.moveInfoDialogPresented) {
-            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, isPresented: $boardViewModel.moveInfoDialogPresented)
+            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, bonus: boardViewModel.getMoveBonus, isPresented: $boardViewModel.moveInfoDialogPresented)
         }
     }
     
