@@ -74,20 +74,24 @@ struct CellModel: Codable, Hashable {
         return letterTile == nil
     }
     
-    func isCurrentMove() -> Bool {
+    @MainActor
+    var isCurrentMove: Bool {
         return !isImmutable && cellStatus != .empty && role == .board
     }
     
+    @MainActor
     var isCenterCell: Bool {
+        // return true
         return Int(ceil(Double(LetterStoreBase.rows / 2))) == row && Int(ceil(Double(LetterStoreBase.cols / 2))) == col
     }
     
+    @MainActor
     func getCellScore() -> Int {
         if (isEmpty) {
             return 0
         }
         
-        if (!isCurrentMove()) {
+        if (!isCurrentMove) {
             return letterTile!.score
         }
         
@@ -101,8 +105,9 @@ struct CellModel: Codable, Hashable {
         }
     }
     
+    @MainActor
     func getCellWordBonusK() -> Int {
-        if (isEmpty || !isCurrentMove()) {
+        if (isEmpty || !isCurrentMove) {
             return 1
         }
         
