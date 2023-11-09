@@ -86,6 +86,7 @@ final class CommandViewModel: ObservableObject {
                 self?.game = game
                 
                 self?.updatePlayerLetterRack()
+                self?.updateGameBoard()
             }
             .store(in: &cancellables)
     }
@@ -103,6 +104,14 @@ final class CommandViewModel: ObservableObject {
         guard let player = player else { return }
         
         rackViewModel.setRack(cells: player.letterRack)
+    }
+    
+    func updateGameBoard() {
+        print("Update game board on game update!")
+        
+        guard let game = game else { return }
+        
+        boardViewModel.cells = game.boardCells
     }
     
     func validateMove() async throws {
@@ -201,9 +210,9 @@ final class CommandViewModel: ObservableObject {
         // Fill missing tiles.
         rackViewModel.fillRack()
         
-        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells)
-        
         boardViewModel.confirmMove()
+        
+        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells)
     }
     
     func resetMove() {
@@ -222,28 +231,12 @@ final class CommandViewModel: ObservableObject {
             } receiveValue: { [weak self] moves in
                 print("MOVE LISTENER :: Game ID \(gameId) moves updated count: \(moves.count)")
                 self?.gameMoves = moves
-                self?.getExistingWords(moves: moves)
             }
             .store(in: &cancellables)
     }
     
     func removeListenerForMoves() {
         MoveManager.shared.removeListenerForMoves()
-    }
-    
-    func getExistingWords(moves: [MoveModel]) {
-        
-        var words = [WordModel]()
-        for move in moves {
-            words = words + move.words
-        }
-        existingWords = words
-        
-        // print("Existing words \(existingWords.map { $0.word }), count: \(existingWords.count)")
-        
-        boardViewModel.clearBoard()
-        boardViewModel.setWordsToBoard(words: existingWords)
-        
     }
     
 }
