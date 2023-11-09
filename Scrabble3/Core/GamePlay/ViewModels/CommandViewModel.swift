@@ -18,7 +18,7 @@ final class CommandViewModel: ObservableObject {
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
     
-    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
+    var currentUser: DBUser? = nil
     
     init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel, gameViewModel: GamePlayViewModel) {
         self.boardViewModel = boardViewModel

@@ -11,6 +11,8 @@ struct CommandView: View {
     
     @Environment(\.mainWindowSize) var mainWindowSize
     
+    @EnvironmentObject var authViewModel: AuthWithEmailViewModel
+    
     @StateObject private var viewModel: CommandViewModel
     
     @StateObject private var rackViewModel: RackViewModel
@@ -160,6 +162,9 @@ struct CommandView: View {
                     }
                 }
             }
+        }
+        .onAppear() {
+            viewModel.currentUser = authViewModel.currentUser
         }
         .task {
             await viewModel.loadGame(gameId: gameId)

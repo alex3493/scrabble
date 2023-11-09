@@ -14,9 +14,7 @@ class GamePlayViewModel: ObservableObject {
     @Published var boardViewModel: BoardViewModel
     @Published var rackViewModel: RackViewModel
     
-    // static var shared = GamePlayViewModel()
-    
-    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
+    var currentUser: DBUser? = nil
     
     private var existingWords = [WordModel]()
     

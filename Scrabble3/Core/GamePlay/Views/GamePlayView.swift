@@ -13,6 +13,8 @@ struct GamePlayView: View {
     
     @StateObject private var viewModel: GamePlayViewModel
     
+    @EnvironmentObject var authViewModel: AuthWithEmailViewModel
+    
     let boardViewModel: BoardViewModel
     let rackViewModel: RackViewModel
     let commandViewModel: CommandViewModel
@@ -52,6 +54,9 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                 }
             }
+        }
+        .onAppear() {
+            viewModel.currentUser = authViewModel.currentUser
         }
         .task {
             viewModel.addListenerForMoves(gameId: game.id)
