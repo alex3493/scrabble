@@ -16,6 +16,8 @@ struct AsteriskDialogView: View {
     @StateObject private var boardViewModel: BoardViewModel
     
     init(asteriskDialogPresented: Binding<Bool>, asteriskRow: Int, asteriskCol: Int, boardViewModel: BoardViewModel) {
+        print("AsteriskDialogView INIT")
+        
         self.asteriskRow = asteriskRow
         self.asteriskCol = asteriskCol
         

@@ -15,6 +15,8 @@ struct RackView: View {
     @StateObject private var rackViewModel: RackViewModel
     
     init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+        print("RackView INIT")
+        
         _boardViewModel = StateObject(wrappedValue: boardViewModel)
         _rackViewModel = StateObject(wrappedValue: rackViewModel)
     }

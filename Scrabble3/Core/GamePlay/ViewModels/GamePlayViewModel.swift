@@ -5,6 +5,8 @@
 //  Created by Alex on 29/10/23.
 //
 
+// TODO: move all code to CommandViewModel - we can simplify dependency graph!
+
 import Foundation
 import Combine
 
