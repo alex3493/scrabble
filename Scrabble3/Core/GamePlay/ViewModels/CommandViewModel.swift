@@ -103,7 +103,19 @@ final class CommandViewModel: ObservableObject {
         
         guard let player = player else { return }
         
-        rackViewModel.setRack(cells: player.letterRack)
+        if rackViewModel.isEmpty {
+            // For empty rack always pull it from game.
+            rackViewModel.setRack(cells: player.letterRack)
+        } else {
+            // Compare current rack content with saved rack:
+            let sourceLetters = player.letterRack.map { $0.letterTile!.char }
+            let targetLetters = rackViewModel.cells.map { $0.letterTile!.char }
+            
+            // If only tiles order have changed there is no need to pull rack from game.
+            if sourceLetters.sorted() != targetLetters.sorted() {
+                rackViewModel.setRack(cells: player.letterRack)
+            }
+        }
     }
     
     func updateGameBoard() {
@@ -128,7 +140,7 @@ final class CommandViewModel: ObservableObject {
         var invalidWords = [WordModel]()
         for word in words {
             let response = await Api.validateWord(word: word.word)
-            if (response == nil || response!.result != "yes") {
+            if (response == nil || !response!.isValid) {
                 invalidWords.append(word)
             }
         }

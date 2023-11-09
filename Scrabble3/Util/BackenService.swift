@@ -21,6 +21,10 @@ struct ValidationResponse: Codable {
     let definitions: [WordDefinition]?
     let usage_rate: Int?
     let imageURL: String?
+    
+    var isValid: Bool {
+        return result == "yes"
+    }
 }
 
 struct Api {
