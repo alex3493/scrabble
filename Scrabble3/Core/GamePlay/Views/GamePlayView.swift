@@ -11,8 +11,6 @@ struct GamePlayView: View {
     
     let game: GameModel
     
-    @StateObject private var viewModel: GamePlayViewModel
-    
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
     let boardViewModel: BoardViewModel
@@ -27,10 +25,7 @@ struct GamePlayView: View {
         // We create all related view models here view models here.
         self.boardViewModel = BoardViewModel()
         self.rackViewModel = RackViewModel()
-        let gamePlayViewModel = GamePlayViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
-        self.commandViewModel = CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: gamePlayViewModel)
-        
-        _viewModel = StateObject(wrappedValue: gamePlayViewModel)
+        self.commandViewModel = CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
     }
     
     var body: some View {
@@ -41,7 +36,7 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                     RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: game.id, boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: viewModel)
+                    CommandView(gameId: game.id, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             } else {
@@ -50,19 +45,19 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                     RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: game.id, boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: viewModel)
+                    CommandView(gameId: game.id, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             }
         }
         .onAppear() {
-            viewModel.currentUser = authViewModel.currentUser
+            commandViewModel.currentUser = authViewModel.currentUser
         }
         .task {
-            viewModel.addListenerForMoves(gameId: game.id)
+            commandViewModel.addListenerForMoves(gameId: game.id)
         }
         .onDisappear() {
-            viewModel.removeListenerForMoves()
+            commandViewModel.removeListenerForMoves()
         }
     }
     
@@ -71,7 +66,7 @@ struct GamePlayView: View {
     }
     
     var hasTurn: Bool {
-        guard let user = viewModel.currentUser else { return false }
+        guard let user = commandViewModel.currentUser else { return false }
         
         let userIndex = game.players.firstIndex { $0.user.userId == user.userId }
         

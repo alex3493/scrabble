@@ -19,13 +19,13 @@ struct CommandView: View {
     
     let gameId: String
     
-    init(gameId: String, boardViewModel: BoardViewModel, rackViewModel: RackViewModel, gameViewModel: GamePlayViewModel) {
+    init(gameId: String, boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
         print("CommandView INIT")
         self.gameId = gameId
         
         _rackViewModel = StateObject(wrappedValue: rackViewModel)
         
-        let viewModel = CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: gameViewModel)
+        let viewModel = CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -200,6 +200,6 @@ struct CommandView_Previews: PreviewProvider {
     static var previews: some View {
         let boardViewModel = BoardViewModel()
         let rackViewModel = RackViewModel()
-        CommandView(gameId: "fake_id", boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: GamePlayViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel))
+        CommandView(gameId: "fake_id", boardViewModel: boardViewModel, rackViewModel: rackViewModel)
     }
 }
