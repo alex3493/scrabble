@@ -5,25 +5,29 @@
 //  Created by Alex on 29/10/23.
 //
 
+// TODO: move all code to CommandViewModel - we can simplify dependency graph!
+
 import Foundation
 import Combine
 
 @MainActor
 class GamePlayViewModel: ObservableObject {
+        
+    @Published var boardViewModel: BoardViewModel
+    @Published var rackViewModel: RackViewModel
     
-    private var rackViewModel = RackViewModel.shared
-    private var boardViewModel = BoardViewModel.shared
-    
-    static var shared = GamePlayViewModel()
-    
-    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
+    var currentUser: DBUser? = nil
     
     private var existingWords = [WordModel]()
     
     @Published var gameMoves: [MoveModel] = []
     private var cancellables = Set<AnyCancellable>()
     
-    private init() { }
+    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+        print("GamePlayViewModel INIT")
+        self.boardViewModel = boardViewModel
+        self.rackViewModel = rackViewModel
+    }
     
     func validateMove() async throws {
         let words = try boardViewModel.getMoveWords()

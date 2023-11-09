@@ -14,9 +14,7 @@ final class GameInfoViewModel: ObservableObject {
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
     
-    let currentUser = AuthWithEmailViewModel.sharedCurrentUser
-    
-    let rackViewModel = RackViewModel.shared
+    var currentUser: DBUser? = nil
     
     var isMeGameCreator: Bool {
         guard let game = game else { return false }

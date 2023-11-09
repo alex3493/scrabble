@@ -13,10 +13,17 @@ struct CellView: View {
     
     var cell: CellModel
     
-    var boardIsLocked: Bool = false
+    var boardIsLocked: Bool
     
-    @StateObject private var board = BoardViewModel.shared
-    @StateObject private var rack = RackViewModel.shared
+    @StateObject private var board: BoardViewModel
+    @StateObject private var rack: RackViewModel
+    
+    init(cell: CellModel, boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+        self.cell = cell
+        self.boardIsLocked = boardIsLocked
+        _board = StateObject(wrappedValue: boardViewModel)
+        _rack = StateObject(wrappedValue: rackViewModel)
+    }
     
     var body: some View {
         let cellPiece = ZStack {
@@ -176,5 +183,5 @@ struct CellView: View {
 }
 
 #Preview {
-    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil))
+    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(), rackViewModel: RackViewModel())
 }

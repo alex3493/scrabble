@@ -11,17 +11,24 @@ struct RackView: View {
     
     @Environment(\.mainWindowSize) var mainWindowSize
     
-    @StateObject private var rackViewModel = RackViewModel.shared
-    @StateObject private var boardViewModel = BoardViewModel.shared
+    @StateObject private var boardViewModel: BoardViewModel
+    @StateObject private var rackViewModel: RackViewModel
+    
+    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+        print("RackView INIT")
+        
+        _boardViewModel = StateObject(wrappedValue: boardViewModel)
+        _rackViewModel = StateObject(wrappedValue: rackViewModel)
+    }
     
     var body: some View {
         if rackViewModel.cells.count > 0 {
             if (isLandscape) {
                 VStack() {
                     Group {
-                        ForEach(0...LetterStoreBase.size - 1, id: \.self) { pos in
+                        ForEach(0..<LetterStoreBase.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
-                            CellView(cell: cell)
+                            CellView(cell: cell, boardIsLocked: false, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .frame(width: idealCellSize)
                         }
@@ -31,9 +38,9 @@ struct RackView: View {
             } else {
                 HStack() {
                     Group {
-                        ForEach(0...LetterStoreBase.size - 1, id: \.self) { pos in
+                        ForEach(0..<LetterStoreBase.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
-                            CellView(cell: cell)
+                            CellView(cell: cell, boardIsLocked: false, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .frame(width: idealCellSize)
                         }
@@ -58,6 +65,6 @@ struct RackView: View {
 }
 
 #Preview {
-    RackView()
+    RackView(boardViewModel: BoardViewModel(), rackViewModel: RackViewModel())
 }
 
