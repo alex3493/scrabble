@@ -10,8 +10,6 @@ import Foundation
 @MainActor
 class BoardViewModel: LetterStoreBase {
     
-    // static var shared = BoardViewModel()
-    
     @Published var asteriskDialogPresented: Bool = false
     var asteriskRow: Int? = nil
     var asteriskCol: Int? = nil

@@ -66,7 +66,7 @@ struct GamePlayView: View {
     }
     
     var hasTurn: Bool {
-        guard let user = commandViewModel.currentUser else { return false }
+        guard let user = authViewModel.currentUser else { return false }
         
         let userIndex = game.players.firstIndex { $0.user.userId == user.userId }
         

@@ -193,7 +193,7 @@ struct CommandView: View {
 //#Preview {
 //    let boardViewModel = BoardViewModel()
 //    let rackViewModel = RackViewModel()
-//    CommandView(gameId: "fake_id", boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: GamePlayViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel))
+//    CommandView(gameId: "fake_id", boardViewModel: boardViewModel, rackViewModel: rackViewModel)
 //}
 
 struct CommandView_Previews: PreviewProvider {
