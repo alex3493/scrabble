@@ -11,11 +11,20 @@ struct CommandView: View {
     
     @Environment(\.mainWindowSize) var mainWindowSize
     
-    @StateObject private var viewModel = CommandViewModel()
+    @StateObject private var viewModel: CommandViewModel
     
-    @StateObject private var rackViewModel = RackViewModel.shared
+    @StateObject private var rackViewModel: RackViewModel
     
     let gameId: String
+    
+    init(gameId: String, boardViewModel: BoardViewModel, rackViewModel: RackViewModel, gameViewModel: GamePlayViewModel) {
+        self.gameId = gameId
+        
+        _rackViewModel = StateObject(wrappedValue: rackViewModel)
+        
+        let viewModel = CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: gameViewModel)
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ZStack {
@@ -175,6 +184,16 @@ struct CommandView: View {
     }
 }
 
-#Preview {
-    CommandView(gameId: "fake_id")
+//#Preview {
+//    let boardViewModel = BoardViewModel()
+//    let rackViewModel = RackViewModel()
+//    CommandView(gameId: "fake_id", boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: GamePlayViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel))
+//}
+
+struct CommandView_Previews: PreviewProvider {
+    static var previews: some View {
+        let boardViewModel = BoardViewModel()
+        let rackViewModel = RackViewModel()
+        CommandView(gameId: "fake_id", boardViewModel: boardViewModel, rackViewModel: rackViewModel, gameViewModel: GamePlayViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel))
+    }
 }

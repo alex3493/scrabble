@@ -13,6 +13,16 @@ struct AsteriskDialogView: View {
     let asteriskRow: Int
     let asteriskCol: Int
     
+    @StateObject private var boardViewModel: BoardViewModel
+    
+    init(asteriskDialogPresented: Binding<Bool>, asteriskRow: Int, asteriskCol: Int, boardViewModel: BoardViewModel) {
+        self.asteriskRow = asteriskRow
+        self.asteriskCol = asteriskCol
+        
+        _asteriskDialogPresented = asteriskDialogPresented
+        _boardViewModel = StateObject(wrappedValue: boardViewModel)
+    }
+    
     var body: some View {
         VStack {
             ForEach (Array(chunks.enumerated()), id: \.offset) { indexI, chunk in
@@ -28,7 +38,7 @@ struct AsteriskDialogView: View {
                             let asteriskTile = LetterTile(char: tile.char, score: tile.score, probability: tile.probability, isAsterisk: true, lang: tile.lang)
                             asteriskDialogPresented = false
                             
-                            BoardViewModel.shared.setLetterTileByPosition(row: asteriskRow, col: asteriskCol, letterTile: asteriskTile)
+                            boardViewModel.setLetterTileByPosition(row: asteriskRow, col: asteriskCol, letterTile: asteriskTile)
                         }
                     }
                 }
@@ -48,5 +58,5 @@ struct AsteriskDialogView: View {
 }
 
 #Preview {
-    AsteriskDialogView(asteriskDialogPresented: .constant(false), asteriskRow: 0, asteriskCol: 0)
+    AsteriskDialogView(asteriskDialogPresented: .constant(false), asteriskRow: 0, asteriskCol: 0, boardViewModel: BoardViewModel())
 }

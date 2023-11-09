@@ -10,11 +10,11 @@ import Combine
 
 @MainActor
 class GamePlayViewModel: ObservableObject {
+        
+    @Published var boardViewModel: BoardViewModel
+    @Published var rackViewModel: RackViewModel
     
-    private var rackViewModel = RackViewModel.shared
-    private var boardViewModel = BoardViewModel.shared
-    
-    static var shared = GamePlayViewModel()
+    // static var shared = GamePlayViewModel()
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
@@ -23,7 +23,11 @@ class GamePlayViewModel: ObservableObject {
     @Published var gameMoves: [MoveModel] = []
     private var cancellables = Set<AnyCancellable>()
     
-    private init() { }
+    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+        print("GamePlayViewModel INIT")
+        self.boardViewModel = boardViewModel
+        self.rackViewModel = rackViewModel
+    }
     
     func validateMove() async throws {
         let words = try boardViewModel.getMoveWords()

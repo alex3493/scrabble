@@ -16,8 +16,6 @@ final class GameInfoViewModel: ObservableObject {
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
     
-    let rackViewModel = RackViewModel.shared
-    
     var isMeGameCreator: Bool {
         guard let game = game else { return false }
         

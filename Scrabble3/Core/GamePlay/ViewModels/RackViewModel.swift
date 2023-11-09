@@ -11,9 +11,9 @@ import Foundation
 class RackViewModel: LetterStoreBase {
     @Published var changeLettersMode: Bool = false
     
-    static var shared = RackViewModel()
+    // static var shared = RackViewModel()
     
-    private override init() {
+    override init() {
         super.init()
         for i in 0..<LetterStoreBase.size {
             let cell = CellModel(row: -1, col: -1, pos: Int(i), letterTile: nil, cellStatus: .empty, role: .rack)

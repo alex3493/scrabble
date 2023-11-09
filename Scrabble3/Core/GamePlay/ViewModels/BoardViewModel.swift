@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 class BoardViewModel: LetterStoreBase {
     
-    static var shared = BoardViewModel()
+    // static var shared = BoardViewModel()
     
     @Published var asteriskDialogPresented: Bool = false
     var asteriskRow: Int? = nil
@@ -21,7 +21,7 @@ class BoardViewModel: LetterStoreBase {
     var moveTotalScore: Int = 0
     var moveBonus: Int? = nil
     
-    private override init() {
+    override init() {
         super.init()
         let numCells: Int = LetterStoreBase.rows * LetterStoreBase.cols;
         for i in 0...numCells - 1 {

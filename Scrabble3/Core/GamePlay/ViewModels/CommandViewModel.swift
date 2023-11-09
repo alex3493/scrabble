@@ -11,14 +11,20 @@ import Combine
 @MainActor
 final class CommandViewModel: ObservableObject {
     
-    private var boardViewModel = BoardViewModel.shared
-    private var rackViewModel = RackViewModel.shared
-    private var gameViewModel = GamePlayViewModel.shared
+    let boardViewModel: BoardViewModel
+    let rackViewModel: RackViewModel
+    let gameViewModel: GamePlayViewModel
     
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
     
     let currentUser = AuthWithEmailViewModel.sharedCurrentUser
+    
+    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel, gameViewModel: GamePlayViewModel) {
+        self.boardViewModel = boardViewModel
+        self.rackViewModel = rackViewModel
+        self.gameViewModel = gameViewModel
+    }
     
     func suspendGame(gameId: String, abort: Bool) async throws {
         gameViewModel.resetMove()
