@@ -24,6 +24,8 @@ final class CommandViewModel: ObservableObject {
     private var existingWords = [WordModel]()
     
     init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+        print("CommandViewModel INIT")
+        
         self.boardViewModel = boardViewModel
         self.rackViewModel = rackViewModel
     }

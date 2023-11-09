@@ -36,7 +36,7 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                     RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: game.id, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                    CommandView(gameId: game.id, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             } else {
@@ -45,7 +45,7 @@ struct GamePlayView: View {
                         .environment(\.mainWindowSize, proxy.size)
                     RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: game.id, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                    CommandView(gameId: game.id, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             }

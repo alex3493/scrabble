@@ -20,6 +20,8 @@ class BoardViewModel: LetterStoreBase {
     var moveBonus: Int? = nil
     
     override init() {
+        print("BoardViewModel INIT")
+        
         super.init()
         let numCells: Int = LetterStoreBase.rows * LetterStoreBase.cols;
         for i in 0...numCells - 1 {
