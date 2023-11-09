@@ -44,6 +44,7 @@ final class GameManager {
         let document = gameCollection.document()
         let documentId = document.documentID
         
+        // We need to init empty board.
         let boardMViewModel = BoardViewModel()
         
         let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, players: [
