@@ -132,6 +132,9 @@ struct GameInfoView: View {
         }.onAppear() {
             print("Current user \(String(describing: authViewModel.currentUser))")
             viewModel.currentUser = authViewModel.currentUser
+        }.onDisappear() {
+            print("GameInfoView disappeared")
+            viewModel.removeListenerForGame()
         }
     }
     

@@ -39,13 +39,17 @@ final class GameManager {
         return decoder
     }()
     
+    @MainActor
     func createNewGame(creatorUser: DBUser) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
+        
+        // We need to init empty board.
+        let boardMViewModel = BoardViewModel()
+        
         let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
-        ], turn: 0)
-        
+        ], turn: 0, boardCells: boardMViewModel.cells)
         try document.setData(from: game, merge: false, encoder: encoder)
         
         return game
@@ -144,7 +148,7 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
-    func nextTurn(gameId: String, score: Int, user: DBUser, userLetterRack: [CellModel]) async throws {
+    func nextTurn(gameId: String, score: Int, user: DBUser, userLetterRack: [CellModel], boardCells: [CellModel]) async throws {
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
         
         // Save current player letter rack.
@@ -162,6 +166,8 @@ final class GameManager {
                 game.gameStatus = .finished
             }
         }
+        
+        game.boardCells = boardCells
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)

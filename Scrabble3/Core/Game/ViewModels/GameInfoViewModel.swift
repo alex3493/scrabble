@@ -78,10 +78,9 @@ final class GameInfoViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    // TODO: check if we have to call this function...
-//    func removeListenerForGame() {
-//        GameManager.shared.removeListenerForGame()
-//    }
+    func removeListenerForGame() {
+        GameManager.shared.removeListenerForGame()
+    }
     
     func createGame(byUser user: DBUser) async throws -> String? {
         self.game = try await GameManager.shared.createNewGame(creatorUser: user)
