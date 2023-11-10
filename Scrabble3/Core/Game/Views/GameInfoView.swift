@@ -114,6 +114,7 @@ struct GameInfoView: View {
                     
                 }
                 .task {
+                    print("GameInfoView task")
                     if (gameId == nil) {
                         do {
                             try await createGame()
@@ -128,13 +129,20 @@ struct GameInfoView: View {
                         viewModel.addListenerForGame()
                     }
                 }
+                .onAppear() {
+                    print("GameInfoView onAppear")
+                }
+                .onDisappear() {
+                    // TODO: it works to avoid double-update for game, but it breaks "suspend game" feature.
+                    // We put it on hold: this view is displayed conditionally in GameInfoView, so we need
+                    // another instance of game subscriber there.
+                    print("GameInfoView disappeared")
+                    // viewModel.removeListenerForGame()
+                }
             }
         }.onAppear() {
             print("Current user \(String(describing: authViewModel.currentUser))")
             viewModel.currentUser = authViewModel.currentUser
-        }.onDisappear() {
-            print("GameInfoView disappeared")
-            viewModel.removeListenerForGame()
         }
     }
     

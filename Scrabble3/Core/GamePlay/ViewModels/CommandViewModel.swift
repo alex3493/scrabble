@@ -82,7 +82,7 @@ final class CommandViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] game in
-                print("GAME LISTENER :: Game ID: \(game.id) updated")
+                print("GAME LISTENER :: Game ID: \(game.id) updated in command view")
                 self?.game = game
                 
                 self?.updatePlayerLetterRack()
@@ -119,8 +119,6 @@ final class CommandViewModel: ObservableObject {
     }
     
     func updateGameBoard() {
-        print("Update game board on game update!")
-        
         guard let game = game else { return }
         
         boardViewModel.cells = game.boardCells
