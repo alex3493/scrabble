@@ -72,7 +72,7 @@ final class GameInfoViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] game in
-                print("GAME LISTENER :: Game ID: \(game.id) updated")
+                print("GAME LISTENER :: Game ID: \(game.id) updated in game info view")
                 self?.game = game
             }
             .store(in: &cancellables)

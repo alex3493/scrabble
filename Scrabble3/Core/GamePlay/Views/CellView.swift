@@ -28,7 +28,7 @@ struct CellView: View {
     var body: some View {
         let cellPiece = ZStack {
             RoundedRectangle(cornerRadius: 5)
-                .fill(getCellFill())
+                .fill(cell.isEmpty && cell.isCenterCell ? .gray : getCellFill())
             if showAsterisk {
                 ZStack {
                     HStack {
