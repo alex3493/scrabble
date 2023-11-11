@@ -164,6 +164,8 @@ struct CellView: View {
                 return .brown
             case .error:
                 return .red
+            case .moveHistory:
+                return .gray
             default:
                 return .black
             }
