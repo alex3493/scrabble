@@ -28,7 +28,7 @@ struct CellView: View {
     var body: some View {
         let cellPiece = ZStack {
             RoundedRectangle(cornerRadius: 5)
-                .fill(cell.isEmpty && cell.isCenterCell ? .gray : getCellFill())
+                .fill(cell.isEmpty && cell.isCenterCell ? .gray : cellFill)
             if showAsterisk {
                 ZStack {
                     HStack {
@@ -63,25 +63,25 @@ struct CellView: View {
             if (cell.cellStatus == .empty) {
                 // Empty tile - can accept moves.
                 cellPiece
-//                    .dropDestination(for: CellModel.self) { items, location in
-//                        let cell = items.first ?? nil
-//                        if (cell != nil) {
-//                            moveCell(drag: cell!, drop: self.cell)
-//                        }
-//                        return true
-//                    }
+                //                    .dropDestination(for: CellModel.self) { items, location in
+                //                        let cell = items.first ?? nil
+                //                        if (cell != nil) {
+                //                            moveCell(drag: cell!, drop: self.cell)
+                //                        }
+                //                        return true
+                //                    }
                     .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
                 // Current move board or rack tiles - free move on board, in rack and between board and rack.
                 cellPiece
-//                    .draggable(cell)
-//                    .dropDestination(for: CellModel.self) { items, location in
-//                        let cell = items.first ?? nil
-//                        if (cell != nil) {
-//                            moveCell(drag: cell!, drop: self.cell)
-//                        }
-//                        return true
-//                    }
+                //                    .draggable(cell)
+                //                    .dropDestination(for: CellModel.self) { items, location in
+                //                        let cell = items.first ?? nil
+                //                        if (cell != nil) {
+                //                            moveCell(drag: cell!, drop: self.cell)
+                //                        }
+                //                        return true
+                //                    }
                     .onDrag {
                         NSItemProvider(object: NSString(string: cell.fingerprint))
                     }
@@ -89,13 +89,13 @@ struct CellView: View {
             } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
                 // Exchange asterisk on board (rack --> board move).
                 cellPiece
-//                    .dropDestination(for: CellModel.self) { items, location in
-//                        let cell = items.first ?? nil
-//                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
-//                            moveCell(drag: cell!, drop: self.cell)
-//                        }
-//                        return true
-//                    }
+                //                    .dropDestination(for: CellModel.self) { items, location in
+                //                        let cell = items.first ?? nil
+                //                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
+                //                            moveCell(drag: cell!, drop: self.cell)
+                //                        }
+                //                        return true
+                //                    }
                     .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if (isCellReadyForLetterChange) {
                 // Check tiles for letter change action.
@@ -144,8 +144,7 @@ struct CellView: View {
         }
     }
     
-    // TODO: Issue here: when cell status is updated the function below is not called. Check why?
-    private func getCellFill() -> Color {
+    private var cellFill: Color {
         if (cell.isEmpty) {
             switch cell.cellBonus {
             case .wordDouble:
