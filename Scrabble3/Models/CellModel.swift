@@ -120,17 +120,26 @@ struct CellModel: Codable, Hashable {
             return 1
         }
     }
-}
-
-extension CellModel: Transferable
-{
-    static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .cell)
-    }
     
+    @MainActor
+    var fingerprint: String {
+        if role == .board {
+            return "board::\(row)::\(col)"
+        } else {
+            return "rack::\(pos)"
+        }
+    }
 }
 
-extension UTType {
-    static var cell: UTType { UTType(exportedAs: "org.scrabble.cell") }
-}
+//extension CellModel: Transferable
+//{
+//    static var transferRepresentation: some TransferRepresentation {
+//        CodableRepresentation(contentType: .cell)
+//    }
+//    
+//}
+//
+//extension UTType {
+//    static var cell: UTType { UTType(exportedAs: "org.scrabble.cell") }
+//}
 
