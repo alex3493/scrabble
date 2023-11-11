@@ -61,34 +61,44 @@ struct CellView: View {
         }
         if !boardIsLocked {
             if (cell.cellStatus == .empty) {
+                // Empty tile - can accept moves.
                 cellPiece
-                    .dropDestination(for: CellModel.self) { items, location in
-                        let cell = items.first ?? nil
-                        if (cell != nil) {
-                            moveCell(drag: cell!, drop: self.cell)
-                        }
-                        return true
-                    }
+//                    .dropDestination(for: CellModel.self) { items, location in
+//                        let cell = items.first ?? nil
+//                        if (cell != nil) {
+//                            moveCell(drag: cell!, drop: self.cell)
+//                        }
+//                        return true
+//                    }
+                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
+                // Current move board or rack tiles - free move on board, in rack and between board and rack.
                 cellPiece
-                    .draggable(cell)
-                    .dropDestination(for: CellModel.self) { items, location in
-                        let cell = items.first ?? nil
-                        if (cell != nil) {
-                            moveCell(drag: cell!, drop: self.cell)
-                        }
-                        return true
+//                    .draggable(cell)
+//                    .dropDestination(for: CellModel.self) { items, location in
+//                        let cell = items.first ?? nil
+//                        if (cell != nil) {
+//                            moveCell(drag: cell!, drop: self.cell)
+//                        }
+//                        return true
+//                    }
+                    .onDrag {
+                        NSItemProvider(object: NSString(string: cell.fingerprint))
                     }
+                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
+                // Exchange asterisk on board (rack --> board move).
                 cellPiece
-                    .dropDestination(for: CellModel.self) { items, location in
-                        let cell = items.first ?? nil
-                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
-                            moveCell(drag: cell!, drop: self.cell)
-                        }
-                        return true
-                    }
+//                    .dropDestination(for: CellModel.self) { items, location in
+//                        let cell = items.first ?? nil
+//                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
+//                            moveCell(drag: cell!, drop: self.cell)
+//                        }
+//                        return true
+//                    }
+                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if (isCellReadyForLetterChange) {
+                // Check tiles for letter change action.
                 cellPiece
                     .onTapGesture {
                         rack.setCellStatusByPosition(
@@ -106,7 +116,8 @@ struct CellView: View {
         }
     }
     
-    private func moveCell(drag: CellModel, drop: CellModel) {
+    @MainActor
+    func moveCell(drag: CellModel, drop: CellModel) {
         if (drag.role == .board && drop.role == .board) {
             // Board to board.
             board.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
@@ -179,6 +190,49 @@ struct CellView: View {
     
     var idealCellSize: CGFloat {
         return (min(mainWindowSize.width, mainWindowSize.height) - 40) / 15
+    }
+    
+    @MainActor
+    func cellItem(fromFingerprint fingerprint: String) -> CellModel {
+        let parts = fingerprint.split(separator: "::")
+        if parts[0] == CellModel.Role.board.rawValue {
+            return board.cellByPosition(row: Int(parts[1])!, col: Int(parts[2])!)
+        } else {
+            return rack.cellByPosition(pos: Int(parts[1])!)
+        }
+    }
+}
+
+struct CellDropDelegate: DropDelegate {
+    let drop: CellModel // Target cell.
+    let viewModel: CellView
+    
+    func performDrop(info: DropInfo) -> Bool {
+        
+        let provider = info.itemProviders(for: [.text]).first
+        
+        provider?.loadObject(ofClass: NSString.self) { fingerprint, _ in
+            DispatchQueue.main.async {
+                guard let fingerprint = fingerprint else { return }
+                
+                // Get drag source cell from DropInfo.
+                let drag = viewModel.cellItem(fromFingerprint: String(fingerprint as! Substring))
+                
+                // Special case: asterisk exchange - we check for extra conditions.
+                if drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk && drop.letterTile!.char != drag.letterTile!.char {
+                    // Trying to exchange asterisk for a wrong letter - no action.
+                    return
+                }
+                
+                viewModel.moveCell(drag: drag, drop: drop)
+            }
+        }
+        
+        return true
+    }
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
     }
 }
 
