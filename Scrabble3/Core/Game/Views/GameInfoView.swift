@@ -47,7 +47,7 @@ struct GameInfoView: View {
                             }
                         }
                         
-                        if (viewModel.isMeGameCreator) {
+                        if (viewModel.canDeleteGame) {
                             ActionButton(label: "УДАЛИТЬ ИГРУ", action: {
                                 do {
                                     try await viewModel.deleteGame(gameId: gameId)
