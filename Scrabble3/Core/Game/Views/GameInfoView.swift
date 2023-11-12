@@ -141,7 +141,7 @@ struct GameInfoView: View {
                 }
             }
         }.onAppear() {
-            print("Current user \(String(describing: authViewModel.currentUser))")
+            // print("Current user \(String(describing: authViewModel.currentUser))")
             viewModel.currentUser = authViewModel.currentUser
         }
     }

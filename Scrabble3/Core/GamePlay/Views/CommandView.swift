@@ -20,7 +20,6 @@ struct CommandView: View {
     let gameId: String
     
     init(gameId: String, commandViewModel: CommandViewModel) {
-        print("CommandView INIT")
         self.gameId = gameId
         
         _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)

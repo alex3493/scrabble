@@ -18,7 +18,6 @@ struct GamePlayView: View {
     let commandViewModel: CommandViewModel
     
     init(game: GameModel) {
-        print("GamePlayView INIT")
         self.game = game
         
         // This is the entry point to game-play view hierarchy.

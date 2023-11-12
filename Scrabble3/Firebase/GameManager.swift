@@ -66,7 +66,7 @@ final class GameManager {
             throw URLError(.cannotDecodeRawData)
         }
         
-        guard var game = try? await getGame(gameId: gameId) else { return }
+        guard let game = try? await getGame(gameId: gameId) else { return }
         
         // Never join running or stopped game.
         guard game.gameStatus == .waiting else { return }
@@ -79,7 +79,7 @@ final class GameManager {
     }
     
     func leaveGame(gameId: String, user: DBUser) async throws {
-        guard var game = try? await getGame(gameId: gameId) else { return }
+        guard let game = try? await getGame(gameId: gameId) else { return }
         
         let player = game.players.first {
             $0.id == user.userId

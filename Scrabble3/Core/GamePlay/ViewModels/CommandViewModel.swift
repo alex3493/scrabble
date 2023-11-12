@@ -123,8 +123,6 @@ final class CommandViewModel: ObservableObject {
         
         boardViewModel.cells = game.boardCells
         
-        print("Highlight last move!", gameMoves.last!)
-        
         if let recentMove = gameMoves.last {
             boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
         }
