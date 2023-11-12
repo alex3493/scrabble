@@ -17,8 +17,6 @@ struct BoardView: View {
     let boardIsLocked: Bool
     
     init(boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
-        print("BoardView INIT")
-        
         self.boardIsLocked = boardIsLocked
         _boardViewModel = StateObject(wrappedValue: boardViewModel)
         _rackViewModel = StateObject(wrappedValue: rackViewModel)

@@ -25,6 +25,14 @@ final class GameListViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func removeListenerForGames() {
+        GameManager.shared.removeListenerForGames()
+    }
+    
+    deinit {
+        print("***** GameListViewModel DESTROYED")
+    }
+    
     // TODO: just testing resource access.
 //    func test() throws {
 //        let url = Bundle.main.url(forResource: "russian", withExtension: "dic", subdirectory: "Dic")

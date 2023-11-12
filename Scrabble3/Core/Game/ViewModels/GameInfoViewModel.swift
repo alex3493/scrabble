@@ -114,4 +114,8 @@ final class GameInfoViewModel: ObservableObject {
         try await GameManager.shared.deleteGame(gameId: gameId)
         MoveManager.shared.deleteMoves(gameId: gameId)
     }
+    
+    deinit {
+        print("***** GameInfoViewModel DESTROYED")
+    }
 }

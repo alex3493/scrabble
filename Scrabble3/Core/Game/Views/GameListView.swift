@@ -28,6 +28,12 @@ struct GameListView: View {
             }
             .task {
                 viewModel.addListenerForGames()
+                print("GameListView appeared")
+            }
+            .onDisappear() {
+                // TODO: this is not working?
+                print("GameListView disappeared")
+                viewModel.removeListenerForGames()
             }
             
             .navigationTitle("Игры")

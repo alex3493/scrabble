@@ -89,12 +89,15 @@ class BoardViewModel: LetterStoreBase {
         setCellStatusByPosition(row: cell.row, col: cell.col)
     }
     
-    // TODO: in some cases the last letter is not highlighted...
-    func highlightWords(words: [WordModel], status: CellModel.CellStatus = .error) {
+    func highlightWords(words: [WordModel], status: CellModel.CellStatus = .error, timeout: Double = 3.0) {
         for word in words {
             for cell in word.cells {
                 setCellStatusByPosition(row: cell.row, col: cell.col, status: status)
             }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+            self.resetCellsStatus()
         }
     }
     
@@ -262,15 +265,15 @@ class BoardViewModel: LetterStoreBase {
         resetCellsStatus()
     }
     
-    func setWordsToBoard(words: [WordModel]) {
-        for word in words {
-            for var cell in word.cells {
-                cell.isImmutable = true
-                cell.setCellStatus(status: .immutable)
-                setCellByPosition(row: cell.row, col: cell.col, cell: cell)
-            }
-        }
-    }
+//    func setWordsToBoard(words: [WordModel]) {
+//        for word in words {
+//            for var cell in word.cells {
+//                cell.isImmutable = true
+//                cell.setCellStatus(status: .immutable)
+//                setCellByPosition(row: cell.row, col: cell.col, cell: cell)
+//            }
+//        }
+//    }
     
     func setCellByPosition(row: Int, col: Int, cell: CellModel) {
         let index = row * LetterStoreBase.cols + col

@@ -122,6 +122,10 @@ final class CommandViewModel: ObservableObject {
         guard let game = game else { return }
         
         boardViewModel.cells = game.boardCells
+        
+        if let recentMove = gameMoves.last {
+            boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
+        }
     }
     
     func validateMove() async throws {
@@ -240,7 +244,9 @@ final class CommandViewModel: ObservableObject {
                 
             } receiveValue: { [weak self] moves in
                 print("MOVE LISTENER :: Game ID \(gameId) moves updated count: \(moves.count)")
-                self?.gameMoves = moves
+                self?.gameMoves = moves.sorted { lhs, rhs in
+                    return lhs.createdAt < rhs.createdAt
+                }
             }
             .store(in: &cancellables)
     }
