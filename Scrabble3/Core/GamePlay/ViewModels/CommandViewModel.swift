@@ -88,9 +88,6 @@ final class CommandViewModel: ObservableObject {
                 
                 self?.updatePlayerLetterRack()
                 self?.updateGameBoard()
-                
-                let systemSoundID: SystemSoundID = 1003
-                AudioServicesPlaySystemSound(systemSoundID)
             }
             .store(in: &cancellables)
     }
@@ -129,6 +126,11 @@ final class CommandViewModel: ObservableObject {
         
         if let recentMove = gameMoves.last {
             boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
+            
+            if currentUser?.userId != recentMove.user.userId {
+                let systemSoundID: SystemSoundID = 1008
+                AudioServicesPlaySystemSound(systemSoundID)
+            }
         }
     }
     
