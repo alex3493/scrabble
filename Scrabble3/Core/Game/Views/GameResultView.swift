@@ -80,8 +80,10 @@ struct GameResultView: View {
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-//#Preview {
-//    let uuid = UUID().uuidString
-//    let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
-//    GameResultView(game: GameModel(id: "fake_id", createdAt: Timestamp(), creatorUser: user, players: [Player(user: user, score: 0, letterRack: [])], turn: 0))
-//}
+struct GameResultView_Previews: PreviewProvider {
+    static var previews: some View {
+        let uuid = UUID().uuidString
+        let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
+        GameResultView(game: GameModel(id: uuid, createdAt: Timestamp(), creatorUser: user, players: [Player(user: user, score: 0, letterRack: [])], turn: 0))
+    }
+}
