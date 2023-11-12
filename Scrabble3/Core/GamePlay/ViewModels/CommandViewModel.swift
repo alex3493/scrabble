@@ -89,7 +89,7 @@ final class CommandViewModel: ObservableObject {
                 self?.updatePlayerLetterRack()
                 self?.updateGameBoard()
                 
-                let systemSoundID: SystemSoundID = 1016
+                let systemSoundID: SystemSoundID = 1003
                 AudioServicesPlaySystemSound(systemSoundID)
             }
             .store(in: &cancellables)
