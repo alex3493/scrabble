@@ -110,6 +110,11 @@ final class GameInfoViewModel: ObservableObject {
         try await GameManager.shared.leaveGame(gameId: gameId, user: user)
     }
     
+    func abortGame(gameId: String) async throws {
+        guard let user = currentUser else { return }
+        try await GameManager.shared.suspendGame(gameId: gameId, abort: true)
+    }
+    
     func deleteGame(gameId: String) async throws {
         try await GameManager.shared.deleteGame(gameId: gameId)
         MoveManager.shared.deleteMoves(gameId: gameId)

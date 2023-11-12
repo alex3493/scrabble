@@ -96,6 +96,15 @@ struct GameInfoView: View {
                                     errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                                 }
                             }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
+                            
+                            ActionButton(label: "ВЫЙТИ ИЗ ИГРЫ", action: {
+                                do {
+                                    try await viewModel.abortGame(gameId: gameId)
+                                } catch {
+                                    print("DEBUG :: Error aborting game: \(error.localizedDescription)")
+                                    errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
+                                }
+                            }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
                         }
                     }
                     
