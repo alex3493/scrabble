@@ -11,17 +11,12 @@ import Foundation
 class RackViewModel: LetterStoreBase {
     @Published var changeLettersMode: Bool = false
     
-    // static var shared = RackViewModel()
-    
     override init() {
         super.init()
         for i in 0..<LetterStoreBase.size {
             let cell = CellModel(row: -1, col: -1, pos: Int(i), letterTile: nil, cellStatus: .empty, role: .rack)
             cells.append(cell)
         }
-        // TODO: we have to fill rack on game start and save it to DB.
-        // On any subsequent turn we have to read rack from DB.
-        // fillRack()
     }
     
     var isEmpty: Bool {

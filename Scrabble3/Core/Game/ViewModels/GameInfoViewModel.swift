@@ -54,6 +54,12 @@ final class GameInfoViewModel: ObservableObject {
         return isMeGamePlayer && game.gameStatus == .waiting
     }
     
+    var canDeleteGame: Bool {
+        guard let game = game else { return false }
+        
+        return isMeGamePlayer && (game.gameStatus == .finished || game.gameStatus == .aborted)
+    }
+    
     var isGameRunning: Bool {
         guard let game = game else { return false }
         
@@ -108,6 +114,11 @@ final class GameInfoViewModel: ObservableObject {
     func leaveGame(gameId: String) async throws {
         guard let user = currentUser else { return }
         try await GameManager.shared.leaveGame(gameId: gameId, user: user)
+    }
+    
+    func abortGame(gameId: String) async throws {
+        guard let user = currentUser else { return }
+        try await GameManager.shared.suspendGame(gameId: gameId, abort: true)
     }
     
     func deleteGame(gameId: String) async throws {

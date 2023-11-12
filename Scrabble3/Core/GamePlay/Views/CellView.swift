@@ -63,25 +63,10 @@ struct CellView: View {
             if (cell.cellStatus == .empty) {
                 // Empty tile - can accept moves.
                 cellPiece
-                //                    .dropDestination(for: CellModel.self) { items, location in
-                //                        let cell = items.first ?? nil
-                //                        if (cell != nil) {
-                //                            moveCell(drag: cell!, drop: self.cell)
-                //                        }
-                //                        return true
-                //                    }
                     .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
                 // Current move board or rack tiles - free move on board, in rack and between board and rack.
                 cellPiece
-                //                    .draggable(cell)
-                //                    .dropDestination(for: CellModel.self) { items, location in
-                //                        let cell = items.first ?? nil
-                //                        if (cell != nil) {
-                //                            moveCell(drag: cell!, drop: self.cell)
-                //                        }
-                //                        return true
-                //                    }
                     .onDrag {
                         NSItemProvider(object: NSString(string: cell.fingerprint))
                     }
@@ -89,13 +74,6 @@ struct CellView: View {
             } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
                 // Exchange asterisk on board (rack --> board move).
                 cellPiece
-                //                    .dropDestination(for: CellModel.self) { items, location in
-                //                        let cell = items.first ?? nil
-                //                        if (cell != nil && cell?.letterTile?.char == self.cell.letterTile?.char) {
-                //                            moveCell(drag: cell!, drop: self.cell)
-                //                        }
-                //                        return true
-                //                    }
                     .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
             } else if (isCellReadyForLetterChange) {
                 // Check tiles for letter change action.
@@ -145,7 +123,7 @@ struct CellView: View {
     }
     
     private var cellFill: Color {
-        if (cell.isEmpty) {
+        if cell.isEmpty {
             switch cell.cellBonus {
             case .wordDouble:
                 return .blue
@@ -158,7 +136,7 @@ struct CellView: View {
             default:
                 return .black
             }
-        } else if (cell.role == .board) {
+        } else if cell.role == .board {
             switch cell.cellStatus {
             case .currentMove:
                 return .brown
@@ -169,6 +147,8 @@ struct CellView: View {
             default:
                 return .black
             }
+        } else if cell.role == .rack && rack.changeLettersMode && cell.cellStatus != .checkedForLetterChange {
+            return .gray
         } else {
             switch cell.cellStatus {
             case .checkedForLetterChange:

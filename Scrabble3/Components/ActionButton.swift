@@ -29,14 +29,52 @@ struct ActionButton: View {
                 }
             }
             .foregroundColor(.white)
-            // TODO: UIScreen doesn't work when screen is rotated.
-            // .frame(/* width: maxWidth ? UIScreen.main.bounds.width - 32 : nil,*/ height: 24)
             .padding(.all, 4)
             .padding(.horizontal, 6)
         }
         .background(backGroundColor)
         .cornerRadius(10)
         .padding(.top, 0)
+    }
+}
+
+struct ActionImageButton: View {
+    let label: String
+    let action: () async -> Void
+    let buttonSystemImage: String
+    let backGroundColor: Color
+    let maxWidth: Bool
+    
+    var body: some View {
+        Button {
+            Task {
+                await action()
+            }
+        } label: {
+            if label == "" {
+                Image(systemName: buttonSystemImage)
+                    .resizable()
+                    .scaledToFit()
+                    .padding(.all, 10)
+                    .foregroundColor(.white)
+                    // TODO: make it dependant from screen resolution.
+                    .frame(width: 40, height: 40)
+            } else {
+                HStack {
+                    Group {
+                        Text(label)
+                            .fontWeight(.semibold)
+                            .font(.system(size: 10))
+                        Image(systemName: buttonSystemImage)
+                    }
+                }
+                .foregroundColor(.white)
+                .padding(.all, 4)
+                .padding(.horizontal, 6)
+            }
+        }
+        .background(backGroundColor)
+        .cornerRadius(10)
     }
 }
 
