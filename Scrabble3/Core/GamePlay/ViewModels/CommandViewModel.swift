@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import AVFoundation
 
 @MainActor
 final class CommandViewModel: ObservableObject {
@@ -87,6 +88,9 @@ final class CommandViewModel: ObservableObject {
                 
                 self?.updatePlayerLetterRack()
                 self?.updateGameBoard()
+                
+                let systemSoundID: SystemSoundID = 1003
+                AudioServicesPlaySystemSound(systemSoundID)
             }
             .store(in: &cancellables)
     }
@@ -108,8 +112,8 @@ final class CommandViewModel: ObservableObject {
             rackViewModel.setRack(cells: player.letterRack)
         } else {
             // Compare current rack content with saved rack:
-            let sourceLetters = player.letterRack.map { $0.letterTile!.char }
-            let targetLetters = rackViewModel.cells.map { $0.letterTile!.char }
+            let sourceLetters = player.letterRack.map { $0.letterTile?.char ?? " " }
+            let targetLetters = rackViewModel.cells.map { $0.letterTile?.char ?? " " }
             
             // If only tiles order have changed there is no need to pull rack from game.
             if sourceLetters.sorted() != targetLetters.sorted() {
