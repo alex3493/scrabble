@@ -24,6 +24,9 @@ struct GameInfoView: View {
         Group {
             if viewModel.isGameRunning, let game = viewModel.game, viewModel.isMeGamePlayer {
                 GamePlayView(game: game)
+            } else if viewModel.isGameFinished, let game = viewModel.game {
+                GameResultView(game: game)
+                    .navigationTitle("Игра окончена")
             } else {
                 VStack {
                     if let game = viewModel.game, let gameId = gameId {
