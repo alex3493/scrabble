@@ -131,15 +131,4 @@ struct CellModel: Codable, Hashable {
     }
 }
 
-//extension CellModel: Transferable
-//{
-//    static var transferRepresentation: some TransferRepresentation {
-//        CodableRepresentation(contentType: .cell)
-//    }
-//    
-//}
-//
-//extension UTType {
-//    static var cell: UTType { UTType(exportedAs: "org.scrabble.cell") }
-//}
 

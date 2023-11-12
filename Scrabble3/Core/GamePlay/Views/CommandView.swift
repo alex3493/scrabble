@@ -43,53 +43,45 @@ struct CommandView: View {
     func hasTurnButtons(game: GameModel, isInChangeLetterMode: Bool) -> some View {
         Group {
             if isInChangeLetterMode {
-                ActionButton(label: "ПОМЕНЯТЬ", action: {
+                ActionImageButton(label: "", action: {
                     do {
                         try await viewModel.changeLetters(gameId: game.id, confirmed: true)
                     } catch {
                         print("DEBUG :: Error changing letter: \(error.localizedDescription)")
                     }
-                }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
                 
-                ActionButton(label: "ОТМЕНИТЬ", action: {
+                ActionImageButton(label: "", action: {
                     viewModel.setChangeLettersMode(mode: false)
-                }, buttonSystemImage: "arrow.circlepath", backGroundColor: Color(.systemBlue), maxWidth: false)
+                }, buttonSystemImage: "arrowshape.turn.up.backward.fill", backGroundColor: Color(.systemGray), maxWidth: false)
             } else {
-                ActionButton(label: "ПОМЕНЯТЬ БУКВЫ", action: {
+                ActionImageButton(label: "", action: {
                     viewModel.setChangeLettersMode(mode: true)
-                }, buttonSystemImage: "arrow.2.circlepath.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
+                }, buttonSystemImage: "arrow.2.circlepath", backGroundColor: Color(.systemOrange), maxWidth: false)
                 
-                ActionButton(label: "ПРОВЕРКА", action: {
+                ActionImageButton(label: "", action: {
                     await viewModel.validateMove(gameId: game.id)
-                }, buttonSystemImage: "questionmark.circle.fill", backGroundColor: Color(.systemGray), maxWidth: false)
+                }, buttonSystemImage: "questionmark", backGroundColor: Color(.systemGray), maxWidth: false)
                 
-                ActionButton(label: "ГОТОВО", action: {
+                ActionImageButton(label: "", action: {
                     do {
                         try await viewModel.submitMove(gameId: game.id)
                     } catch {
                         print("DEBUG :: Error submitting move: \(error.localizedDescription)")
                     }
-                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemBlue), maxWidth: false)
+                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
             }
         }
     }
     func exitGameButtons(game: GameModel) -> some View {
         Group {
-            ActionButton(label: "ОТЛОЖИТЬ ИГРУ", action: {
+            ActionImageButton(label: "", action: {
                 do {
                     try await viewModel.suspendGame(gameId: game.id, abort: false)
                 } catch {
                     print("DEBUG :: Error suspending game: \(error.localizedDescription)")
                 }
-            }, buttonSystemImage: "stop.circle", backGroundColor: Color(.systemOrange), maxWidth: false)
-            
-//            ActionButton(label: "ВЫЙТИ ИЗ ИГРЫ", action: {
-//                do {
-//                    try await viewModel.suspendGame(gameId: game.id, abort: true)
-//                } catch {
-//                    print("DEBUG :: Error leaving game: \(error.localizedDescription)")
-//                }
-//            }, buttonSystemImage: "xmark.bin", backGroundColor: Color(.systemRed), maxWidth: false)
+            }, buttonSystemImage: "figure.walk.motion", backGroundColor: Color(.systemRed), maxWidth: false)
         }
     }
     
@@ -97,7 +89,7 @@ struct CommandView: View {
         ZStack {
             if let game = viewModel.game {
                 if isLandscape {
-                    VStack(alignment: .trailing) {
+                    VStack(alignment: .trailing, spacing: 12) {
                         // TODO: Spacer() has no effect here! Check why...
                         playerList(game: game)
                             .frame(maxWidth: .infinity)
@@ -112,29 +104,21 @@ struct CommandView: View {
                     }
                     .padding()
                 } else {
-                    HStack(alignment: .top) {
+                    HStack(alignment: .top, spacing: 12) {
                         playerList(game: game)
                             .frame(maxWidth: mainWindowSize.width / 2)
                         
+                        if !isInChangeLetterMode {
+                            Spacer()
+                            
+                            exitGameButtons(game: game)
+                        }
+                        
                         Spacer()
                         
-                        HStack(alignment: .top) {
-                            if hasTurn {
-                                VStack(alignment: .leading) {
-                                    hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
-                                }
-                                .frame(width: mainWindowSize.width / 4)
-                            }
-                            
-                            if !isInChangeLetterMode {
-                                VStack(alignment: .trailing) {
-                                    exitGameButtons(game: game)
-                                }
-                                .frame(width: mainWindowSize.width / 4)
-                            }
-                        }
-                        .padding()
+                        hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
                     }
+                    .padding()
                 }
             }
         }
