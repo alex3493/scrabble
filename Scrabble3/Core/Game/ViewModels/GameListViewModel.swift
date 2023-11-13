@@ -15,6 +15,8 @@ final class GameListViewModel: ObservableObject {
     @Published private(set) var archivedGames: [GameModel] = []
     private var cancellables = Set<AnyCancellable>()
     
+    // var currentUser: DBUser? = nil
+    
     func addListenerForGames() {
         GameManager.shared.addListenerForGames()
             .sink { completion in
