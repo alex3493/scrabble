@@ -114,9 +114,11 @@ struct CommandView: View {
                             exitGameButtons(game: game)
                         }
                         
-                        Spacer()
-                        
-                        hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
+                        if hasTurn {
+                            Spacer()
+                            
+                            hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
+                        }
                     }
                     .padding()
                 }
