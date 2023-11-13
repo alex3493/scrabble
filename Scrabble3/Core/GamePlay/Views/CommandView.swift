@@ -61,7 +61,7 @@ struct CommandView: View {
                 
                 ActionImageButton(label: "", action: {
                     await viewModel.validateMove(gameId: game.id)
-                }, buttonSystemImage: "questionmark", backGroundColor: Color(.systemGray), maxWidth: false)
+                }, buttonSystemImage: "info", backGroundColor: Color(.systemGray), maxWidth: false)
                 
                 ActionImageButton(label: "", action: {
                     do {
