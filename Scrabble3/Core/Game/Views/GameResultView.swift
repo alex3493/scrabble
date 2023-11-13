@@ -38,6 +38,22 @@ struct GameResultView: View {
                         }
                     }
                 }
+                
+                if let winners = winners {
+                    Section(winners.count > 1 ? "Победители" : "Победитель") {
+                        ForEach(winners, id: \.id) { item in
+                            HStack(spacing: 12) {
+                                Text(item.user.name!)
+                                Spacer()
+                                Text("\(item.score)")
+                            }
+                            .padding()
+                        }
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .fontWeight(.bold)
+                    }
+                }
             }
             .padding()
             
@@ -74,6 +90,25 @@ struct GameResultView: View {
     
     var canDeleteGame: Bool {
         return game.creatorUser.userId == currentUser?.userId
+    }
+    
+    var maxScore: Int? {
+        return game.players.max(by: { $0.score < $1.score })?.score
+    }
+    
+    var winners: [Player]? {
+        
+        if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
+            var winnerPlayers = game.players.sorted { lhs, rhs in
+                return lhs.score < rhs.score
+            }
+            
+            return winnerPlayers.filter { player in
+                return player.score == maxScore
+            }
+        }
+        
+        return nil
     }
 }
 

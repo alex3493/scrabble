@@ -158,7 +158,7 @@ final class GameManager {
         
         game.nextTurn(score: score, playerIndex: playerIndex)
         
-        // TODO: refactor.
+        // TODO: refactor - make max score configurable.
         if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
             // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
             if (game.turn == 0 && maxScore >= 200) {
