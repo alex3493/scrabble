@@ -43,6 +43,7 @@ struct GameListView: View {
                         NavigationLink {
                             GameInfoView()
                                 .navigationBarBackButtonHidden()
+                                .toolbar(.hidden, for: .tabBar)
                         } label: {
                             Image(systemName: "plus")
                                 .font(.headline)
