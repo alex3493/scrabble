@@ -44,6 +44,7 @@ struct ActionImageButton: View {
     let buttonSystemImage: String
     let backGroundColor: Color
     let maxWidth: Bool
+    var disabled: Bool = false
     
     var body: some View {
         Button {
@@ -75,6 +76,8 @@ struct ActionImageButton: View {
         }
         .background(backGroundColor)
         .cornerRadius(10)
+        .disabled(disabled)
+        .opacity(disabled ? 0.5 : 1.0)
     }
 }
 

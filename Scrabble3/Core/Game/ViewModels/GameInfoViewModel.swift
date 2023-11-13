@@ -51,13 +51,24 @@ final class GameInfoViewModel: ObservableObject {
     var canLeaveGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGamePlayer && game.gameStatus == .waiting
+        return !isMeGameCreator && isMeGamePlayer && game.gameStatus == .waiting
     }
     
     var canDeleteGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGameCreator && (game.gameStatus == .finished || game.gameStatus == .aborted)
+        // No action if self is not game creator.
+        if !isMeGameCreator {
+            return false
+        }
+        
+        // Closed games - allow deletion.
+        if game.gameStatus == .finished || game.gameStatus == .aborted {
+            return true
+        }
+        
+        // For waiting games allow deletion only if game creator is the only player in game.
+        return game.gameStatus == .waiting && game.players.count <= 1
     }
     
     var isGameRunning: Bool {
@@ -123,7 +134,7 @@ final class GameInfoViewModel: ObservableObject {
     }
     
     func abortGame(gameId: String) async throws {
-        guard let user = currentUser else { return }
+        // guard let user = currentUser else { return }
         try await GameManager.shared.suspendGame(gameId: gameId, abort: true)
     }
     

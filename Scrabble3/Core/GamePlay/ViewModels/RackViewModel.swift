@@ -62,6 +62,14 @@ class RackViewModel: LetterStoreBase {
         fillRack()
     }
     
+    var hasLettersMarkedForChange: Bool {
+        let markedForChange = cells.filter({ cell in
+            return cell.cellStatus == .checkedForLetterChange
+        })
+        
+        return markedForChange.count > 0
+    }
+    
     func clearRack() {
         for idx in cells.indices {
             emptyCellByPosition(pos: idx)

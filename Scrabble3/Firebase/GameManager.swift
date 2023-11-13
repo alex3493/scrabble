@@ -17,11 +17,16 @@ final class GameManager {
     
     // Just in case we need explicit listener removal.
     private var gamesListener: ListenerRegistration? = nil
+    private var archivedGamesListener: ListenerRegistration? = nil
     private var gameListener: ListenerRegistration? = nil
     
     private let gameCollection = Firestore.firestore().collection("games")
     
-    // TODO: add waiting games collection property (.whereField stuff)
+    private let activeGameCollection = Firestore.firestore().collection("games")
+        .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
+    
+    private let archivedGameCollection = Firestore.firestore().collection("games")
+        .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["finished", "aborted"])
     
     private func gameDocument(gameId: String) -> DocumentReference {
         return gameCollection.document(gameId)
@@ -176,11 +181,21 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
+    // Listen for active games.
     func addListenerForGames() -> AnyPublisher<[GameModel], Error> {
-        let (publisher, listener) = gameCollection
+        let (publisher, listener) = activeGameCollection
             .addListSnapshotListener(as: GameModel.self)
         
         self.gamesListener = listener
+        return publisher
+    }
+    
+    // Listen for archived games.
+    func addListenerForArchivedGames() -> AnyPublisher<[GameModel], Error> {
+        let (publisher, listener) = archivedGameCollection
+            .addListSnapshotListener(as: GameModel.self)
+        
+        self.archivedGamesListener = listener
         return publisher
     }
     
@@ -194,6 +209,10 @@ final class GameManager {
     
     func removeListenerForGames() {
         gamesListener?.remove()
+    }
+    
+    func removeListenerForArchivedGames() {
+        archivedGamesListener?.remove()
     }
     
     func removeListenerForGame() {

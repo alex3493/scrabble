@@ -49,7 +49,7 @@ struct CommandView: View {
                     } catch {
                         print("DEBUG :: Error changing letter: \(error.localizedDescription)")
                     }
-                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
+                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemPink), maxWidth: false, disabled: !rackViewModel.hasLettersMarkedForChange)
                 
                 ActionImageButton(label: "", action: {
                     viewModel.setChangeLettersMode(mode: false)
@@ -61,7 +61,7 @@ struct CommandView: View {
                 
                 ActionImageButton(label: "", action: {
                     await viewModel.validateMove(gameId: game.id)
-                }, buttonSystemImage: "questionmark", backGroundColor: Color(.systemGray), maxWidth: false)
+                }, buttonSystemImage: "info", backGroundColor: Color(.systemGray), maxWidth: false)
                 
                 ActionImageButton(label: "", action: {
                     do {

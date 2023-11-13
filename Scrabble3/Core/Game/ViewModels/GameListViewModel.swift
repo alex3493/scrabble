@@ -12,7 +12,10 @@ import Combine
 final class GameListViewModel: ObservableObject {
     
     @Published private(set) var games: [GameModel] = []
+    @Published private(set) var archivedGames: [GameModel] = []
     private var cancellables = Set<AnyCancellable>()
+    
+    // var currentUser: DBUser? = nil
     
     func addListenerForGames() {
         GameManager.shared.addListenerForGames()
@@ -25,7 +28,22 @@ final class GameListViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func addListenerForArchivedGames() {
+        GameManager.shared.addListenerForArchivedGames()
+            .sink { completion in
+                
+            } receiveValue: { [weak self] games in
+                print("GAMES LISTENER :: Archived game list updated. Games count: \(games.count)")
+                self?.archivedGames = games
+            }
+            .store(in: &cancellables)
+    }
+    
     func removeListenerForGames() {
+        GameManager.shared.removeListenerForGames()
+    }
+    
+    func removeListenerForArchivedGames() {
         GameManager.shared.removeListenerForGames()
     }
     
