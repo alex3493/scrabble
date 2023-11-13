@@ -57,13 +57,19 @@ final class GameInfoViewModel: ObservableObject {
     var canDeleteGame: Bool {
         guard let game = game else { return false }
         
-        return isMeGamePlayer && (game.gameStatus == .finished || game.gameStatus == .aborted)
+        return isMeGameCreator && (game.gameStatus == .finished || game.gameStatus == .aborted)
     }
     
     var isGameRunning: Bool {
         guard let game = game else { return false }
         
         return game.gameStatus == .running
+    }
+    
+    var isGameFinished: Bool {
+        guard let game = game else { return false }
+        
+        return game.gameStatus == .finished
     }
     
     var players: [Player] {

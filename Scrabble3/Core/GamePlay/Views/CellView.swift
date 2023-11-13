@@ -174,12 +174,14 @@ struct CellView: View {
     }
     
     @MainActor
-    func cellItem(fromFingerprint fingerprint: String) -> CellModel {
+    func cellItem(fromFingerprint fingerprint: String) -> CellModel? {
         let parts = fingerprint.split(separator: "::")
         if parts[0] == CellModel.Role.board.rawValue {
             return board.cellByPosition(row: Int(parts[1])!, col: Int(parts[2])!)
-        } else {
+        } else if parts[0] == CellModel.Role.rack.rawValue {
             return rack.cellByPosition(pos: Int(parts[1])!)
+        } else {
+            return nil
         }
     }
 }
@@ -194,10 +196,11 @@ struct CellDropDelegate: DropDelegate {
         
         provider?.loadObject(ofClass: NSString.self) { fingerprint, _ in
             DispatchQueue.main.async {
-                guard let fingerprint = fingerprint else { return }
-                
-                // Get drag source cell from DropInfo.
-                let drag = viewModel.cellItem(fromFingerprint: String(fingerprint as! Substring))
+                guard
+                    // Get drag source cell from DropInfo.
+                    let fingerprint = fingerprint,
+                    let drag = viewModel.cellItem(fromFingerprint: String(fingerprint as! Substring))
+                else { return }
                 
                 // Special case: asterisk exchange - we check for extra conditions.
                 if drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk && drop.letterTile!.char != drag.letterTile!.char {
