@@ -54,7 +54,7 @@ struct UserListView: View {
         }
         .task {
             do {
-                try await viewModel.fetchUsers()
+                try await viewModel.fetchUsers(reload: true)
             } catch {
                 print("DEBUG :: Error fetching users", error.localizedDescription)
             }

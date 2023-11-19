@@ -63,13 +63,23 @@ class UserListViewModel: ObservableObject {
         print("UserListViewModel INIT")
     }
     
-    func fetchUsers() async throws {
+    func fetchUsers(reload: Bool = false) async throws {
+        if reload {
+            lastDocument = nil
+            users = []
+            allUsersFetched = false
+        }
+        
+        print("Fetching users", reload)
+        
         let (newUsers, lastDocument) = try await UserManager.shared.getUsers(limit: 3, afterDocument: lastDocument)
         
         var newUsersWithContactData: [UserWithContactData] = []
         
         // We absolutely need current user here.
         if let currentUser {
+            
+            // print("Injecting contacts to user list items", contacts)
             
             let contactedByMe = contacts.filter { $0.isUserInitiator(user: currentUser) }
             let contactedToMe = contacts.filter { $0.isUserCounterpart(user: currentUser) }
@@ -89,6 +99,8 @@ class UserListViewModel: ObservableObject {
         }
         
         users.append(contentsOf: newUsersWithContactData)
+        
+        // print("Loaded page: ", users.map { ($0.id, $0.user.userId, $0.contactLink) })
         
         if let lastDocument {
             self.lastDocument = lastDocument

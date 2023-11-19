@@ -55,6 +55,8 @@ struct UserRowView: View {
                 } else {
                     Image(systemName: "questionmark.circle")
                 }
+            } else {
+                let notContact = true
             }
             
         }
