@@ -9,18 +9,24 @@ import SwiftUI
 
 struct UserListView: View {
     
-    @ObservedObject var viewModel = UserListViewModel()
+    @ObservedObject var viewModel: UserListViewModel
     
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
+    @Environment(\.dismiss) var dismiss
+    
+    // Here we have current user contacts.
+    let contacts: [UserContact]
+    
     var body: some View {
         List {
-            ForEach(viewModel.users, id: \.userId) { user in
-                UserRowView(viewModel: viewModel, user: user)
-                
-                if user == viewModel.users.last && viewModel.currentUser != nil && !viewModel.allUsersFetched {
-                    ProgressView()
-                        .onAppear() {
+            if let currentUser = authViewModel.currentUser {
+                ForEach(viewModel.users, id: \.id) { userWithContactData in
+                    UserRowView(viewModel: viewModel, userWithContactData: userWithContactData, currentUser: currentUser)
+                        .deleteDisabled(!userWithContactData.isContact)
+                    
+                    if userWithContactData == viewModel.users.last && !viewModel.allUsersFetched {
+                        ProgressView().onAppear() {
                             Task {
                                 do {
                                     try await viewModel.fetchUsers()
@@ -29,6 +35,20 @@ struct UserListView: View {
                                 }
                             }
                         }
+                    }
+                }
+                .onDelete { indexSet in
+                    print("Going to delete item", indexSet.first!)
+                    if let index = indexSet.first, let contactLink = viewModel.users[index].contactLink {
+                        Task {
+                            do {
+                                try await viewModel.deleteContact(id: contactLink.id)
+                                dismiss()
+                            } catch {
+                                print("DEBUG :: Error deleting contact", viewModel.users[indexSet.first!].contactLink!.id)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -40,11 +60,14 @@ struct UserListView: View {
             }
         }
         .onAppear() {
+            print("User list view appeared")
             viewModel.currentUser = authViewModel.currentUser
+            viewModel.contacts = contacts
         }
+        
     }
 }
 
 #Preview {
-    UserListView()
+    UserListView(viewModel: UserListViewModel(), contacts: [])
 }

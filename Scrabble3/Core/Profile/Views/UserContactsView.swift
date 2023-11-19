@@ -13,6 +13,8 @@ struct UserContactsView: View {
     
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
+    @ObservedObject var userListViewModel = UserListViewModel()
+    
     var body: some View {
         VStack {
             ForEach(viewModel.contactUsers, id: \.id) { contactUser in
@@ -56,6 +58,21 @@ struct UserContactsView: View {
         }
         .task {
             viewModel.addListenerForContacts()
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                NavigationLink {
+                    UserListView(viewModel: userListViewModel, contacts: viewModel.contactUsers)
+                        .navigationTitle("Все игроки")
+                } label: {
+                    HStack {
+                        Text("Добавить")
+                        Spacer()
+                        Image(systemName: "person.badge.plus")
+                            .font(.headline)
+                    }
+                }
+            }
         }
     }
 }

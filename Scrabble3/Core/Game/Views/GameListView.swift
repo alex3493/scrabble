@@ -110,19 +110,6 @@ struct GameListView: View {
                 UserContactsView()
                     .navigationTitle("Мои контакты")
                     .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            NavigationLink {
-                                UserListView()
-                                    .navigationTitle("Все игроки")
-                            } label: {
-                                HStack {
-                                    Text("Добавить")
-                                    Spacer()
-                                    Image(systemName: "person.badge.plus")
-                                        .font(.headline)
-                                }
-                            }
-                        }
                         ToolbarItem(placement: .navigationBarTrailing) {
                             NavigationLink {
                                 ProfileView()

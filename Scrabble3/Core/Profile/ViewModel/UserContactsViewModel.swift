@@ -13,6 +13,12 @@ struct UserContact: Identifiable {
         return contactLink.id
     }
     
+//    init(contactLink: UsersLinkModel, initiatorUser: DBUser, counterpartUser: DBUser) {
+//        self.contactLink = contactLink
+//        self.initiatorUser = initiatorUser
+//        self.counterpartUser = counterpartUser
+//    }
+    
     let contactLink: UsersLinkModel
     
     let initiatorUser: DBUser
@@ -24,6 +30,10 @@ struct UserContact: Identifiable {
     
     func isUserInitiator(user: DBUser?) -> Bool {
         return user?.userId == initiatorUser.userId
+    }
+    
+    func isUserCounterpart(user: DBUser?) -> Bool {
+        return user?.userId == counterpartUser.userId
     }
     
     var canAcceptContact: Bool {
@@ -69,9 +79,6 @@ class UserContactsViewModel: ObservableObject {
                         }
                         
                         self?.contactUsers = contactUsers
-                        
-                        // print("Users dictionary", self?.contactUsers as Any)
-                        
                     } else {
                         self?.contactUsers = []
                     }
