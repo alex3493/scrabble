@@ -109,6 +109,16 @@ final class UserManager {
             .getDocumentsWithSnapshot(as: DBUser.self)
     }
     
+    // We have to order by email, otherwise we cannot exclude contacted users from the query.
+    func getUsers(limit: Int, excludeEmails: [String], afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
+        return try await userCollection
+            .order(by: DBUser.CodingKeys.email.rawValue, descending: false)
+            .whereField(DBUser.CodingKeys.email.rawValue, notIn: excludeEmails)
+            .limit(to: limit)
+            .startOptionally(afterDocument: afterDocument)
+            .getDocumentsWithSnapshot(as: DBUser.self)
+    }
+    
     func getUsers(withIds: [String]) async throws -> [DBUser] {
         return try await userCollection
             .order(by: DBUser.CodingKeys.name.rawValue, descending: false)

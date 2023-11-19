@@ -72,14 +72,17 @@ class UserListViewModel: ObservableObject {
         
         print("Fetching users", reload)
         
-        let (newUsers, lastDocument) = try await UserManager.shared.getUsers(limit: 3, afterDocument: lastDocument)
-        
         var newUsersWithContactData: [UserWithContactData] = []
-        
-        // We absolutely need current user here.
+    
         if let currentUser {
+            let contactedByMeEmails = contacts.compactMap { $0.counterpartUser.email }
+            let contactedToMeEmails = contacts.compactMap { $0.initiatorUser.email }
             
-            // print("Injecting contacts to user list items", contacts)
+            var excludeEmails = contactedByMeEmails + contactedToMeEmails
+            
+            excludeEmails.append(currentUser.email!)
+            
+            let (newUsers, lastDocument) = try await UserManager.shared.getUsers(limit: 3, excludeEmails: excludeEmails, afterDocument: lastDocument)
             
             let contactedByMe = contacts.filter { $0.isUserInitiator(user: currentUser) }
             let contactedToMe = contacts.filter { $0.isUserCounterpart(user: currentUser) }
@@ -96,16 +99,16 @@ class UserListViewModel: ObservableObject {
                     newUsersWithContactData.append(UserWithContactData(user: user, contactLink: nil))
                 }
             }
-        }
-        
-        users.append(contentsOf: newUsersWithContactData)
-        
-        // print("Loaded page: ", users.map { ($0.id, $0.user.userId, $0.contactLink) })
-        
-        if let lastDocument {
-            self.lastDocument = lastDocument
-        } else {
-            allUsersFetched = true
+            
+            users.append(contentsOf: newUsersWithContactData)
+            
+            // print("Loaded page: ", users.map { ($0.id, $0.user.userId, $0.contactLink) })
+            
+            if let lastDocument {
+                self.lastDocument = lastDocument
+            } else {
+                allUsersFetched = true
+            }
         }
     }
     
