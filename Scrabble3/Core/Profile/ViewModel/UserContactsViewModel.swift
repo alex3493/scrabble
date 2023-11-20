@@ -13,12 +13,6 @@ struct UserContact: Identifiable {
         return contactLink.id
     }
     
-    //    init(contactLink: UsersLinkModel, initiatorUser: DBUser, counterpartUser: DBUser) {
-    //        self.contactLink = contactLink
-    //        self.initiatorUser = initiatorUser
-    //        self.counterpartUser = counterpartUser
-    //    }
-    
     let contactLink: UsersLinkModel
     
     let initiatorUser: DBUser
@@ -28,12 +22,12 @@ struct UserContact: Identifiable {
         return contactLink.contactConfirmed
     }
     
-    func isUserInitiator(user: DBUser?) -> Bool {
-        return user?.userId == initiatorUser.userId
+    func isIncomingContact(currentUserId: String) -> Bool {
+        return contactLink.counterpartUserId == currentUserId
     }
     
-    func isUserCounterpart(user: DBUser?) -> Bool {
-        return user?.userId == counterpartUser.userId
+    func displayContact(currentUserId: String) -> DBUser {
+        return isIncomingContact(currentUserId: currentUserId) ? initiatorUser : counterpartUser
     }
     
     var canAcceptContact: Bool {
@@ -46,8 +40,6 @@ struct UserContact: Identifiable {
 class UserContactsViewModel: ObservableObject {
     
     @Published private(set) var contactUsers: [UserContact] = []
-    
-    @Published private(set) var usersWithContactData: [UserWithContactData] = []
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -75,26 +67,14 @@ class UserContactsViewModel: ObservableObject {
                         let usersDict = Dictionary(uniqueKeysWithValues: users.lazy.map { ($0.userId, $0) })
                         
                         var contactUsers: [UserContact] = []
-                        
-                        var usersWithContactData: [UserWithContactData] = []
-                        
+                          
                         contacts.forEach { linkModel in
                             contactUsers.append(UserContact(contactLink: linkModel, initiatorUser: usersDict[linkModel.initiatorUserId]!, counterpartUser: usersDict[linkModel.counterpartUserId]!))
-                            
-                            let isIncomingContact = linkModel.counterpartUserId == currentUser.userId
-                            
-                            let contactUserId = isIncomingContact ? linkModel.initiatorUserId : linkModel.counterpartUserId
-                            
-                            if let user = usersDict[contactUserId] {
-                                usersWithContactData.append(UserWithContactData(user: user, contactLink: linkModel, isIncomingContact: isIncomingContact))
-                            }
                         }
                         
                         self?.contactUsers = contactUsers
-                        self?.usersWithContactData = usersWithContactData
                     } else {
                         self?.contactUsers = []
-                        self?.usersWithContactData = []
                     }
                 }
             }

@@ -17,38 +17,21 @@ struct UserContactsView: View {
     
     var body: some View {
         VStack {
-            ForEach(viewModel.contactUsers, id: \.id) { contactUser in
-                if contactUser.isUserInitiator(user: authViewModel.currentUser) {
-                    HStack {
-                        Text("Counterpart: \(contactUser.counterpartUser.name!)")
-                        ActionButton(label: "Delete", action: {
+            List {
+                ForEach(viewModel.contactUsers, id: \.id) { contactUser in
+                    UserContactRowView(userContact: contactUser, viewModel: viewModel, currentUser: authViewModel.currentUser)
+                }
+                .onDelete { indexSet in
+                    print("Going to delete item", indexSet.first!)
+                    if let index = indexSet.first {
+                        let contactLink = viewModel.contactUsers[index].contactLink
+                        Task {
                             do {
-                                try await viewModel.deleteContact(id: contactUser.id)
+                                try await viewModel.deleteContact(id: contactLink.id)
                             } catch {
-                                print("DEBUG :: Error deleting contact", contactUser)
+                                print("DEBUG :: Error deleting contact", viewModel.contactUsers[indexSet.first!].contactLink.id)
                             }
-                        }, buttonSystemImage: "trash", backGroundColor: .red, maxWidth: false)
-                    }
-                } else {
-                    HStack {
-                        Text("Initiator: \(contactUser.initiatorUser.name!)")
-                        if contactUser.canAcceptContact {
-                            ActionButton(label: "Accept", action: {
-                                do {
-                                    try await viewModel.acceptContact(id: contactUser.id)
-                                } catch {
-                                    print("DEBUG :: Error accepting contact", contactUser)
-                                }
-                            }, buttonSystemImage: "heart", backGroundColor: .green, maxWidth: false)
                         }
-                        
-                        ActionButton(label: "Delete", action: {
-                            do {
-                                try await viewModel.deleteContact(id: contactUser.id)
-                            } catch {
-                                print("DEBUG :: Error deleting contact", contactUser)
-                            }
-                        }, buttonSystemImage: "trash", backGroundColor: .red, maxWidth: false)
                     }
                 }
             }

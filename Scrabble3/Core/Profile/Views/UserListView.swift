@@ -20,12 +20,12 @@ struct UserListView: View {
     
     var body: some View {
         List {
-            ForEach(viewModel.users, id: \.id) { userWithContactData in
+            ForEach(viewModel.users, id: \.id) { user in
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("\(userWithContactData.name)")
+                        Text("\(user.name!)")
                             .fontWeight(.semibold)
-                        Text("\(userWithContactData.email)")
+                        Text("\(user.email!)")
                             .font(.footnote)
                     }
                     
@@ -33,16 +33,16 @@ struct UserListView: View {
                     
                     ActionButton(label: "Add contact", action: {
                         do {
-                            try await viewModel.addContactRequest(targetUser: userWithContactData.user)
+                            try await viewModel.addContactRequest(targetUser: user)
                             // We have to return to contact list view here.
                             dismiss()
                         } catch {
-                            print("DEBUG :: Error adding user contact for user ", userWithContactData.user.email!)
+                            print("DEBUG :: Error adding user contact for user ", user.email!)
                         }
                     }, buttonSystemImage: "person.crop.circle.badge.plus", backGroundColor: .green, maxWidth: false)
                 }
                 
-                if userWithContactData == viewModel.users.last && !viewModel.allUsersFetched {
+                if user == viewModel.users.last && !viewModel.allUsersFetched {
                     ProgressView().onAppear() {
                         Task {
                             do {
@@ -50,19 +50,6 @@ struct UserListView: View {
                             } catch {
                                 print("DEBUG:: Error fetching users", error.localizedDescription)
                             }
-                        }
-                    }
-                }
-            }
-            .onDelete { indexSet in
-                print("Going to delete item", indexSet.first!)
-                if let index = indexSet.first, let contactLink = viewModel.users[index].contactLink {
-                    Task {
-                        do {
-                            try await viewModel.deleteContact(id: contactLink.id)
-                            dismiss()
-                        } catch {
-                            print("DEBUG :: Error deleting contact", viewModel.users[indexSet.first!].contactLink!.id)
                         }
                     }
                 }
