@@ -101,13 +101,13 @@ final class UserManager {
         try await userDocument(userId: userId).getDocument(as: DBUser.self)
     }
     
-    func getUsers(limit: Int, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
-        return try await userCollection
-            .order(by: DBUser.CodingKeys.name.rawValue, descending: false)
-            .limit(to: limit)
-            .startOptionally(afterDocument: afterDocument)
-            .getDocumentsWithSnapshot(as: DBUser.self)
-    }
+//    func getUsers(limit: Int, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
+//        return try await userCollection
+//            .order(by: DBUser.CodingKeys.name.rawValue, descending: false)
+//            .limit(to: limit)
+//            .startOptionally(afterDocument: afterDocument)
+//            .getDocumentsWithSnapshot(as: DBUser.self)
+//    }
     
     // We have to order by email, otherwise we cannot exclude contacted users from the query.
     func getUsers(limit: Int, excludeEmails: [String], afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {

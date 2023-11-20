@@ -13,11 +13,11 @@ struct UserContact: Identifiable {
         return contactLink.id
     }
     
-//    init(contactLink: UsersLinkModel, initiatorUser: DBUser, counterpartUser: DBUser) {
-//        self.contactLink = contactLink
-//        self.initiatorUser = initiatorUser
-//        self.counterpartUser = counterpartUser
-//    }
+    //    init(contactLink: UsersLinkModel, initiatorUser: DBUser, counterpartUser: DBUser) {
+    //        self.contactLink = contactLink
+    //        self.initiatorUser = initiatorUser
+    //        self.counterpartUser = counterpartUser
+    //    }
     
     let contactLink: UsersLinkModel
     
@@ -47,6 +47,8 @@ class UserContactsViewModel: ObservableObject {
     
     @Published private(set) var contactUsers: [UserContact] = []
     
+    @Published private(set) var usersWithContactData: [UserWithContactData] = []
+    
     private var cancellables = Set<AnyCancellable>()
     
     var currentUser: DBUser? = nil
@@ -74,13 +76,25 @@ class UserContactsViewModel: ObservableObject {
                         
                         var contactUsers: [UserContact] = []
                         
+                        var usersWithContactData: [UserWithContactData] = []
+                        
                         contacts.forEach { linkModel in
                             contactUsers.append(UserContact(contactLink: linkModel, initiatorUser: usersDict[linkModel.initiatorUserId]!, counterpartUser: usersDict[linkModel.counterpartUserId]!))
+                            
+                            let isIncomingContact = linkModel.counterpartUserId == currentUser.userId
+                            
+                            let contactUserId = isIncomingContact ? linkModel.initiatorUserId : linkModel.counterpartUserId
+                            
+                            if let user = usersDict[contactUserId] {
+                                usersWithContactData.append(UserWithContactData(user: user, contactLink: linkModel, isIncomingContact: isIncomingContact))
+                            }
                         }
                         
                         self?.contactUsers = contactUsers
+                        self?.usersWithContactData = usersWithContactData
                     } else {
                         self?.contactUsers = []
+                        self?.usersWithContactData = []
                     }
                 }
             }

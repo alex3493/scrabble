@@ -63,7 +63,7 @@ struct UserContactsView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 NavigationLink {
                     UserListView(viewModel: userListViewModel, contacts: viewModel.contactUsers)
-                        .navigationTitle("Все игроки")
+                        .navigationTitle("Добавить контакт")
                 } label: {
                     HStack {
                         Text("Добавить")
