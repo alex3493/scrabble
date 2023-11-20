@@ -23,6 +23,7 @@
 		FA64832A2AF4FA4500A9DBAA /* MoveInfoDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6483292AF4FA4500A9DBAA /* MoveInfoDialogView.swift */; };
 		FA64832C2AF5282100A9DBAA /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA64832B2AF5282100A9DBAA /* PlayerModel.swift */; };
 		FA6E7F7D2B01424F00F0C6AC /* GameResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E7F7C2B01424F00F0C6AC /* GameResultView.swift */; };
+		FA7247982B0B6B0100AF3FA1 /* UserContactRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7247972B0B6B0100AF3FA1 /* UserContactRowView.swift */; };
 		FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545752AEA549200B58EFC /* MoveManager.swift */; };
 		FA7545792AEA584100B58EFC /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545782AEA584100B58EFC /* GameModel.swift */; };
 		FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75457A2AEA589000B58EFC /* WordModel.swift */; };
@@ -40,6 +41,9 @@
 		FA75459A2AEE39B600B58EFC /* RackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545992AEE39B600B58EFC /* RackViewModel.swift */; };
 		FA75459C2AEE491100B58EFC /* CellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75459B2AEE491100B58EFC /* CellView.swift */; };
 		FA75459F2AEE808800B58EFC /* BackenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA75459E2AEE808800B58EFC /* BackenService.swift */; };
+		FA8D0A732B04F69B00A1B038 /* UsersLinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D0A722B04F69A00A1B038 /* UsersLinkModel.swift */; };
+		FA8D0A752B0558D300A1B038 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D0A742B0558D200A1B038 /* UserListView.swift */; };
+		FA8D0A792B05656000A1B038 /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D0A782B05656000A1B038 /* UserListViewModel.swift */; };
 		FAB8724F2AA258610015D0FA /* Scrabble3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8724E2AA258610015D0FA /* Scrabble3App.swift */; };
 		FAB872512AA258610015D0FA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872502AA258610015D0FA /* RootView.swift */; };
 		FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB872522AA2586B0015D0FA /* Assets.xcassets */; };
@@ -60,6 +64,8 @@
 		FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */; };
 		FAC46A022AD4AB9700AB3A8E /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */; };
 		FAC5BC4D2AFE28C7009FDD86 /* Dic in Resources */ = {isa = PBXBuildFile; fileRef = FAC5BC4C2AFE28C7009FDD86 /* Dic */; };
+		FAD97C802B0653030032BAFC /* UserContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD97C7F2B0653030032BAFC /* UserContactsView.swift */; };
+		FAD97C822B069F410032BAFC /* UserContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD97C812B069F410032BAFC /* UserContactsViewModel.swift */; };
 		FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962202AE56C4300BAAC7B /* ActionButton.swift */; };
 		FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962242AE5A75200BAAC7B /* GamePlayView.swift */; };
 		FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */; };
@@ -97,6 +103,7 @@
 		FA6483292AF4FA4500A9DBAA /* MoveInfoDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveInfoDialogView.swift; sourceTree = "<group>"; };
 		FA64832B2AF5282100A9DBAA /* PlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
 		FA6E7F7C2B01424F00F0C6AC /* GameResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResultView.swift; sourceTree = "<group>"; };
+		FA7247972B0B6B0100AF3FA1 /* UserContactRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactRowView.swift; sourceTree = "<group>"; };
 		FA7545752AEA549200B58EFC /* MoveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveManager.swift; sourceTree = "<group>"; };
 		FA7545782AEA584100B58EFC /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		FA75457A2AEA589000B58EFC /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
@@ -115,6 +122,9 @@
 		FA75459B2AEE491100B58EFC /* CellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellView.swift; sourceTree = "<group>"; };
 		FA75459D2AEE5B0F00B58EFC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FA75459E2AEE808800B58EFC /* BackenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackenService.swift; sourceTree = "<group>"; };
+		FA8D0A722B04F69A00A1B038 /* UsersLinkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersLinkModel.swift; sourceTree = "<group>"; };
+		FA8D0A742B0558D200A1B038 /* UserListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
+		FA8D0A782B05656000A1B038 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
 		FAB8724B2AA258610015D0FA /* Scrabble3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrabble3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB8724E2AA258610015D0FA /* Scrabble3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3App.swift; sourceTree = "<group>"; };
 		FAB872502AA258610015D0FA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -134,6 +144,8 @@
 		FAC469FD2AD402F700AB3A8E /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 		FAC469FF2AD4590100AB3A8E /* AuthWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWithEmailViewModel.swift; sourceTree = "<group>"; };
 		FAC5BC4C2AFE28C7009FDD86 /* Dic */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Dic; sourceTree = "<group>"; };
+		FAD97C7F2B0653030032BAFC /* UserContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactsView.swift; sourceTree = "<group>"; };
+		FAD97C812B069F410032BAFC /* UserContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactsViewModel.swift; sourceTree = "<group>"; };
 		FAE962202AE56C4300BAAC7B /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		FAE962242AE5A75200BAAC7B /* GamePlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePlayView.swift; sourceTree = "<group>"; };
 		FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
@@ -228,6 +240,7 @@
 				FA75458F2AED566A00B58EFC /* LetterStoreBase.swift */,
 				FA7545952AEE2C2200B58EFC /* ValidationError.swift */,
 				FA64832B2AF5282100A9DBAA /* PlayerModel.swift */,
+				FA8D0A722B04F69A00A1B038 /* UsersLinkModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -240,6 +253,26 @@
 				FA7545992AEE39B600B58EFC /* RackViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		FA8D0A762B05653600A1B038 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */,
+				FA8D0A742B0558D200A1B038 /* UserListView.swift */,
+				FAD97C7F2B0653030032BAFC /* UserContactsView.swift */,
+				FA7247972B0B6B0100AF3FA1 /* UserContactRowView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA8D0A772B05654800A1B038 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FA8D0A782B05656000A1B038 /* UserListViewModel.swift */,
+				FAD97C812B069F410032BAFC /* UserContactsViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		FAB872422AA258610015D0FA = {
@@ -386,7 +419,8 @@
 		FAC469FA2AD3FDD300AB3A8E /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				FAC469FB2AD3FE2E00AB3A8E /* ProfileView.swift */,
+				FA8D0A772B05654800A1B038 /* ViewModel */,
+				FA8D0A762B05653600A1B038 /* Views */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -558,10 +592,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA592C632ADBB15C00BAFF8F /* Query+EXT.swift in Sources */,
+				FA8D0A752B0558D300A1B038 /* UserListView.swift in Sources */,
 				FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */,
 				FA6E7F7D2B01424F00F0C6AC /* GameResultView.swift in Sources */,
 				FA592C672ADBDEA600BAFF8F /* GameInfoView.swift in Sources */,
 				FAC469F52AD3D9AA00AB3A8E /* UserManager.swift in Sources */,
+				FA8D0A732B04F69B00A1B038 /* UsersLinkModel.swift in Sources */,
 				FA7545902AED566A00B58EFC /* LetterStoreBase.swift in Sources */,
 				FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
@@ -573,10 +609,13 @@
 				FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */,
 				FA592C652ADBB26800BAFF8F /* GameListViewModel.swift in Sources */,
 				FA592C602ADB39A800BAFF8F /* GameManager.swift in Sources */,
+				FA7247982B0B6B0100AF3FA1 /* UserContactRowView.swift in Sources */,
 				FA7545792AEA584100B58EFC /* GameModel.swift in Sources */,
 				FA6483282AF39CA100A9DBAA /* Utils.swift in Sources */,
 				FAB872512AA258610015D0FA /* RootView.swift in Sources */,
+				FA8D0A792B05656000A1B038 /* UserListViewModel.swift in Sources */,
 				FA7545892AEC05F100B58EFC /* DeviceEnvironment.swift in Sources */,
+				FAD97C822B069F410032BAFC /* UserContactsViewModel.swift in Sources */,
 				FA7545962AEE2C2200B58EFC /* ValidationError.swift in Sources */,
 				FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */,
 				FA75459C2AEE491100B58EFC /* CellView.swift in Sources */,
@@ -595,6 +634,7 @@
 				FA7545832AEC046C00B58EFC /* BoardView.swift in Sources */,
 				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
 				FA592C692ADBDFB800BAFF8F /* GameInfoViewModel.swift in Sources */,
+				FAD97C802B0653030032BAFC /* UserContactsView.swift in Sources */,
 				FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */,
 				FA75458E2AECF23C00B58EFC /* CommandViewModel.swift in Sources */,
 				FA75457F2AEA58AA00B58EFC /* CellModel.swift in Sources */,

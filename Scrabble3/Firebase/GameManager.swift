@@ -115,7 +115,6 @@ final class GameManager {
         
         game.gameStatus = .running
         
-        // TODO: check if we need this!
         // Set letter racks for each player.
         for playerIndex in game.players.indices {
             game.players[playerIndex].letterRack = initRack()
@@ -199,6 +198,7 @@ final class GameManager {
         return publisher
     }
     
+    // Listen for game item updates.
     func addListenerForGame(gameId: String) -> AnyPublisher<GameModel, Error> {
         let (publisher, listener) = gameCollection.document(gameId)
             .addItemSnapshotListener(as: GameModel.self)
@@ -229,5 +229,7 @@ final class GameManager {
         
         return rack
     }
+    
+    // TODO: we can also move init board here.
 }
 

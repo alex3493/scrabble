@@ -45,8 +45,12 @@ struct GameListView: View {
                                 .navigationBarBackButtonHidden()
                                 .toolbar(.hidden, for: .tabBar)
                         } label: {
-                            Image(systemName: "plus")
-                                .font(.headline)
+                            HStack {
+                                Text("Новая игра")
+                                Spacer()
+                                Image(systemName: "plus")
+                                    .font(.headline)
+                            }
                         }
                     })
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -101,14 +105,33 @@ struct GameListView: View {
             .tabItem {
                 Label("Оконченные", systemImage: "archivebox")
             }
+            
+            NavigationStack {
+                UserContactsView()
+                    .navigationTitle("Мои контакты")
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink {
+                                ProfileView()
+                                    .toolbar(.hidden, for: .tabBar)
+                            } label: {
+                                Image(systemName: "gear")
+                                    .font(.headline)
+                            }
+                        }
+                    }
+            }
+            .tabItem {
+                Label("Мои контакты", systemImage: "person.2.fill")
+            }
         }
         .task {
             viewModel.addListenerForGames()
             viewModel.addListenerForArchivedGames()
         }
-//        .onAppear() {
-//            viewModel.currentUser = authViewModel.currentUser
-//        }
+        //        .onAppear() {
+        //            viewModel.currentUser = authViewModel.currentUser
+        //        }
         .onDisappear() {
             // TODO: not sure we ever need it - we are using cancellables.
             viewModel.removeListenerForGames()
