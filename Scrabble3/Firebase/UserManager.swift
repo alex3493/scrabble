@@ -120,6 +120,8 @@ final class UserManager {
     }
     
     func getUsers(withIds: [String]) async throws -> [DBUser] {
+        guard withIds.count > 0 else { return [] }
+        
         return try await userCollection
             .order(by: DBUser.CodingKeys.name.rawValue, descending: false)
             .whereField(DBUser.CodingKeys.userId.rawValue, in: withIds)

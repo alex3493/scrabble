@@ -22,8 +22,27 @@ final class GameManager {
     
     private let gameCollection = Firestore.firestore().collection("games")
     
-    private let activeGameCollection = Firestore.firestore().collection("games")
-        .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
+    func activeGameCollection(includeEmails: [String]) -> Query {
+        
+        // TODO: if includeEmails is empty we should return empty query (check how to do it)...
+        let creatorUserEmailField = "\(GameModel.CodingKeys.creatorUser.rawValue).\(DBUser.CodingKeys.email.rawValue)"
+        
+        var emails = includeEmails
+        if emails.count == 0 {
+            // For now - quick hack, just make sure we have empty result set.
+            emails.append("")
+        }
+        
+        return gameCollection
+            .order(by: creatorUserEmailField, descending: false)
+            .whereFilter(Filter.orFilter([
+                // We only check contacts for waiting games.
+                Filter.whereField(creatorUserEmailField, in: emails),
+                Filter.whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "suspended"])
+            ]))
+            .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
+
+    }
     
     private let archivedGameCollection = Firestore.firestore().collection("games")
         .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["finished", "aborted"])
@@ -181,8 +200,8 @@ final class GameManager {
     }
     
     // Listen for active games.
-    func addListenerForGames() -> AnyPublisher<[GameModel], Error> {
-        let (publisher, listener) = activeGameCollection
+    func addListenerForGames(includeEmails: [String]) -> AnyPublisher<[GameModel], Error> {
+        let (publisher, listener) = activeGameCollection(includeEmails: includeEmails)
             .addListSnapshotListener(as: GameModel.self)
         
         self.gamesListener = listener

@@ -15,100 +15,82 @@ struct GameListView: View {
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
     var body: some View {
-        TabView {
-            NavigationStack {
-                List {
-                    ForEach(viewModel.games, id: \.id.self) { item in
-                        NavigationLink {
-                            GameInfoView(gameId: item.id)
-                                .navigationBarBackButtonHidden()
-                                .toolbar(.hidden, for: .tabBar)
-                        } label: {
-                            HStack {
-                                Text(item.creatorUser.name ?? "")
-                                Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
-                                Spacer()
-                                HStack(spacing: 12) {
-                                    Text(gameStatusLabel(game: item))
-                                    Image(systemName: gameStatusIcon(game: item))
-                                        .frame(width: 24)
+        if authViewModel.currentUser != nil {
+            TabView {
+                NavigationStack {
+                    List {
+                        ForEach(viewModel.games, id: \.id.self) { item in
+                            NavigationLink {
+                                GameInfoView(gameId: item.id)
+                                    .navigationBarBackButtonHidden()
+                                    .toolbar(.hidden, for: .tabBar)
+                            } label: {
+                                HStack {
+                                    Text(item.creatorUser.name ?? "")
+                                    Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
+                                    Spacer()
+                                    HStack(spacing: 12) {
+                                        Text(gameStatusLabel(game: item))
+                                        Image(systemName: gameStatusIcon(game: item))
+                                            .frame(width: 24)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                .navigationTitle("Игры")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading, content: {
-                        NavigationLink {
-                            GameInfoView()
-                                .navigationBarBackButtonHidden()
-                                .toolbar(.hidden, for: .tabBar)
-                        } label: {
-                            HStack {
-                                Text("Новая игра")
-                                Spacer()
-                                Image(systemName: "plus")
+                    .navigationTitle("Игры")
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading, content: {
+                            NavigationLink {
+                                GameInfoView()
+                                    .navigationBarBackButtonHidden()
+                                    .toolbar(.hidden, for: .tabBar)
+                            } label: {
+                                HStack {
+                                    Text("Новая игра")
+                                    Spacer()
+                                    Image(systemName: "plus")
+                                        .font(.headline)
+                                }
+                            }
+                        })
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink {
+                                ProfileView()
+                                    .toolbar(.hidden, for: .tabBar)
+                            } label: {
+                                Image(systemName: "gear")
                                     .font(.headline)
                             }
                         }
-                    })
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        NavigationLink {
-                            ProfileView()
-                                .toolbar(.hidden, for: .tabBar)
-                        } label: {
-                            Image(systemName: "gear")
-                                .font(.headline)
-                        }
                     }
                 }
-            }
-            .tabItem {
-                Label("Активные", systemImage: "play.fill")
-            }
-            
-            NavigationStack {
-                List {
-                    ForEach(viewModel.archivedGames, id: \.id.self) { item in
-                        NavigationLink {
-                            GameInfoView(gameId: item.id)
-                                .navigationBarBackButtonHidden()
-                                .toolbar(.hidden, for: .tabBar)
-                        } label: {
-                            HStack {
-                                Text(item.creatorUser.name ?? "")
-                                Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
-                                Spacer()
-                                HStack(spacing: 12) {
-                                    Text(gameStatusLabel(game: item))
-                                    Image(systemName: gameStatusIcon(game: item))
-                                        .frame(width: 24)
+                .tabItem {
+                    Label("Активные", systemImage: "play.fill")
+                }
+                
+                NavigationStack {
+                    List {
+                        ForEach(viewModel.archivedGames, id: \.id.self) { item in
+                            NavigationLink {
+                                GameInfoView(gameId: item.id)
+                                    .navigationBarBackButtonHidden()
+                                    .toolbar(.hidden, for: .tabBar)
+                            } label: {
+                                HStack {
+                                    Text(item.creatorUser.name ?? "")
+                                    Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
+                                    Spacer()
+                                    HStack(spacing: 12) {
+                                        Text(gameStatusLabel(game: item))
+                                        Image(systemName: gameStatusIcon(game: item))
+                                            .frame(width: 24)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                .navigationTitle("Архив")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        NavigationLink {
-                            ProfileView()
-                                .toolbar(.hidden, for: .tabBar)
-                        } label: {
-                            Image(systemName: "gear")
-                                .font(.headline)
-                        }
-                    }
-                }
-            }
-            .tabItem {
-                Label("Оконченные", systemImage: "archivebox")
-            }
-            
-            NavigationStack {
-                UserContactsView()
-                    .navigationTitle("Мои контакты")
+                    .navigationTitle("Архив")
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             NavigationLink {
@@ -120,23 +102,45 @@ struct GameListView: View {
                             }
                         }
                     }
+                }
+                .tabItem {
+                    Label("Оконченные", systemImage: "archivebox")
+                }
+                
+                NavigationStack {
+                    UserContactsView(viewModel: viewModel.userContactsViewModel)
+                        .navigationTitle("Мои контакты")
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                NavigationLink {
+                                    ProfileView()
+                                        .toolbar(.hidden, for: .tabBar)
+                                } label: {
+                                    Image(systemName: "gear")
+                                        .font(.headline)
+                                }
+                            }
+                        }
+                }
+                .tabItem {
+                    Label("Мои контакты", systemImage: "person.2.fill")
+                }
             }
-            .tabItem {
-                Label("Мои контакты", systemImage: "person.2.fill")
+            .task {
+                // viewModel.addListenerForGames()
+                viewModel.addListenerForArchivedGames()
+                viewModel.addListenerForContacts()
             }
-        }
-        .task {
-            viewModel.addListenerForGames()
-            viewModel.addListenerForArchivedGames()
-        }
-        //        .onAppear() {
-        //            viewModel.currentUser = authViewModel.currentUser
-        //        }
-        .onDisappear() {
-            // TODO: not sure we ever need it - we are using cancellables.
-            viewModel.removeListenerForGames()
-            viewModel.removeListenerForArchivedGames()
-            print("Games root view disappeared - remove game list listeners")
+            .onAppear() {
+                viewModel.currentUser = authViewModel.currentUser
+            }
+            .onDisappear() {
+                // TODO: not sure we ever need it - we are using cancellables.
+                viewModel.removeListenerForGames()
+                viewModel.removeListenerForArchivedGames()
+                viewModel.removeListenerForContacts()
+                print("Games root view disappeared - remove game list and contact listeners")
+            }
         }
     }
     

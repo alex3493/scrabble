@@ -86,9 +86,3 @@ struct GamePlayView_Previews: PreviewProvider {
     }
 }
 
-// TODO: Shortcut version is not working.
-//#Preview {
-//    let uuid = UUID().uuidString
-//    let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
-//    GamePlayView(gameId: uuid, game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, users: [user], turn: 0, scores: [0]))
-//}
