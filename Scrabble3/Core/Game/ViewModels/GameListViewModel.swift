@@ -15,10 +15,25 @@ final class GameListViewModel: ObservableObject {
     @Published private(set) var archivedGames: [GameModel] = []
     private var cancellables = Set<AnyCancellable>()
     
-    // var currentUser: DBUser? = nil
+    var currentUser: DBUser? = nil
     
-    func addListenerForGames() {
-        GameManager.shared.addListenerForGames()
+    @Published private(set) var userContactsViewModel = UserContactsViewModel()
+    
+    func addListenerForGames(withContactUsers contactUsers: [UserContact]) {
+        guard let currentUser else { return }
+        
+        // Remove existing listener (if any).
+        GameManager.shared.removeListenerForGames()
+        
+        let confirmedContacts = contactUsers.filter { $0.contactConfirmed == true }
+        
+        let initiatorEmails = confirmedContacts.map { $0.initiatorUser.email ?? "" }
+        let counterpartEmails = confirmedContacts.map { $0.counterpartUser.email ?? "" }
+        
+        // Always list games created by me, even if no other players are connected.
+        let emails = Array(Set(initiatorEmails + counterpartEmails + [currentUser.email ?? ""]))
+        
+        GameManager.shared.addListenerForGames(includeEmails: emails)
             .sink { completion in
                 
             } receiveValue: { [weak self] games in
@@ -39,6 +54,41 @@ final class GameListViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func addListenerForContacts() {
+        guard let currentUser else { return }
+        
+        UserManager.shared.addListenerForContacts(user: currentUser)
+            .sink { completion in
+                
+            } receiveValue: { [weak self] contacts in
+                print("CONTACTS LISTENER :: Contact list updated. Contacts count: \(contacts.count)")
+                
+                let requestIds = contacts.map { $0.counterpartUserId }
+                
+                let mentionIds = contacts.map { $0.initiatorUserId }
+                
+                let ids = requestIds + mentionIds
+                
+                Task {
+                    let users = try await UserManager.shared.getUsers(withIds: ids)
+                    
+                    let usersDict = Dictionary(uniqueKeysWithValues: users.lazy.map { ($0.userId, $0) })
+                    
+                    var contactUsers: [UserContact] = []
+                    
+                    contacts.forEach { linkModel in
+                        contactUsers.append(UserContact(contactLink: linkModel, initiatorUser: usersDict[linkModel.initiatorUserId]!, counterpartUser: usersDict[linkModel.counterpartUserId]!))
+                    }
+                    
+                    self?.userContactsViewModel.contactUsers = contactUsers
+                    
+                    // Once we have contacts loaded we can refresh games listener.
+                    self?.addListenerForGames(withContactUsers: contactUsers)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     func removeListenerForGames() {
         GameManager.shared.removeListenerForGames()
     }
@@ -47,23 +97,27 @@ final class GameListViewModel: ObservableObject {
         GameManager.shared.removeListenerForGames()
     }
     
+    func removeListenerForContacts() {
+        UserManager.shared.removeListenerForContacts()
+    }
+    
     deinit {
         print("***** GameListViewModel DESTROYED")
     }
     
     // TODO: just testing resource access.
-//    func test() throws {
-//        let url = Bundle.main.url(forResource: "russian", withExtension: "dic", subdirectory: "Dic")
-//        if let url = url, try url.checkResourceIsReachable() {
-//            print("file exist")
-//            if let fileContents = try? String(contentsOf: url) {
-//                // we loaded the file into a string!
-//                print("file loaded")
-//                print("Content:", fileContents)
-//            }
-//        } else {
-//            print("file is not found")
-//        }
-//        
-//    }
+    //    func test() throws {
+    //        let url = Bundle.main.url(forResource: "russian", withExtension: "dic", subdirectory: "Dic")
+    //        if let url = url, try url.checkResourceIsReachable() {
+    //            print("file exist")
+    //            if let fileContents = try? String(contentsOf: url) {
+    //                // we loaded the file into a string!
+    //                print("file loaded")
+    //                print("Content:", fileContents)
+    //            }
+    //        } else {
+    //            print("file is not found")
+    //        }
+    //
+    //    }
 }

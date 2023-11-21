@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct UserContactsView: View {
-    
-    @ObservedObject var viewModel = UserContactsViewModel()
+    @StateObject private var viewModel: UserContactsViewModel
     
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
-    @ObservedObject var userListViewModel = UserListViewModel()
+    @StateObject var userListViewModel = UserListViewModel()
+    
+    init(viewModel: UserContactsViewModel) {
+        print("UserContactsView INIT")
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack {
@@ -39,9 +43,6 @@ struct UserContactsView: View {
         .onAppear() {
             viewModel.currentUser = authViewModel.currentUser
         }
-        .task {
-            viewModel.addListenerForContacts()
-        }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 NavigationLink {
@@ -61,5 +62,5 @@ struct UserContactsView: View {
 }
 
 #Preview {
-    UserContactsView()
+    UserContactsView(viewModel: UserContactsViewModel())
 }
