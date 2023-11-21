@@ -19,11 +19,14 @@ final class GameListViewModel: ObservableObject {
     
     @Published private(set) var userContactsViewModel = UserContactsViewModel()
     
-    func addListenerForGames(withContactUsers contactUsers: [UserContact]) {
+    func addListenerForGames() {
         guard let currentUser else { return }
         
         // Remove existing listener (if any).
-        GameManager.shared.removeListenerForGames()
+        removeListenerForGames()
+        
+        // Read contact users for view model store.
+        let contactUsers = userContactsViewModel.contactUsers
         
         let confirmedContacts = contactUsers.filter { $0.contactConfirmed == true }
         
@@ -64,18 +67,14 @@ final class GameListViewModel: ObservableObject {
                 print("CONTACTS LISTENER :: Contact list updated. Contacts count: \(contacts.count)")
                 
                 let requestIds = contacts.map { $0.counterpartUserId }
-                
                 let mentionIds = contacts.map { $0.initiatorUserId }
-                
                 let ids = requestIds + mentionIds
                 
                 Task {
                     let users = try await UserManager.shared.getUsers(withIds: ids)
-                    
                     let usersDict = Dictionary(uniqueKeysWithValues: users.lazy.map { ($0.userId, $0) })
                     
                     var contactUsers: [UserContact] = []
-                    
                     contacts.forEach { linkModel in
                         contactUsers.append(UserContact(contactLink: linkModel, initiatorUser: usersDict[linkModel.initiatorUserId]!, counterpartUser: usersDict[linkModel.counterpartUserId]!))
                     }
@@ -83,7 +82,7 @@ final class GameListViewModel: ObservableObject {
                     self?.userContactsViewModel.contactUsers = contactUsers
                     
                     // Once we have contacts loaded we can refresh games listener.
-                    self?.addListenerForGames(withContactUsers: contactUsers)
+                    self?.addListenerForGames()
                 }
             }
             .store(in: &cancellables)

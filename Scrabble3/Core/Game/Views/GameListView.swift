@@ -127,19 +127,21 @@ struct GameListView: View {
                 }
             }
             .task {
-                // viewModel.addListenerForGames()
                 viewModel.addListenerForArchivedGames()
                 viewModel.addListenerForContacts()
             }
             .onAppear() {
                 viewModel.currentUser = authViewModel.currentUser
+                print("GameListView APPEARED")
+                // TODO: if we remove games listener when we leave list view, we have to reactivate it when we return.
+                // Find out how we can do it... Root view only appears once.
             }
             .onDisappear() {
                 // TODO: not sure we ever need it - we are using cancellables.
                 viewModel.removeListenerForGames()
                 viewModel.removeListenerForArchivedGames()
                 viewModel.removeListenerForContacts()
-                print("Games root view disappeared - remove game list and contact listeners")
+                print("GameListView DISAPPEARED")
             }
         }
     }
