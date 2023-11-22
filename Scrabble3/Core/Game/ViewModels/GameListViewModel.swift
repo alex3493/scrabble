@@ -46,8 +46,25 @@ final class GameListViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    // TODO: later we will remove listener for archived games.
+    // We will display games archive as a paginated list (scroll).
     func addListenerForArchivedGames() {
-        GameManager.shared.addListenerForArchivedGames()
+        guard let currentUser else { return }
+        
+        // Remove existing listener (if any).
+        removeListenerForArchivedGames()
+        
+        // Read contact users for view model store.
+        let contactUsers = userContactsViewModel.contactUsers
+        
+        let confirmedContacts = contactUsers.filter { $0.contactConfirmed == true }
+        
+        let initiatorEmails = confirmedContacts.map { $0.initiatorUser.email ?? "" }
+        let counterpartEmails = confirmedContacts.map { $0.counterpartUser.email ?? "" }
+        
+        let emails = Array(Set(initiatorEmails + counterpartEmails + [currentUser.email ?? ""]))
+        
+        GameManager.shared.addListenerForArchivedGames(includeEmails: emails)
             .sink { completion in
                 
             } receiveValue: { [weak self] games in

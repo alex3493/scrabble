@@ -22,8 +22,18 @@ final class GameManager {
     
     private let gameCollection = Firestore.firestore().collection("games")
     
-    func activeGameCollection(includeEmails: [String]) -> Query {
-        
+    private func activeGameCollection(includeEmails: [String]) -> Query {
+        gameCollection(withCreatorEmails: includeEmails)
+            .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
+
+    }
+    
+    private func archivedGameCollection(includeEmails: [String]) -> Query {
+        gameCollection(withCreatorEmails: includeEmails)
+            .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["finished", "aborted"])
+    }
+    
+    private func gameCollection(withCreatorEmails includeEmails: [String]) -> Query {
         // TODO: if includeEmails is empty we should return empty query (check how to do it)...
         let creatorUserEmailField = "\(GameModel.CodingKeys.creatorUser.rawValue).\(DBUser.CodingKeys.email.rawValue)"
         
@@ -35,17 +45,8 @@ final class GameManager {
         
         return gameCollection
             .order(by: creatorUserEmailField, descending: false)
-            .whereFilter(Filter.orFilter([
-                // We only check contacts for waiting games.
-                Filter.whereField(creatorUserEmailField, in: emails),
-                Filter.whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "suspended"])
-            ]))
-            .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
-
+            .whereField(creatorUserEmailField, in: emails)
     }
-    
-    private let archivedGameCollection = Firestore.firestore().collection("games")
-        .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["finished", "aborted"])
     
     private func gameDocument(gameId: String) -> DocumentReference {
         return gameCollection.document(gameId)
@@ -209,8 +210,8 @@ final class GameManager {
     }
     
     // Listen for archived games.
-    func addListenerForArchivedGames() -> AnyPublisher<[GameModel], Error> {
-        let (publisher, listener) = archivedGameCollection
+    func addListenerForArchivedGames(includeEmails: [String]) -> AnyPublisher<[GameModel], Error> {
+        let (publisher, listener) = archivedGameCollection(includeEmails: includeEmails)
             .addListSnapshotListener(as: GameModel.self)
         
         self.archivedGamesListener = listener
