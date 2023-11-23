@@ -41,7 +41,7 @@ struct GameResultView: View {
                 
                 if let winners = winners {
                     Section(winners.count > 1 ? "Победители" : "Победитель") {
-                        ForEach(winners, id: \.id) { item in
+                        ForEach(winners, id: \.id.self) { item in
                             HStack(spacing: 12) {
                                 Text(item.user.name!)
                                 Spacer()

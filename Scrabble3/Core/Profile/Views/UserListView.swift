@@ -20,7 +20,7 @@ struct UserListView: View {
     
     var body: some View {
         List {
-            ForEach(viewModel.users, id: \.id) { user in
+            ForEach(viewModel.users, id: \.id.self) { user in
                 HStack {
                     VStack(alignment: .leading) {
                         Text("\(user.name!)")

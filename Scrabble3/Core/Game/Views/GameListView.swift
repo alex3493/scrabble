@@ -70,26 +70,7 @@ struct GameListView: View {
                 }
                 
                 NavigationStack {
-                    List {
-                        ForEach(viewModel.archivedGames, id: \.id.self) { item in
-                            NavigationLink {
-                                GameInfoView(gameId: item.id)
-                                    .navigationBarBackButtonHidden()
-                                    .toolbar(.hidden, for: .tabBar)
-                            } label: {
-                                HStack {
-                                    Text(item.creatorUser.name ?? "")
-                                    Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
-                                    Spacer()
-                                    HStack(spacing: 12) {
-                                        Text(gameStatusLabel(game: item))
-                                        Image(systemName: gameStatusIcon(game: item))
-                                            .frame(width: 24)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    ArchivedGameListView(contacts: contacts)
                     .navigationTitle("Архив")
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
@@ -127,7 +108,6 @@ struct GameListView: View {
                 }
             }
             .task {
-                viewModel.addListenerForArchivedGames()
                 viewModel.addListenerForContacts()
             }
             .onAppear() {
@@ -139,17 +119,11 @@ struct GameListView: View {
             .onDisappear() {
                 // TODO: not sure we ever need it - we are using cancellables.
                 viewModel.removeListenerForGames()
-                viewModel.removeListenerForArchivedGames()
                 viewModel.removeListenerForContacts()
                 print("GameListView DISAPPEARED")
             }
         }
     }
-    
-    // TODO: we have to show different status icon and label for waiting games.
-    // - game creator waiting for other users.
-    // - game available for joining by another player.
-    // - game with two or more players - ready to start.
     
     func gameStatusLabel(game: GameModel) -> String {
         if game.gameStatus == .waiting {
@@ -169,10 +143,6 @@ struct GameListView: View {
             return "Идет игра"
         } else if game.gameStatus == .suspended {
             return "Приостановлена"
-        } else if game.gameStatus == .finished {
-            return "Окончена"
-        } else if game.gameStatus == .aborted {
-            return "Отменена"
         }
         return ""
     }
@@ -195,10 +165,6 @@ struct GameListView: View {
             return "play.fill"
         } else if game.gameStatus == .suspended {
             return "playpause.fill"
-        } else if game.gameStatus == .finished {
-            return "flag.2.crossed.fill"
-        } else if game.gameStatus == .aborted {
-            return "xmark.circle.fill"
         }
         return ""
     }
@@ -213,6 +179,10 @@ struct GameListView: View {
         guard let user = authViewModel.currentUser else { return false }
         
         return !isMeGameCreator(game: game) && game.players.first { $0.user.userId == user.userId } != nil
+    }
+    
+    var contacts: [UserContact] {
+        return viewModel.userContactsViewModel.contactUsers
     }
     
 }

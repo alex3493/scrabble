@@ -17,7 +17,6 @@ final class GameManager {
     
     // Just in case we need explicit listener removal.
     private var gamesListener: ListenerRegistration? = nil
-    private var archivedGamesListener: ListenerRegistration? = nil
     private var gameListener: ListenerRegistration? = nil
     
     private let gameCollection = Firestore.firestore().collection("games")
@@ -47,6 +46,16 @@ final class GameManager {
             .order(by: creatorUserEmailField, descending: false)
             .whereField(creatorUserEmailField, in: emails)
     }
+    
+    func getArchivedGames(limit: Int, includeEmails: [String], afterDocument: DocumentSnapshot?) async throws -> (items: [GameModel], lastDocument: DocumentSnapshot?) {
+        
+        return try await archivedGameCollection(includeEmails: includeEmails)
+            .limit(to: limit)
+            .startOptionally(afterDocument: afterDocument)
+            .getDocumentsWithSnapshot(as: GameModel.self)
+    }
+    
+    
     
     private func gameDocument(gameId: String) -> DocumentReference {
         return gameCollection.document(gameId)
@@ -209,15 +218,6 @@ final class GameManager {
         return publisher
     }
     
-    // Listen for archived games.
-    func addListenerForArchivedGames(includeEmails: [String]) -> AnyPublisher<[GameModel], Error> {
-        let (publisher, listener) = archivedGameCollection(includeEmails: includeEmails)
-            .addListSnapshotListener(as: GameModel.self)
-        
-        self.archivedGamesListener = listener
-        return publisher
-    }
-    
     // Listen for game item updates.
     func addListenerForGame(gameId: String) -> AnyPublisher<GameModel, Error> {
         let (publisher, listener) = gameCollection.document(gameId)
@@ -229,10 +229,6 @@ final class GameManager {
     
     func removeListenerForGames() {
         gamesListener?.remove()
-    }
-    
-    func removeListenerForArchivedGames() {
-        archivedGamesListener?.remove()
     }
     
     func removeListenerForGame() {

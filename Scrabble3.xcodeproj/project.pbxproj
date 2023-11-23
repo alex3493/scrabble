@@ -11,6 +11,8 @@
 		FA4F5E1B2AD2E71C00A39306 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = FA4F5E1A2AD2E71C00A39306 /* FirebaseAnalytics */; };
 		FA4F5E1D2AD2E71C00A39306 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FA4F5E1C2AD2E71C00A39306 /* FirebaseAnalyticsSwift */; };
 		FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */; };
+		FA56A06F2B0F40DA0089C405 /* ArchivedGameListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56A06E2B0F40DA0089C405 /* ArchivedGameListView.swift */; };
+		FA56A0712B0F40F20089C405 /* ArchivedGameListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56A0702B0F40F20089C405 /* ArchivedGameListViewModel.swift */; };
 		FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */; };
 		FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C5A2ADB144B00BAFF8F /* GameListView.swift */; };
 		FA592C602ADB39A800BAFF8F /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA592C5F2ADB39A700BAFF8F /* GameManager.swift */; };
@@ -91,6 +93,8 @@
 /* Begin PBXFileReference section */
 		FA024E272AA392AF0099BAAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		FA56A06E2B0F40DA0089C405 /* ArchivedGameListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedGameListView.swift; sourceTree = "<group>"; };
+		FA56A0702B0F40F20089C405 /* ArchivedGameListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedGameListViewModel.swift; sourceTree = "<group>"; };
 		FA592C582ADA8A1D00BAFF8F /* ErrorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStore.swift; sourceTree = "<group>"; };
 		FA592C5A2ADB144B00BAFF8F /* GameListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListView.swift; sourceTree = "<group>"; };
 		FA592C5F2ADB39A700BAFF8F /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
@@ -262,6 +266,7 @@
 				FA8D0A742B0558D200A1B038 /* UserListView.swift */,
 				FAD97C7F2B0653030032BAFC /* UserContactsView.swift */,
 				FA7247972B0B6B0100AF3FA1 /* UserContactRowView.swift */,
+				FA56A06E2B0F40DA0089C405 /* ArchivedGameListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -271,6 +276,7 @@
 			children = (
 				FA8D0A782B05656000A1B038 /* UserListViewModel.swift */,
 				FAD97C812B069F410032BAFC /* UserContactsViewModel.swift */,
+				FA56A0702B0F40F20089C405 /* ArchivedGameListViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -630,6 +636,7 @@
 				FA64832C2AF5282100A9DBAA /* PlayerModel.swift in Sources */,
 				FAC469FE2AD402F700AB3A8E /* SettingsRowView.swift in Sources */,
 				FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */,
+				FA56A0712B0F40F20089C405 /* ArchivedGameListViewModel.swift in Sources */,
 				FAC469FC2AD3FE2E00AB3A8E /* ProfileView.swift in Sources */,
 				FA7545832AEC046C00B58EFC /* BoardView.swift in Sources */,
 				FA592C5B2ADB144B00BAFF8F /* GameListView.swift in Sources */,
@@ -639,6 +646,7 @@
 				FA75458E2AECF23C00B58EFC /* CommandViewModel.swift in Sources */,
 				FA75457F2AEA58AA00B58EFC /* CellModel.swift in Sources */,
 				FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */,
+				FA56A06F2B0F40DA0089C405 /* ArchivedGameListView.swift in Sources */,
 				FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
