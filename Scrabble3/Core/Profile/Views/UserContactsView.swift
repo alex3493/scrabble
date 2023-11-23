@@ -22,7 +22,7 @@ struct UserContactsView: View {
     var body: some View {
         VStack {
             List {
-                ForEach(viewModel.contactUsers, id: \.id) { contactUser in
+                ForEach(viewModel.contactUsers, id: \.id.self) { contactUser in
                     UserContactRowView(userContact: contactUser, viewModel: viewModel, currentUser: authViewModel.currentUser)
                 }
                 .onDelete { indexSet in

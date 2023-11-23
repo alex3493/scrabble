@@ -9,8 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct GameModel: Identifiable, Codable {
-    
+struct GameModel: Identifiable, Codable, Equatable {
     let id: String
     let createdAt: Timestamp
     let creatorUser: DBUser
@@ -18,6 +17,10 @@ struct GameModel: Identifiable, Codable {
     var boardCells: [CellModel]
     var turn: Int = 0
     var gameStatus: GameStatus = .waiting
+    
+    static func == (lhs: GameModel, rhs: GameModel) -> Bool {
+        return lhs.id == rhs.id
+    }
     
     enum CodingKeys: String, CodingKey {
         case id
