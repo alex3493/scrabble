@@ -9,10 +9,17 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+enum GameLanguage: String, Codable {
+    case en
+    case ru
+    case es
+}
+
 struct GameModel: Identifiable, Codable, Equatable {
     let id: String
     let createdAt: Timestamp
     let creatorUser: DBUser
+    let lang: GameLanguage
     var players: [Player]
     var boardCells: [CellModel]
     var turn: Int = 0
@@ -26,6 +33,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         case id
         case createdAt = "created_at"
         case creatorUser = "creator_user"
+        case lang
         case players
         case boardCells = "board_cells"
         case turn
@@ -40,10 +48,11 @@ struct GameModel: Identifiable, Codable, Equatable {
         case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = []) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = []) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
+        self.lang = lang
         self.players = players
         self.boardCells = boardCells
         self.turn = turn

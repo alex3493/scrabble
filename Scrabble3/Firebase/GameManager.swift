@@ -81,7 +81,7 @@ final class GameManager {
         // We need to init empty board.
         let boardMViewModel = BoardViewModel()
         
-        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, players: [
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: GameLanguage.ru, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
         ], turn: 0, boardCells: boardMViewModel.cells)
         try document.setData(from: game, merge: false, encoder: encoder)
