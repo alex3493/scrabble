@@ -13,6 +13,8 @@ struct ArchivedGameListView: View {
     
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
     
+    let errorStore = ErrorStore.shared
+    
     // Here we have current user contacts.
     let contacts: [UserContact]
     
@@ -43,6 +45,7 @@ struct ArchivedGameListView: View {
                                 try await viewModel.fetchGames()
                             } catch {
                                 print("DEBUG:: Error fetching users", error.localizedDescription)
+                                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }
                     }
@@ -54,6 +57,7 @@ struct ArchivedGameListView: View {
                 try await viewModel.fetchGames()
             } catch {
                 print("DEBUG :: Error fetching users", error.localizedDescription)
+                errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
             }
         }
         .onAppear() {

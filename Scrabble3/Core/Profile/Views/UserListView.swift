@@ -15,6 +15,8 @@ struct UserListView: View {
     
     @Environment(\.dismiss) var dismiss
     
+    let errorStore = ErrorStore.shared
+    
     // Here we have current user contacts.
     let contacts: [UserContact]
     
@@ -38,6 +40,7 @@ struct UserListView: View {
                             dismiss()
                         } catch {
                             print("DEBUG :: Error adding user contact for user ", user.email!)
+                            errorStore.showContactSetupAlertView(withMessage: error.localizedDescription)
                         }
                     }, buttonSystemImage: "person.crop.circle.badge.plus", backGroundColor: .green, maxWidth: false)
                 }
@@ -49,6 +52,7 @@ struct UserListView: View {
                                 try await viewModel.fetchUsers()
                             } catch {
                                 print("DEBUG:: Error fetching users", error.localizedDescription)
+                                errorStore.showContactSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }
                     }
@@ -60,6 +64,7 @@ struct UserListView: View {
                 try await viewModel.fetchUsers(reload: true)
             } catch {
                 print("DEBUG :: Error fetching users", error.localizedDescription)
+                errorStore.showContactSetupAlertView(withMessage: error.localizedDescription)
             }
         }
         .onAppear() {

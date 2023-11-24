@@ -14,6 +14,8 @@ struct UserContactsView: View {
     
     @StateObject var userListViewModel = UserListViewModel()
     
+    let errorStore = ErrorStore.shared
+    
     init(viewModel: UserContactsViewModel) {
         print("UserContactsView INIT")
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -34,6 +36,7 @@ struct UserContactsView: View {
                                 try await viewModel.deleteContact(id: contactLink.id)
                             } catch {
                                 print("DEBUG :: Error deleting contact", viewModel.contactUsers[indexSet.first!].contactLink.id)
+                                errorStore.showContactSetupAlertView(withMessage: error.localizedDescription)
                             }
                         }
                     }
