@@ -15,7 +15,11 @@ enum AppError: LocalizedError {
     
     case gameSetupError(message: String?)
     
+    case gamePlayError(message: String?)
+    
     case moveValidationError(errorType: ValidationError)
+    
+    case contactSetupError(message: String?)
     
     var errorDescription: String? {
         switch self {
@@ -25,7 +29,11 @@ enum AppError: LocalizedError {
             return "Failed registering new account"
         case .gameSetupError:
             return "Error setting up game"
+        case .gamePlayError:
+            return "ОШИБКА"
         case .moveValidationError:
+            return "ОШИБКА"
+        case .contactSetupError:
             return "ОШИБКА"
         }
     }
@@ -39,6 +47,9 @@ enum AppError: LocalizedError {
             return message ?? "Email address is already in use"
         case .gameSetupError(let message):
             return message ?? "Error trying to create, join, leave, remove or start game"
+        case .gamePlayError(message: let message):
+            return message ?? "Error trying to submit move"
+            
         case .moveValidationError(let errorType):
             switch errorType {
                 
@@ -54,8 +65,10 @@ enum AppError: LocalizedError {
                 let words = words.joined(separator: ", ")
                 return "Слова уже использованы: \(words)"
             }
+            
+        case .contactSetupError(message: let message):
+            return message ?? "Error trying add, confirm or remove a contact"
         }
-        
     }
     
 }
@@ -88,8 +101,16 @@ final class ErrorStore: ObservableObject {
         activeError = AppError.gameSetupError(message: message)
     }
     
+    func showGamePlayAlertView(withMessage message: String?) {
+        activeError = AppError.gamePlayError(message: message)
+    }
+    
     func showMoveValidationErrorAlert(errorType: ValidationError) {
         activeError = AppError.moveValidationError(errorType: errorType)
+    }
+    
+    func showContactSetupAlertView(withMessage message: String?) {
+        activeError = AppError.contactSetupError(message: message)
     }
     
 }

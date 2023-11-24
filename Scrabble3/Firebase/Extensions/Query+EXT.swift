@@ -31,11 +31,6 @@ extension Query {
         return self.start(afterDocument: lastDocument)
     }
     
-//    func reloadOptionally(atDocument firstDocument: DocumentSnapshot?) -> Query {
-//        guard let firstDocument else { return self }
-//        return self.start(atDocument: firstDocument)
-//    }
-    
     func aggregateCount() async throws -> Int {
         let snapshot = try await self.count.getAggregation(source: .server)
         return Int(truncating: snapshot.count)

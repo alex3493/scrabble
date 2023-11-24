@@ -17,6 +17,8 @@ struct CommandView: View {
     
     @StateObject private var rackViewModel: RackViewModel
     
+    let errorStore = ErrorStore.shared
+    
     let gameId: String
     
     init(gameId: String, commandViewModel: CommandViewModel) {
@@ -48,6 +50,7 @@ struct CommandView: View {
                         try await viewModel.changeLetters(gameId: game.id, confirmed: true)
                     } catch {
                         print("DEBUG :: Error changing letter: \(error.localizedDescription)")
+                        errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
                     }
                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemPink), maxWidth: false, disabled: !rackViewModel.hasLettersMarkedForChange)
                 
@@ -68,6 +71,7 @@ struct CommandView: View {
                         try await viewModel.submitMove(gameId: game.id)
                     } catch {
                         print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                        errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
                     }
                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
             }
@@ -80,6 +84,7 @@ struct CommandView: View {
                     try await viewModel.suspendGame(gameId: game.id, abort: false)
                 } catch {
                     print("DEBUG :: Error suspending game: \(error.localizedDescription)")
+                    errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
                 }
             }, buttonSystemImage: "figure.walk.motion", backGroundColor: Color(.systemRed), maxWidth: false)
         }

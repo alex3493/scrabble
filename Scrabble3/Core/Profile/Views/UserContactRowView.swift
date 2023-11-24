@@ -13,6 +13,8 @@ struct UserContactRowView: View {
     let viewModel: UserContactsViewModel
     let currentUser: DBUser?
     
+    let errorStore = ErrorStore.shared
+    
     var body: some View {
         if let currentUser = currentUser {
             HStack {
@@ -33,6 +35,7 @@ struct UserContactRowView: View {
                             try await viewModel.acceptContact(id: userContact.contactLink.id)
                         } catch {
                             print("DEBUG :: Error confirming user contact for user ", userContact.contactLink.id)
+                            errorStore.showContactSetupAlertView(withMessage: error.localizedDescription)
                         }
                     }, buttonSystemImage: "person.crop.circle.badge.plus", backGroundColor: .green, maxWidth: false)
                 } else {

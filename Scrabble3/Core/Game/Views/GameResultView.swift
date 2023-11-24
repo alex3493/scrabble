@@ -99,7 +99,7 @@ struct GameResultView: View {
     var winners: [Player]? {
         
         if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
-            var winnerPlayers = game.players.sorted { lhs, rhs in
+            let winnerPlayers = game.players.sorted { lhs, rhs in
                 return lhs.score < rhs.score
             }
             
