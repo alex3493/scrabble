@@ -7,7 +7,17 @@
 
 import Foundation
 
-struct WordModel: Codable, Hashable {
+struct WordInfo: Codable, WordDefinition {
+    var term: String
+    var definition: String
+    var imageURL: String?
+}
+
+struct WordModel: Codable, Hashable, Equatable {
+    static func == (lhs: WordModel, rhs: WordModel) -> Bool {
+        return lhs.getHash() == rhs.getHash()
+    }
+    
     var word: String = ""
     
     let anchorRow: Int
@@ -26,6 +36,8 @@ struct WordModel: Codable, Hashable {
     
     var isConnectedToExisting: Bool = false
     
+    var wordDefinition: WordInfo? = nil
+    
     enum CodingKeys: String, CodingKey {
         case word
         case anchorRow = "anchor_row"
@@ -34,10 +46,15 @@ struct WordModel: Codable, Hashable {
         case score
         case cells
         case isConnectedToExisting = "is_connected_to_existing"
+        case wordDefinition = "word_definition"
     }
     
     var isWord: Bool {
         return cells.count > 1
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        return hasher.combine(getHash())
     }
     
     func getHash() -> String {
@@ -56,6 +73,11 @@ struct WordModel: Codable, Hashable {
         let intersection = currentCells.intersection(wordCells)
         
         return !intersection.isEmpty
+    }
+    
+    mutating func setWordInfo(definition: WordDefinition?) {
+        guard let definition else { return }
         
+        wordDefinition = WordInfo(term: definition.term, definition: definition.definition, imageURL: definition.imageURL)
     }
 }
