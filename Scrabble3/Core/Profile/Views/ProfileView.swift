@@ -89,14 +89,6 @@ struct ProfileView: View {
     }
 }
 
-struct GameLanguagePreferenceKey: PreferenceKey {
-    static var defaultValue: GameLanguage = .ru
-    
-    static func reduce(value: inout GameLanguage, nextValue: () -> GameLanguage) {
-        value = nextValue()
-    }
-}
-
 #Preview {
     ProfileView()
         .environmentObject(AuthWithEmailViewModel())

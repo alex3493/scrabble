@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct WordDefinition: Codable {
+protocol ValidationResponse {
+    var isValid: Bool { get }
+}
+
+//MARK : word definitions.
+struct WordDefinitionRussian: Codable {
     let term: String
     let short: String
     let dic: String
@@ -15,10 +20,19 @@ struct WordDefinition: Codable {
     let imageURL: String?
 }
 
-struct ValidationResponse: Codable {
+struct WordDefinitionEnglish: Codable {
+    let word: String
+    let definition: String
+    let inflection: String
+    let wordSize: Int
+    let wordScore: Int
+}
+
+//MARK : validation responses.
+struct ValidationResponseRussian: Codable, ValidationResponse {
     let result: String
     let word: String
-    let definitions: [WordDefinition]?
+    let definitions: [WordDefinitionRussian]?
     let usage_rate: Int?
     let imageURL: String?
     
@@ -27,7 +41,17 @@ struct ValidationResponse: Codable {
     }
 }
 
-struct Api {
+struct ValidationResponseEnglish: Codable, ValidationResponse {
+    let success: Bool
+    let data: [WordDefinitionEnglish]
+    
+    var isValid: Bool {
+        return success
+    }
+}
+
+//MARK : API requests.
+struct ApiRussian {
     @MainActor
     static func validateWord(word: String) async -> ValidationResponse? {
         let query = URLQueryItem(name: "word", value: word)
@@ -38,10 +62,51 @@ struct Api {
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            return try? JSONDecoder().decode(ValidationResponse.self, from: data)
+            return try? JSONDecoder().decode(ValidationResponseRussian.self, from: data)
         } catch {
             // TODO: should re-throw?
             return nil
         }
+    }
+}
+
+struct ApiEnglish {
+    @MainActor
+    static func validateWord(word: String) async -> ValidationResponse? {
+        
+        guard var url = URL(string: "https://shop.hasbro.com/api/scrabble/dictionary/") else {
+            return nil
+        }
+        url.append(path: word)
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return try? JSONDecoder().decode(ValidationResponseEnglish.self, from: data)
+        } catch {
+            // TODO: should re-throw?
+            return nil
+        }
+    }
+}
+
+struct Api {
+    @MainActor
+    static func validateWord(word: String, lang: GameLanguage) async -> ValidationResponse? {
+        var response: ValidationResponse?
+        
+        switch lang {
+        case .ru:
+            response = await ApiRussian.validateWord(word: word)
+            break
+        case .en:
+            response = await ApiEnglish.validateWord(word: word)
+            break
+        default:
+            response = nil
+        }
+        
+        // print("DEBUG :: Word validation response", response as Any)
+        
+        return response
     }
 }

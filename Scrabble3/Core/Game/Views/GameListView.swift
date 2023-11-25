@@ -127,6 +127,7 @@ struct GameListView: View {
             }
             .onReceive(Just(preferredLanguage)) { value in
                 print("Language preference changed!", value)
+                // We have to reinit games listener when preferred language changes.
                 viewModel.addListenerForGames(lang: value)
             }
         }

@@ -135,6 +135,11 @@ final class CommandViewModel: ObservableObject {
     }
     
     func validateMove() async throws {
+        guard let game else {
+            print("PANIC :: game not defined!")
+            return
+        }
+        
         let words = try boardViewModel.getMoveWords()
         
         boardViewModel.resetCellsStatus()
@@ -147,7 +152,7 @@ final class CommandViewModel: ObservableObject {
         
         var invalidWords = [WordModel]()
         for word in words {
-            let response = await Api.validateWord(word: word.word)
+            let response = await Api.validateWord(word: word.word, lang: game.lang)
             if (response == nil || !response!.isValid) {
                 invalidWords.append(word)
             }
