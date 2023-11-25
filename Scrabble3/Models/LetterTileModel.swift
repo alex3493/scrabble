@@ -40,8 +40,8 @@ struct LetterTileBank {
             self.tiles = LetterBank.lettersRu
         case .es:
             self.tiles = LetterBank.lettersEs
-        default:
-            self.tiles = LetterBank.lettersRu
+//        default:
+//            self.tiles = LetterBank.lettersRu
         }
     }
 }

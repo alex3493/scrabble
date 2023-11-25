@@ -37,7 +37,7 @@ struct WordModel: Codable, Hashable {
     }
     
     var isWord: Bool {
-        return word.count > 1
+        return cells.count > 1
     }
     
     func getHash() -> String {

@@ -140,8 +140,8 @@ struct Api {
         case .es:
             response = await ApiSpanish.validateWord(word: word)
             break
-        default:
-            response = nil
+//        default:
+//            response = nil
         }
         
         // print("DEBUG :: Word validation response", response as Any)
