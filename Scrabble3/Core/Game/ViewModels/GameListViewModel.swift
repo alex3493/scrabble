@@ -19,6 +19,8 @@ final class GameListViewModel: ObservableObject {
     
     @Published private(set) var userContactsViewModel = UserContactsViewModel()
     
+    let preferredLanguage = GameLanguage(rawValue: UserDefaults().string(forKey: "PreferredLang") ?? "ru")
+    
     func addListenerForGames() {
         guard let currentUser else { return }
         
@@ -36,7 +38,7 @@ final class GameListViewModel: ObservableObject {
         // Always list games created by me, even if no other players are connected.
         let emails = Array(Set(initiatorEmails + counterpartEmails + [currentUser.email ?? ""]))
         
-        GameManager.shared.addListenerForGames(includeEmails: emails)
+        GameManager.shared.addListenerForGames(includeEmails: emails, lang: preferredLanguage ?? .ru)
             .sink { completion in
                 
             } receiveValue: { [weak self] games in

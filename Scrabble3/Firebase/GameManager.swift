@@ -21,9 +21,10 @@ final class GameManager {
     
     private let gameCollection = Firestore.firestore().collection("games")
     
-    private func activeGameCollection(includeEmails: [String]) -> Query {
+    private func activeGameCollection(includeEmails: [String], lang: GameLanguage) -> Query {
         gameCollection(withCreatorEmails: includeEmails)
             .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
+            .whereField(GameModel.CodingKeys.lang.rawValue, isEqualTo: lang.rawValue)
 
     }
     
@@ -74,14 +75,14 @@ final class GameManager {
     }()
     
     @MainActor
-    func createNewGame(creatorUser: DBUser) async throws -> GameModel {
+    func createNewGame(creatorUser: DBUser, lang: GameLanguage) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
         
         // We need to init empty board.
-        let boardMViewModel = BoardViewModel()
+        let boardMViewModel = BoardViewModel(lang: lang)
         
-        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: GameLanguage.ru, players: [
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: lang, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
         ], turn: 0, boardCells: boardMViewModel.cells)
         try document.setData(from: game, merge: false, encoder: encoder)
@@ -146,7 +147,7 @@ final class GameManager {
         
         // Set letter racks for each player.
         for playerIndex in game.players.indices {
-            game.players[playerIndex].letterRack = initRack()
+            game.players[playerIndex].letterRack = initRack(lang: game.lang)
         }
         
         guard let data = try? encoder.encode(game) else {
@@ -210,8 +211,8 @@ final class GameManager {
     }
     
     // Listen for active games.
-    func addListenerForGames(includeEmails: [String]) -> AnyPublisher<[GameModel], Error> {
-        let (publisher, listener) = activeGameCollection(includeEmails: includeEmails)
+    func addListenerForGames(includeEmails: [String], lang: GameLanguage) -> AnyPublisher<[GameModel], Error> {
+        let (publisher, listener) = activeGameCollection(includeEmails: includeEmails, lang: lang)
             .addListSnapshotListener(as: GameModel.self)
         
         self.gamesListener = listener
@@ -235,8 +236,8 @@ final class GameManager {
         gameListener?.remove()
     }
     
-    func initRack() -> [CellModel] {
-        let letterBank = LetterBank.getAllTilesShuffled()
+    func initRack(lang: GameLanguage) -> [CellModel] {
+        let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
         
         var rack = [CellModel]()
         for pos in 0..<LetterStoreBase.size {

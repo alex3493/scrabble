@@ -58,5 +58,5 @@ struct AsteriskDialogView: View {
 }
 
 #Preview {
-    AsteriskDialogView(asteriskDialogPresented: .constant(false), asteriskRow: 0, asteriskCol: 0, boardViewModel: BoardViewModel())
+    AsteriskDialogView(asteriskDialogPresented: .constant(false), asteriskRow: 0, asteriskCol: 0, boardViewModel: BoardViewModel(lang: .ru))
 }

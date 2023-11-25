@@ -63,6 +63,6 @@ struct RackView: View {
 }
 
 #Preview {
-    RackView(boardViewModel: BoardViewModel(), rackViewModel: RackViewModel())
+    RackView(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
 }
 

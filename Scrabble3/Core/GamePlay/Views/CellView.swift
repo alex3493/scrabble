@@ -221,5 +221,5 @@ struct CellDropDelegate: DropDelegate {
 }
 
 #Preview {
-    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(), rackViewModel: RackViewModel())
+    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
 }

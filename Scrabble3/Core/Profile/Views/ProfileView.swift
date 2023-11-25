@@ -55,12 +55,9 @@ struct ProfileView: View {
                         Text("English").tag(GameLanguage.en)
                         Text("Spanish").tag(GameLanguage.es)
                     } label: {
-                        SettingsRowView(imageName: "character.book.closed", title: "Language", tintColor: Color(.systemGray))
+                        SettingsRowView(imageName: "character.book.closed", title: "Game Language", tintColor: Color(.systemGray))
                         
                     }
-//                    .onChange(of: preferredLang) { tag in
-//                        print("Language tag: \(String(describing: tag))")
-//                    }
                 }
                 
                 Section("Account") {

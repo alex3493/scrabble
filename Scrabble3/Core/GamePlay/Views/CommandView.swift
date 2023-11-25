@@ -157,8 +157,8 @@ struct CommandView: View {
 
 struct CommandView_Previews: PreviewProvider {
     static var previews: some View {
-        let boardViewModel = BoardViewModel()
-        let rackViewModel = RackViewModel()
+        let boardViewModel = BoardViewModel(lang: .ru)
+        let rackViewModel = RackViewModel(lang: .ru)
         CommandView(gameId: "fake_id", commandViewModel: CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel))
     }
 }

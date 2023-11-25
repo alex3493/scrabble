@@ -11,8 +11,8 @@ import Foundation
 class RackViewModel: LetterStoreBase {
     @Published var changeLettersMode: Bool = false
     
-    override init() {
-        super.init()
+    override init(lang: GameLanguage) {
+        super.init(lang: lang)
         for i in 0..<LetterStoreBase.size {
             let cell = CellModel(row: -1, col: -1, pos: Int(i), letterTile: nil, cellStatus: .empty, role: .rack)
             cells.append(cell)
@@ -93,7 +93,7 @@ class RackViewModel: LetterStoreBase {
     }
     
     func fillRack() {
-        let letterBank = LetterBank.getAllTilesShuffled()
+        let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
         
         for cell in cells {
             if (cell.isEmpty) {

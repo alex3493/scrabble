@@ -7,19 +7,13 @@
 
 import Foundation
 
-enum Lang: String, Codable {
-    case en
-    case ru
-    case es
-}
-
 struct LetterTile: Codable, Hashable {
     let char: String
     let score: Int
     let probability: Int
     let isAsterisk: Bool
     
-    let lang: Lang
+    let lang: GameLanguage
     
     enum CodingKeys: String, CodingKey {
         case char
@@ -38,7 +32,7 @@ struct LetterTile: Codable, Hashable {
 struct LetterTileBank {
     var tiles = [LetterTile]()
     
-    init(lang: Lang = .ru) {
+    init(lang: GameLanguage) {
         switch lang {
         case .en:
             self.tiles = LetterBank.lettersEn
@@ -118,10 +112,23 @@ struct LetterBank {
         LetterTile(char: "*", score: 0, probability: 5, isAsterisk: true, lang: .ru),
     ]
     
-    static func getAllTilesShuffled(lang: Lang = .en) -> [LetterTile] {
+    static func getAllTilesShuffled(lang: GameLanguage) -> [LetterTile] {
         var store: [LetterTile] = [LetterTile]()
         
-        LetterBank.lettersRu.forEach({ tile in
+        var letterBank: [LetterTile]
+        
+        switch lang {
+        case .ru:
+            letterBank = LetterBank.lettersRu
+            break
+        case .en:
+            letterBank = LetterBank.lettersEn
+            break
+        default:
+            letterBank = LetterBank.lettersRu
+        }
+        
+        letterBank.forEach({ tile in
             for _ in 0...tile.probability {
                 store.append(LetterTile(char: tile.char, score: tile.score, probability: tile.probability, isAsterisk: tile.isAsterisk, lang: tile.lang))
             }
