@@ -10,7 +10,6 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
-    // TODO: Explore @AppStorage wrapper.
     @AppStorage("PreferredLang") var preferredLang: GameLanguage = .ru
     
     var body: some View {
@@ -87,6 +86,14 @@ struct ProfileView: View {
         .onAppear() {
             preferredLang = GameLanguage(rawValue: UserDefaults.standard.string(forKey: "PreferredLang") ?? "ru") ?? GameLanguage.ru
         }
+    }
+}
+
+struct GameLanguagePreferenceKey: PreferenceKey {
+    static var defaultValue: GameLanguage = .ru
+    
+    static func reduce(value: inout GameLanguage, nextValue: () -> GameLanguage) {
+        value = nextValue()
     }
 }
 

@@ -7,12 +7,15 @@
 
 import SwiftUI
 import Firebase
+import Combine
 
 struct GameListView: View {
     
     @StateObject private var viewModel = GameListViewModel()
     
     @EnvironmentObject var authViewModel: AuthWithEmailViewModel
+    
+    @AppStorage("PreferredLang") var preferredLanguage: GameLanguage = .ru
     
     var body: some View {
         if authViewModel.currentUser != nil {
@@ -71,18 +74,18 @@ struct GameListView: View {
                 
                 NavigationStack {
                     ArchivedGameListView(contacts: contacts)
-                    .navigationTitle("Архив")
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            NavigationLink {
-                                ProfileView()
-                                    .toolbar(.hidden, for: .tabBar)
-                            } label: {
-                                Image(systemName: "gear")
-                                    .font(.headline)
+                        .navigationTitle("Архив")
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                NavigationLink {
+                                    ProfileView()
+                                        .toolbar(.hidden, for: .tabBar)
+                                } label: {
+                                    Image(systemName: "gear")
+                                        .font(.headline)
+                                }
                             }
                         }
-                    }
                 }
                 .tabItem {
                     Label("Оконченные", systemImage: "archivebox")
@@ -108,7 +111,7 @@ struct GameListView: View {
                 }
             }
             .task {
-                viewModel.addListenerForContacts()
+                viewModel.addListenerForContacts(lang: preferredLanguage)
             }
             .onAppear() {
                 viewModel.currentUser = authViewModel.currentUser
@@ -121,6 +124,10 @@ struct GameListView: View {
                 viewModel.removeListenerForGames()
                 viewModel.removeListenerForContacts()
                 print("GameListView DISAPPEARED")
+            }
+            .onReceive(Just(preferredLanguage)) { value in
+                print("Language preference changed!", value)
+                viewModel.addListenerForGames(lang: value)
             }
         }
     }
