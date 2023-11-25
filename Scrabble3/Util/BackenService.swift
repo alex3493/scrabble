@@ -28,6 +28,12 @@ struct WordDefinitionEnglish: Codable {
     let wordScore: Int
 }
 
+struct WordDefinitionSpanish: Codable {
+    let text: String
+    let pos: String
+    let gen: String
+}
+
 //MARK : validation responses.
 struct ValidationResponseRussian: Codable, ValidationResponse {
     let result: String
@@ -47,6 +53,14 @@ struct ValidationResponseEnglish: Codable, ValidationResponse {
     
     var isValid: Bool {
         return success
+    }
+}
+
+struct ValidationResponseSpanish: Codable, ValidationResponse {
+    let def: [WordDefinitionSpanish]
+    
+    var isValid: Bool {
+        return !def.isEmpty
     }
 }
 
@@ -89,6 +103,28 @@ struct ApiEnglish {
     }
 }
 
+struct ApiSpanish {
+    @MainActor
+    static func validateWord(word: String) async -> ValidationResponse? {
+        let query = URLQueryItem(name: "text", value: word)
+        let keyQuery = URLQueryItem(name: "key", value: "dict.1.1.20231125T101354Z.02e231dd0878d9ec.4ea53be52aea0fd9b6ecb0b965d7582cfd872539")
+        let langQuery = URLQueryItem(name: "lang", value: "es-ru")
+        
+        guard var url = URL(string: "https://dictionary.yandex.net/api/v1/dicservice.json/lookup") else {
+            return nil
+        }
+        url.append(queryItems: [query, keyQuery, langQuery])
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return try? JSONDecoder().decode(ValidationResponseSpanish.self, from: data)
+        } catch {
+            // TODO: should re-throw?
+            return nil
+        }
+    }
+}
+
 struct Api {
     @MainActor
     static func validateWord(word: String, lang: GameLanguage) async -> ValidationResponse? {
@@ -100,6 +136,9 @@ struct Api {
             break
         case .en:
             response = await ApiEnglish.validateWord(word: word)
+            break
+        case .es:
+            response = await ApiSpanish.validateWord(word: word)
             break
         default:
             response = nil

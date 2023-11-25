@@ -30,16 +30,18 @@ struct LetterTile: Codable, Hashable {
 }
 
 struct LetterTileBank {
-    var tiles = [LetterTile]()
+    var tiles: [LetterTile]
     
     init(lang: GameLanguage) {
         switch lang {
         case .en:
             self.tiles = LetterBank.lettersEn
-        
+        case .ru:
+            self.tiles = LetterBank.lettersRu
+        case .es:
+            self.tiles = LetterBank.lettersEs
         default:
             self.tiles = LetterBank.lettersRu
-        
         }
     }
 }
@@ -73,7 +75,7 @@ struct LetterBank {
         LetterTile(char: "X", score: 8, probability: 1, isAsterisk: false, lang: .en),
         LetterTile(char: "Y", score: 4, probability: 2, isAsterisk: false, lang: .en),
         LetterTile(char: "Z", score: 10, probability: 1, isAsterisk: false, lang: .en),
-        LetterTile(char: "*", score: 0, probability: 3, isAsterisk: true, lang: .en),
+        LetterTile(char: "*", score: 0, probability: 5, isAsterisk: true, lang: .en),
     ]
     
     static let lettersRu: [LetterTile] = [
@@ -112,21 +114,44 @@ struct LetterBank {
         LetterTile(char: "*", score: 0, probability: 5, isAsterisk: true, lang: .ru),
     ]
     
+    static let lettersEs: [LetterTile] = [
+        LetterTile(char: "A", score: 1, probability: 12, isAsterisk: false, lang: .es),
+        LetterTile(char: "B", score: 3, probability: 2, isAsterisk: false, lang: .es),
+        LetterTile(char: "C", score: 3, probability: 4, isAsterisk: false, lang: .es),
+        LetterTile(char: "CH", score: 5, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "D", score: 2, probability: 5, isAsterisk: false, lang: .es),
+        LetterTile(char: "E", score: 1, probability: 12, isAsterisk: false, lang: .es),
+        LetterTile(char: "F", score: 4, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "G", score: 2, probability: 2, isAsterisk: false, lang: .es),
+        LetterTile(char: "H", score: 4, probability: 2, isAsterisk: false, lang: .es),
+        LetterTile(char: "I", score: 1, probability: 6, isAsterisk: false, lang: .es),
+        LetterTile(char: "J", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "K", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "L", score: 1, probability: 4, isAsterisk: false, lang: .es),
+        LetterTile(char: "LL", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "M", score: 3, probability: 2, isAsterisk: false, lang: .es),
+        LetterTile(char: "N", score: 1, probability: 5, isAsterisk: false, lang: .es),
+        LetterTile(char: "Ñ", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "O", score: 1, probability: 9, isAsterisk: false, lang: .es),
+        LetterTile(char: "P", score: 3, probability: 2, isAsterisk: false, lang: .es),
+        LetterTile(char: "Q", score: 5, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "R", score: 1, probability: 5, isAsterisk: false, lang: .es),
+        LetterTile(char: "RR", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "S", score: 1, probability: 6, isAsterisk: false, lang: .es),
+        LetterTile(char: "T", score: 1, probability: 4, isAsterisk: false, lang: .es),
+        LetterTile(char: "U", score: 1, probability: 5, isAsterisk: false, lang: .es),
+        LetterTile(char: "V", score: 4, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "W", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "X", score: 8, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "Y", score: 4, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "Z", score: 10, probability: 1, isAsterisk: false, lang: .es),
+        LetterTile(char: "*", score: 0, probability: 5, isAsterisk: true, lang: .es),
+    ]
+    
     static func getAllTilesShuffled(lang: GameLanguage) -> [LetterTile] {
         var store: [LetterTile] = [LetterTile]()
         
-        var letterBank: [LetterTile]
-        
-        switch lang {
-        case .ru:
-            letterBank = LetterBank.lettersRu
-            break
-        case .en:
-            letterBank = LetterBank.lettersEn
-            break
-        default:
-            letterBank = LetterBank.lettersRu
-        }
+        let letterBank = LetterTileBank(lang: lang).tiles
         
         letterBank.forEach({ tile in
             for _ in 0...tile.probability {
