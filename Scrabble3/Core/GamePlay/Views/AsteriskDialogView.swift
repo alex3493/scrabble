@@ -46,8 +46,12 @@ struct AsteriskDialogView: View {
         }
     }
     
-    var letters: [LetterTile] = LetterBank.lettersRu.filter { tile in
-        return !tile.isAsterisk
+    var letters: [LetterTile] {
+        let letterBank = LetterTileBank(lang: boardViewModel.lang).tiles
+        
+        return letterBank.filter { tile in
+            return !tile.isAsterisk
+        }
     }
     
     var chunks: [[LetterTile]] {
