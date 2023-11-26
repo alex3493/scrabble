@@ -18,6 +18,14 @@ struct MoveInfoDialogView: View {
     var body: some View {
         VStack {
             List {
+                HStack {
+                    Text("Всего")
+                    Spacer()
+                    Text("\(score + (bonus ?? 0))")
+                }
+                .fontWeight(.bold)
+                .padding(.bottom, 12)
+                .padding(.top, 10)
                 ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                     VStack {
                         HStack {
@@ -38,7 +46,7 @@ struct MoveInfoDialogView: View {
                                                 .frame(maxWidth: 100, maxHeight: 100)
                                         },
                                         placeholder: {
-                                            ProgressView()
+                                            // ProgressView()
                                         }
                                     )
                                     
@@ -55,12 +63,6 @@ struct MoveInfoDialogView: View {
                     }
                     .fontWeight(.semibold)
                 }
-                HStack {
-                    Text("Всего")
-                    Spacer()
-                    Text("\(score + (bonus ?? 0))")
-                }
-                .fontWeight(.bold)
             }
             
             Spacer()

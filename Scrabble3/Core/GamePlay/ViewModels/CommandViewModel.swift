@@ -57,15 +57,12 @@ final class CommandViewModel: ObservableObject {
                 let moveWords = try boardViewModel.getMoveWords()
                 
                 // TODO: this is a duplicate code - make it better!
-                // Inject word definitions obtained during API validation.
-                var wordsWithDefinitions: [WordModel] = []
-                
-                moveWords.forEach { word in
+                let wordsWithDefinitions = moveWords.map { word in
                     var withDefinition = word
                     if let definition = wordDefinitionsDict[word.getHash()] {
                         withDefinition.setWordInfo(definition: definition)
                     }
-                    wordsWithDefinitions.append(withDefinition)
+                    return withDefinition
                 }
                 
                 let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
@@ -245,14 +242,12 @@ final class CommandViewModel: ObservableObject {
         }
         
         // Inject word definitions obtained during API validation.
-        var wordsWithDefinitions: [WordModel] = []
-        
-        moveWords.forEach { word in
+        let wordsWithDefinitions = moveWords.map { word in
             var withDefinition = word
             if let definition = wordDefinitionsDict[word.getHash()] {
                 withDefinition.setWordInfo(definition: definition)
             }
-            wordsWithDefinitions.append(withDefinition)
+            return withDefinition
         }
         
         try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
