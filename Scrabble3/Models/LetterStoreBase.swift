@@ -15,4 +15,10 @@ class LetterStoreBase: ObservableObject {
     static let cols: Int = 15
     static let size: Int = 8
     
+    let lang: GameLanguage
+    
+    init(lang: GameLanguage) {
+        self.lang = lang
+    }
+    
 }

@@ -24,6 +24,8 @@ final class CommandViewModel: ObservableObject {
     
     private var existingWords = [WordModel]()
     
+    private var wordDefinitionsDict: [String: WordDefinition] = [:]
+    
     init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
         print("CommandViewModel INIT")
         
@@ -54,7 +56,16 @@ final class CommandViewModel: ObservableObject {
             if await submitMove() {
                 let moveWords = try boardViewModel.getMoveWords()
                 
-                let wordsSummary = moveWords.map { ($0.word, $0.score) }
+                // TODO: this is a duplicate code - make it better!
+                let wordsWithDefinitions = moveWords.map { word in
+                    var withDefinition = word
+                    if let definition = wordDefinitionsDict[word.getHash()] {
+                        withDefinition.setWordInfo(definition: definition)
+                    }
+                    return withDefinition
+                }
+                
+                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
                 
                 let totalScore = moveWords.reduce(0) { $0 + $1.score }
                 
@@ -135,6 +146,11 @@ final class CommandViewModel: ObservableObject {
     }
     
     func validateMove() async throws {
+        guard let game else {
+            print("PANIC :: game not defined!")
+            return
+        }
+        
         let words = try boardViewModel.getMoveWords()
         
         boardViewModel.resetCellsStatus()
@@ -147,9 +163,12 @@ final class CommandViewModel: ObservableObject {
         
         var invalidWords = [WordModel]()
         for word in words {
-            let response = await Api.validateWord(word: word.word)
+            let response = await Api.validateWord(word: word.word, lang: game.lang)
             if (response == nil || !response!.isValid) {
                 invalidWords.append(word)
+            } else {
+                // Add word definition to dictionary for future use (on submit move).
+                wordDefinitionsDict[word.getHash()] = response!.wordDefinition
             }
         }
         
@@ -215,16 +234,23 @@ final class CommandViewModel: ObservableObject {
         
         var moveScore = boardViewModel.getMoveScore()
         
-        let moveWords = try? boardViewModel.getMoveWords()
-        
-        guard let moveWords = moveWords, let currentUser = currentUser else { return }
+        guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser else { return }
         
         if rackViewModel.isEmpty {
             // TODO: move to settings.
             moveScore += 15
         }
         
-        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore, hasBonus: rackViewModel.isEmpty)
+        // Inject word definitions obtained during API validation.
+        let wordsWithDefinitions = moveWords.map { word in
+            var withDefinition = word
+            if let definition = wordDefinitionsDict[word.getHash()] {
+                withDefinition.setWordInfo(definition: definition)
+            }
+            return withDefinition
+        }
+        
+        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.

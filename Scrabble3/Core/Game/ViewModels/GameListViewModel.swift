@@ -19,8 +19,14 @@ final class GameListViewModel: ObservableObject {
     
     @Published private(set) var userContactsViewModel = UserContactsViewModel()
     
-    func addListenerForGames() {
+    var preferredLanguage: GameLanguage? = nil
+    
+    func addListenerForGames(lang: GameLanguage) {
         guard let currentUser else { return }
+        
+        // Only act if preferred language has changed, otherwise we may encounter infinite update loop.
+        guard lang.rawValue != preferredLanguage?.rawValue else { return }
+        preferredLanguage = lang
         
         // Remove existing listener (if any).
         removeListenerForGames()
@@ -36,7 +42,7 @@ final class GameListViewModel: ObservableObject {
         // Always list games created by me, even if no other players are connected.
         let emails = Array(Set(initiatorEmails + counterpartEmails + [currentUser.email ?? ""]))
         
-        GameManager.shared.addListenerForGames(includeEmails: emails)
+        GameManager.shared.addListenerForGames(includeEmails: emails, lang: lang)
             .sink { completion in
                 
             } receiveValue: { [weak self] games in
@@ -46,7 +52,7 @@ final class GameListViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func addListenerForContacts() {
+    func addListenerForContacts(lang: GameLanguage) {
         guard let currentUser else { return }
         
         UserManager.shared.addListenerForContacts(user: currentUser)
@@ -71,7 +77,7 @@ final class GameListViewModel: ObservableObject {
                     self?.userContactsViewModel.contactUsers = contactUsers
                     
                     // Once we have contacts loaded we can refresh games listener.
-                    self?.addListenerForGames()
+                    self?.addListenerForGames(lang: lang)
                 }
             }
             .store(in: &cancellables)

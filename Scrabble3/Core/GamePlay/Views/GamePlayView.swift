@@ -22,8 +22,8 @@ struct GamePlayView: View {
         
         // This is the entry point to game-play view hierarchy.
         // We create all related view models here view models here.
-        self.boardViewModel = BoardViewModel()
-        self.rackViewModel = RackViewModel()
+        self.boardViewModel = BoardViewModel(lang: game.lang)
+        self.rackViewModel = RackViewModel(lang: game.lang)
         self.commandViewModel = CommandViewModel(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
     }
     
@@ -82,7 +82,7 @@ struct GamePlayView_Previews: PreviewProvider {
     static var previews: some View {
         let uuid = UUID().uuidString
         let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
-        GamePlayView(game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, players: [
+        GamePlayView(game: GameModel(id: uuid, createdAt: Timestamp(date: Date()), creatorUser: user, lang: GameLanguage.ru, players: [
             Player(user: user, score: 0, letterRack: [])
         ], turn: 0))
     }

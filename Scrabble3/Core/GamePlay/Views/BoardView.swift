@@ -50,5 +50,5 @@ struct BoardView: View {
 }
 
 #Preview {
-    BoardView(boardIsLocked: false, boardViewModel: BoardViewModel(), rackViewModel: RackViewModel())
+    BoardView(boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
 }

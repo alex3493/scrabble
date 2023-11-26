@@ -15,14 +15,14 @@ class BoardViewModel: LetterStoreBase {
     var asteriskCol: Int? = nil
     
     @Published var moveInfoDialogPresented: Bool = false
-    var moveWordsSummary: [(String, Int)] = []
+    var moveWordsSummary: [(String, WordInfo?, Int)] = []
     var moveTotalScore: Int = 0
     var moveBonus: Int? = nil
     
-    override init() {
+    override init(lang: GameLanguage) {
         print("BoardViewModel INIT")
         
-        super.init()
+        super.init(lang: lang)
         let numCells: Int = LetterStoreBase.rows * LetterStoreBase.cols;
         for i in 0...numCells - 1 {
             let row = i / LetterStoreBase.rows

@@ -14,6 +14,8 @@ final class GameInfoViewModel: ObservableObject {
     @Published var game: GameModel?
     private var cancellables = Set<AnyCancellable>()
     
+    let preferredLanguage = GameLanguage(rawValue: UserDefaults().string(forKey: "PreferredLang") ?? "ru")
+    
     var currentUser: DBUser? = nil
     
     var isMeGameCreator: Bool {
@@ -106,7 +108,7 @@ final class GameInfoViewModel: ObservableObject {
     }
     
     func createGame(byUser user: DBUser) async throws -> String? {
-        self.game = try await GameManager.shared.createNewGame(creatorUser: user)
+        self.game = try await GameManager.shared.createNewGame(creatorUser: user, lang: preferredLanguage ?? .ru)
         
         return self.game?.id
     }

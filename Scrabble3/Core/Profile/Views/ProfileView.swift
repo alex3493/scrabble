@@ -10,6 +10,8 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthWithEmailViewModel
     
+    @AppStorage("PreferredLang") var preferredLang: GameLanguage = .ru
+    
     var body: some View {
         List {
             if let user = viewModel.currentUser {
@@ -46,6 +48,15 @@ struct ProfileView: View {
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
+                    
+                    Picker(selection: $preferredLang) {
+                        Text("Russian").tag(GameLanguage.ru)
+                        Text("English").tag(GameLanguage.en)
+                        Text("Spanish").tag(GameLanguage.es)
+                    } label: {
+                        SettingsRowView(imageName: "character.book.closed", title: "Game Language", tintColor: Color(.systemGray))
+                        
+                    }
                 }
                 
                 Section("Account") {
@@ -71,6 +82,9 @@ struct ProfileView: View {
                     }
                 }
             }
+        }
+        .onAppear() {
+            preferredLang = GameLanguage(rawValue: UserDefaults.standard.string(forKey: "PreferredLang") ?? "ru") ?? GameLanguage.ru
         }
     }
 }
