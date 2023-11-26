@@ -15,6 +15,10 @@ struct CellView: View {
     
     var boardIsLocked: Bool
     
+    @State var isWordsInfoPresented = false
+    
+    @State var moveWordsSummary: [(String, WordInfo?, Int)] = []
+    
     @StateObject private var commandViewModel: CommandViewModel
     
     @StateObject private var board: BoardViewModel
@@ -92,11 +96,14 @@ struct CellView: View {
             } else {
                 cellPiece
             }
-        } else {
+        } else if !cell.isEmpty {
             cellPiece
                 .onTapGesture {
-                    print("Board cell clicked", cell.row, cell.col)
+                    board.moveWordsSummary = showWordDefinitions(row: cell.row, col: cell.col)
+                    board.moveInfoDialogPresented = true
                 }
+        } else {
+            cellPiece
         }
     }
     
@@ -189,6 +196,26 @@ struct CellView: View {
         } else {
             return nil
         }
+    }
+    
+    @MainActor
+    private func showWordDefinitions(row: Int, col: Int) -> [(String, WordInfo?, Int)] {
+        print("showWordDefinitions", row, col)
+        
+        let allWords = commandViewModel.gameMoves.flatMap { $0.words }
+        
+        let wordsAtCell = allWords.filter { $0.isCellInWord(row: row, col: col)}
+        
+        var summary = [(String, WordInfo?, Int)]()
+        
+        wordsAtCell.forEach { word in
+            summary.append((word.word, word.wordDefinition, word.score))
+        }
+        
+        print("summary", summary)
+        
+        return summary
+        
     }
 }
 

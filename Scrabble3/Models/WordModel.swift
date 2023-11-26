@@ -11,6 +11,12 @@ struct WordInfo: Codable, WordDefinition {
     var term: String
     var definition: String
     var imageURL: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case term
+        case definition
+        case imageURL = "image_url"
+    }
 }
 
 struct WordModel: Codable, Hashable, Equatable {
@@ -73,6 +79,12 @@ struct WordModel: Codable, Hashable, Equatable {
         let intersection = currentCells.intersection(wordCells)
         
         return !intersection.isEmpty
+    }
+    
+    func isCellInWord(row: Int, col: Int) -> Bool {
+        return cells.contains { cell in
+            return cell.row == row && cell.col == col
+        }
     }
     
     mutating func setWordInfo(definition: WordDefinition?) {
