@@ -15,14 +15,17 @@ struct CellView: View {
     
     var boardIsLocked: Bool
     
+    @StateObject private var commandViewModel: CommandViewModel
+    
     @StateObject private var board: BoardViewModel
     @StateObject private var rack: RackViewModel
     
-    init(cell: CellModel, boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+    init(cell: CellModel, boardIsLocked: Bool, commandViewModel: CommandViewModel) {
         self.cell = cell
         self.boardIsLocked = boardIsLocked
-        _board = StateObject(wrappedValue: boardViewModel)
-        _rack = StateObject(wrappedValue: rackViewModel)
+        _commandViewModel = StateObject(wrappedValue: commandViewModel)
+        _board = StateObject(wrappedValue: commandViewModel.boardViewModel)
+        _rack = StateObject(wrappedValue: commandViewModel.rackViewModel)
     }
     
     var body: some View {
@@ -91,6 +94,9 @@ struct CellView: View {
             }
         } else {
             cellPiece
+                .onTapGesture {
+                    print("Board cell clicked", cell.row, cell.col)
+                }
         }
     }
     
@@ -220,6 +226,6 @@ struct CellDropDelegate: DropDelegate {
     }
 }
 
-#Preview {
-    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-}
+//#Preview {
+//    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
+//}

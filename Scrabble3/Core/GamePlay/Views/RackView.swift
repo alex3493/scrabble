@@ -13,10 +13,12 @@ struct RackView: View {
     
     @StateObject private var boardViewModel: BoardViewModel
     @StateObject private var rackViewModel: RackViewModel
+    @StateObject private var commandViewModel: CommandViewModel
     
-    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel, commandViewModel: CommandViewModel) {
         _boardViewModel = StateObject(wrappedValue: boardViewModel)
         _rackViewModel = StateObject(wrappedValue: rackViewModel)
+        _commandViewModel = StateObject(wrappedValue: commandViewModel)
     }
     
     var body: some View {
@@ -26,7 +28,7 @@ struct RackView: View {
                     Group {
                         ForEach(0..<LetterStoreBase.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
-                            CellView(cell: cell, boardIsLocked: false, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                            CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .frame(width: idealCellSize)
                         }
@@ -38,7 +40,7 @@ struct RackView: View {
                     Group {
                         ForEach(0..<LetterStoreBase.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
-                            CellView(cell: cell, boardIsLocked: false, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                            CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .frame(width: idealCellSize)
                         }
@@ -62,7 +64,7 @@ struct RackView: View {
     }
 }
 
-#Preview {
-    RackView(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-}
+//#Preview {
+//    RackView(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
+//}
 
