@@ -96,8 +96,7 @@ struct CellView: View {
             } else if cell.isImmutable && cell.role == .board && !cell.isEmpty {
                 cellPiece
                     .onTapGesture {
-                        board.moveWordsSummary = showWordDefinitions(row: cell.row, col: cell.col)
-                        board.moveInfoDialogPresented = true
+                        showWordDefinitions(row: cell.row, col: cell.col)
                     }
             } else {
                 cellPiece
@@ -105,8 +104,7 @@ struct CellView: View {
         } else if !cell.isEmpty {
             cellPiece
                 .onTapGesture {
-                    board.moveWordsSummary = showWordDefinitions(row: cell.row, col: cell.col)
-                    board.moveInfoDialogPresented = true
+                    showWordDefinitions(row: cell.row, col: cell.col)
                 }
         } else {
             cellPiece
@@ -205,12 +203,13 @@ struct CellView: View {
     }
     
     @MainActor
-    private func showWordDefinitions(row: Int, col: Int) -> [(String, WordInfo?, Int)] {
-        print("showWordDefinitions", row, col)
+    private func showWordDefinitions(row: Int, col: Int) {
+        print("showWordDefinitions cell and count", row, col, commandViewModel.gameMoves.count)
         
+        // TODO::20 - this is not working in some cases!
         let allWords = commandViewModel.gameMoves.flatMap { $0.words }
         
-        let wordsAtCell = allWords.filter { $0.isCellInWord(row: row, col: col)}
+        let wordsAtCell = allWords.filter { $0.isCellInWord(row: row, col: col) }
         
         var summary = [(String, WordInfo?, Int)]()
         
@@ -220,8 +219,9 @@ struct CellView: View {
         
         print("summary", summary)
         
-        return summary
-        
+        board.moveWordsSummary = summary
+        board.moveTotalScore = nil
+        board.moveInfoDialogPresented = true
     }
 }
 
