@@ -24,6 +24,8 @@ final class CommandViewModel: ObservableObject {
     
     private var existingWords = [WordModel]()
     
+    private var wordDefinitionsDict: [String: WordDefinition] = [:]
+    
     init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
         print("CommandViewModel INIT")
         
@@ -155,6 +157,9 @@ final class CommandViewModel: ObservableObject {
             let response = await Api.validateWord(word: word.word, lang: game.lang)
             if (response == nil || !response!.isValid) {
                 invalidWords.append(word)
+            } else {
+                // Add word definition to dictionary for future use (on submit move).
+                wordDefinitionsDict[word.getHash()] = response!.wordDefinition
             }
         }
         
@@ -220,16 +225,25 @@ final class CommandViewModel: ObservableObject {
         
         var moveScore = boardViewModel.getMoveScore()
         
-        let moveWords = try? boardViewModel.getMoveWords()
-        
-        guard let moveWords = moveWords, let currentUser = currentUser else { return }
+        guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser else { return }
         
         if rackViewModel.isEmpty {
             // TODO: move to settings.
             moveScore += 15
         }
         
-        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: moveWords, score: moveScore, hasBonus: rackViewModel.isEmpty)
+        // Inject word definitions obtained during API validation.
+        var wordsWithDefinitions: [WordModel] = []
+        
+        moveWords.forEach { word in
+            var withDefinition = word
+            if let definition = wordDefinitionsDict[word.getHash()] {
+                withDefinition.setWordInfo(definition: definition)
+            }
+            wordsWithDefinitions.append(withDefinition)
+        }
+        
+        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
