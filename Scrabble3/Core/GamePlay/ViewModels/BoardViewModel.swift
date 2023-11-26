@@ -15,7 +15,7 @@ class BoardViewModel: LetterStoreBase {
     var asteriskCol: Int? = nil
     
     @Published var moveInfoDialogPresented: Bool = false
-    var moveWordsSummary: [(String, Int)] = []
+    var moveWordsSummary: [(String, WordInfo?, Int)] = []
     var moveTotalScore: Int = 0
     var moveBonus: Int? = nil
     

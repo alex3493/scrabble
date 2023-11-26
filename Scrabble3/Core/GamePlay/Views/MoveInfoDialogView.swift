@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MoveInfoDialogView: View {
     
-    let words: [(String, Int)]
+    let words: [(String, WordInfo?, Int)]
     let score: Int
     let bonus: Int?
     
@@ -19,10 +19,32 @@ struct MoveInfoDialogView: View {
         VStack {
             List {
                 ForEach(Array(words.enumerated()), id: \.offset) { index, word in
-                    HStack {
-                        Text("\(word.0)")
-                        Spacer()
-                        Text("\(word.1)")
+                    VStack {
+                        HStack {
+                            Text("\(word.0)")
+                            Spacer()
+                            Text("\(word.2)")
+                        }
+                        if let wordInfo = word.1 {
+                            HStack {
+                                Text("\(wordInfo.definition)")
+                                Spacer()
+                                if let imageUrl = wordInfo.imageURL {
+                                    AsyncImage(
+                                        url: URL(string: imageUrl),
+                                        content: { image in
+                                            image.resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: 100, maxHeight: 100)
+                                        },
+                                        placeholder: {
+                                            ProgressView()
+                                        }
+                                    )
+                                    
+                                }
+                            }
+                        }
                     }
                 }
                 if let bonus = bonus {
@@ -58,5 +80,5 @@ struct MoveInfoDialogView: View {
 }
 
 #Preview {
-    MoveInfoDialogView(words: [("Word", 10)], score: 10, bonus: nil, isPresented: .constant(false))
+    MoveInfoDialogView(words: [("Word", WordInfo(term: "Word", definition: "Definition"), 10)], score: 10, bonus: nil, isPresented: .constant(false))
 }

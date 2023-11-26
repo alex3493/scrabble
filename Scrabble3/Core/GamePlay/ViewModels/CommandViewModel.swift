@@ -56,7 +56,19 @@ final class CommandViewModel: ObservableObject {
             if await submitMove() {
                 let moveWords = try boardViewModel.getMoveWords()
                 
-                let wordsSummary = moveWords.map { ($0.word, $0.score) }
+                // TODO: this is a duplicate code - make it better!
+                // Inject word definitions obtained during API validation.
+                var wordsWithDefinitions: [WordModel] = []
+                
+                moveWords.forEach { word in
+                    var withDefinition = word
+                    if let definition = wordDefinitionsDict[word.getHash()] {
+                        withDefinition.setWordInfo(definition: definition)
+                    }
+                    wordsWithDefinitions.append(withDefinition)
+                }
+                
+                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
                 
                 let totalScore = moveWords.reduce(0) { $0 + $1.score }
                 
