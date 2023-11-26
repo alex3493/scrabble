@@ -10,7 +10,7 @@ import SwiftUI
 struct MoveInfoDialogView: View {
     
     let words: [(String, WordInfo?, Int)]
-    let score: Int
+    let score: Int?
     let bonus: Int?
     
     @Binding var isPresented: Bool
@@ -18,14 +18,16 @@ struct MoveInfoDialogView: View {
     var body: some View {
         VStack {
             List {
-                HStack {
-                    Text("Всего")
-                    Spacer()
-                    Text("\(score + (bonus ?? 0))")
+                if let totalScore = score {
+                    HStack {
+                        Text("Всего")
+                        Spacer()
+                        Text("\(totalScore + (bonus ?? 0))")
+                    }
+                    .fontWeight(.bold)
+                    .padding(.bottom, 12)
+                    .padding(.top, 10)
                 }
-                .fontWeight(.bold)
-                .padding(.bottom, 12)
-                .padding(.top, 10)
                 ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                     VStack {
                         HStack {

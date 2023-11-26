@@ -93,6 +93,12 @@ struct CellView: View {
                             : .checkedForLetterChange
                         )
                     }
+            } else if cell.isImmutable && cell.role == .board && !cell.isEmpty {
+                cellPiece
+                    .onTapGesture {
+                        board.moveWordsSummary = showWordDefinitions(row: cell.row, col: cell.col)
+                        board.moveInfoDialogPresented = true
+                    }
             } else {
                 cellPiece
             }
