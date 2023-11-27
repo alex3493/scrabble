@@ -282,6 +282,7 @@ final class CommandViewModel: ObservableObject {
                 self?.gameMoves = moves.sorted { lhs, rhs in
                     return lhs.createdAt < rhs.createdAt
                 }
+                self?.existingWords = self?.gameMoves.flatMap { $0.words } ?? []
             }
             .store(in: &cancellables)
     }

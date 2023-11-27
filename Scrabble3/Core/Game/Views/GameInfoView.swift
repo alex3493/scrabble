@@ -24,7 +24,7 @@ struct GameInfoView: View {
         Group {
             if viewModel.isGameRunning, let game = viewModel.game, viewModel.isMeGamePlayer {
                 GamePlayView(game: game)
-            } else if viewModel.isGameFinished, let game = viewModel.game {
+            } else if (viewModel.isGameFinished || viewModel.isGameAborted), let game = viewModel.game {
                 GameResultView(game: game)
                     .navigationTitle("Игра окончена")
             } else {
