@@ -56,6 +56,8 @@ struct MoveInfoDialogView: View {
                             }
                         }
                     }
+                    .padding(.top, 10)
+                    .padding(.bottom, 10)
                 }
                 if let bonus = bonus {
                     HStack {

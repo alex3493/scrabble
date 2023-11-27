@@ -73,6 +73,12 @@ final class GameInfoViewModel: ObservableObject {
         return game.gameStatus == .waiting && game.players.count <= 1
     }
     
+    var isGameWaiting: Bool {
+        guard let game = game else { return false }
+        
+        return game.gameStatus == .waiting
+    }
+    
     var isGameRunning: Bool {
         guard let game = game else { return false }
         

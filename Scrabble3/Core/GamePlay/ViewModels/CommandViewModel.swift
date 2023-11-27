@@ -56,16 +56,19 @@ final class CommandViewModel: ObservableObject {
             if await submitMove() {
                 let moveWords = try boardViewModel.getMoveWords()
                 
-                // TODO: this is a duplicate code - make it better!
-                let wordsWithDefinitions = moveWords.map { word in
-                    var withDefinition = word
-                    if let definition = wordDefinitionsDict[word.getHash()] {
-                        withDefinition.setWordInfo(definition: definition)
-                    }
-                    return withDefinition
-                }
+                // We can also show definitions in current move info.
+//                let wordsWithDefinitions = moveWords.map { word in
+//                    var withDefinition = word
+//                    if let definition = wordDefinitionsDict[word.getHash()] {
+//                        withDefinition.setWordInfo(definition: definition)
+//                    }
+//                    return withDefinition
+//                }
+//                
+//                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
                 
-                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
+                // For current move words check we do not inject word definitions.
+                let wordsSummary = moveWords.map { ($0.word, $0.wordDefinition, $0.score) }
                 
                 let totalScore = moveWords.reduce(0) { $0 + $1.score }
                 

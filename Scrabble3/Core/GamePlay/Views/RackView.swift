@@ -15,10 +15,10 @@ struct RackView: View {
     @StateObject private var rackViewModel: RackViewModel
     @StateObject private var commandViewModel: CommandViewModel
     
-    init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel, commandViewModel: CommandViewModel) {
-        _boardViewModel = StateObject(wrappedValue: boardViewModel)
-        _rackViewModel = StateObject(wrappedValue: rackViewModel)
+    init(commandViewModel: CommandViewModel) {
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
+        _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
+        _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
     }
     
     var body: some View {
@@ -64,7 +64,7 @@ struct RackView: View {
     }
 }
 
-//#Preview {
-//    RackView(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-//}
+#Preview {
+    RackView(commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
+}
 
