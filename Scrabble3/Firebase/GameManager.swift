@@ -135,7 +135,6 @@ final class GameManager {
     }
     
     func deleteGame(gameId: String) async throws {
-        // TODO::21 - here we see error in console.
         try await gameDocument(gameId: gameId).delete()
     }
     
