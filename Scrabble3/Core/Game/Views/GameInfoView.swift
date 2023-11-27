@@ -130,7 +130,6 @@ struct GameInfoView: View {
                     
                 }
                 .task {
-                    print("GameInfoView task")
                     if (gameId == nil) {
                         do {
                             try await createGame()
