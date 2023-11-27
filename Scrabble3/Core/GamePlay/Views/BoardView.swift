@@ -17,11 +17,11 @@ struct BoardView: View {
     
     let boardIsLocked: Bool
     
-    init(boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel, commandViewModel: CommandViewModel) {
+    init(boardIsLocked: Bool, commandViewModel: CommandViewModel) {
         self.boardIsLocked = boardIsLocked
-        _boardViewModel = StateObject(wrappedValue: boardViewModel)
-        _rackViewModel = StateObject(wrappedValue: rackViewModel)
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
+        _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
+        _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
     }
     
     var body: some View {
@@ -51,6 +51,6 @@ struct BoardView: View {
     }
 }
 
-//#Preview {
-//    BoardView(boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-//}
+#Preview {
+    BoardView(boardIsLocked: false, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
+}
