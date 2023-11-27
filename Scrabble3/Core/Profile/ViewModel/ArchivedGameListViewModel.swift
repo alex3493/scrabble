@@ -21,10 +21,16 @@ class ArchivedGameListViewModel: ObservableObject {
     
     var currentUser: DBUser? = nil
     
-    func fetchGames() async throws {
-        print("Fetching archived games")
+    func fetchGames(reload: Bool = false) async throws {
+        print("Fetching archived games. Reload mode: ", reload)
         
         if let currentUser {
+            
+            if reload {
+                lastDocument = nil
+                games = []
+                allGamesFetched = false
+            }
             
             let confirmedContacts = contacts.filter { $0.contactConfirmed == true }
             

@@ -135,6 +135,7 @@ final class GameManager {
     }
     
     func deleteGame(gameId: String) async throws {
+        // TODO::21 - here we see error in console.
         try await gameDocument(gameId: gameId).delete()
     }
     
@@ -220,9 +221,9 @@ final class GameManager {
     }
     
     // Listen for game item updates.
-    func addListenerForGame(gameId: String) -> AnyPublisher<GameModel, Error> {
+    func addListenerForGame(gameId: String) -> AnyPublisher<GameModel?, Error> {
         let (publisher, listener) = gameCollection.document(gameId)
-            .addItemSnapshotListener(as: GameModel.self)
+            .addItemSnapshotListener(as: GameModel?.self)
         
         self.gameListener = listener
         return publisher

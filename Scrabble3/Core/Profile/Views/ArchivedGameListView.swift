@@ -54,7 +54,7 @@ struct ArchivedGameListView: View {
         }
         .task {
             do {
-                try await viewModel.fetchGames()
+                try await viewModel.fetchGames(reload: true)
             } catch {
                 print("DEBUG :: Error fetching users", error.localizedDescription)
                 errorStore.showGameSetupAlertView(withMessage: error.localizedDescription)
