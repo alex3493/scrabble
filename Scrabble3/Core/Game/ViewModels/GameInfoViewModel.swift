@@ -91,6 +91,12 @@ final class GameInfoViewModel: ObservableObject {
         return game.gameStatus == .finished
     }
     
+    var isGameAborted: Bool {
+        guard let game = game else { return false }
+        
+        return game.gameStatus == .aborted
+    }
+    
     var players: [Player] {
         guard let game = game else { return [] }
         return game.players

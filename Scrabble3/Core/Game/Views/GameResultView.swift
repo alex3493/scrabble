@@ -21,6 +21,8 @@ struct GameResultView: View {
     
     @State var currentUser: DBUser? = nil
     
+    @State var gameWords: [String: [WordModel]] = [:]
+    
     var body: some View {
         VStack {
             List {
@@ -29,17 +31,7 @@ struct GameResultView: View {
                     Text("Current game status: \(game.gameStatus.rawValue)")
                 }
                 
-                Section("Игроки") {
-                    ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
-                        HStack(spacing: 12) {
-                            Text(item.user.name!)
-                            Spacer()
-                            Text("\(item.score)")
-                        }
-                    }
-                }
-                
-                if let winners = winners {
+                if let winners = winners, game.gameStatus == .finished {
                     Section(winners.count > 1 ? "Победители" : "Победитель") {
                         ForEach(winners, id: \.id.self) { item in
                             HStack(spacing: 12) {
@@ -52,6 +44,32 @@ struct GameResultView: View {
                         .background(Color.green)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
+                    }
+                }
+                
+                Section("Игроки") {
+                    ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
+                        VStack {
+                            HStack(spacing: 12) {
+                                Text(item.user.name!)
+                                Spacer()
+                                Text("\(item.score)")
+                            }
+                            .fontWeight(.bold)
+                            Divider()
+                            if !getPlayerWords(playerId: item.id).isEmpty {
+                                ForEach(Array(getPlayerWords(playerId: item.id).enumerated()), id: \.offset) { index, item in
+                                    HStack {
+                                        Text("\(item.word)")
+                                        Spacer()
+                                        Text("\(item.score)")
+                                    }
+                                }
+                            } else {
+                                Text("Игрок не поставил ни одного слова")
+                                    .fontWeight(.bold)
+                            }
+                        }
                     }
                 }
             }
@@ -86,6 +104,13 @@ struct GameResultView: View {
             // print("Current user \(String(describing: authViewModel.currentUser))")
             currentUser = authViewModel.currentUser
         }
+        .task {
+            do {
+                try await fetchGameWords()
+            } catch {
+                print("DEBUG :: Error fetching game words", error.localizedDescription)
+            }
+        }
     }
     
     var canDeleteGame: Bool {
@@ -109,6 +134,23 @@ struct GameResultView: View {
         }
         
         return nil
+    }
+    
+    func fetchGameWords() async throws {
+        gameWords = [:]
+        
+        let moves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
+        
+        game.players.forEach { player in
+            let playerMoves = moves.filter { $0.user.userId == player.id }
+            gameWords[player.id] = playerMoves.flatMap{ $0.words }
+        }
+    }
+    
+    func getPlayerWords(playerId: String) -> [WordModel] {
+        guard !gameWords.isEmpty, let words = gameWords[playerId] else { return [] }
+        
+        return words
     }
 }
 
