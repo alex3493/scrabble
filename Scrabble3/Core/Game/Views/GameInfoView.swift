@@ -109,6 +109,10 @@ struct GameInfoView: View {
                                 }
                             }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
                         }
+                    } else {
+                        Text("Game does not exist")
+                            .fontWeight(.bold)
+                            .padding()
                     }
                     
                     Spacer()

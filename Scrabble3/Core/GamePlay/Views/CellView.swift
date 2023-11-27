@@ -15,14 +15,21 @@ struct CellView: View {
     
     var boardIsLocked: Bool
     
+    @State var isWordsInfoPresented = false
+    
+    @State var moveWordsSummary: [(String, WordInfo?, Int)] = []
+    
+    @StateObject private var commandViewModel: CommandViewModel
+    
     @StateObject private var board: BoardViewModel
     @StateObject private var rack: RackViewModel
     
-    init(cell: CellModel, boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+    init(cell: CellModel, boardIsLocked: Bool, commandViewModel: CommandViewModel) {
         self.cell = cell
         self.boardIsLocked = boardIsLocked
-        _board = StateObject(wrappedValue: boardViewModel)
-        _rack = StateObject(wrappedValue: rackViewModel)
+        _commandViewModel = StateObject(wrappedValue: commandViewModel)
+        _board = StateObject(wrappedValue: commandViewModel.boardViewModel)
+        _rack = StateObject(wrappedValue: commandViewModel.rackViewModel)
     }
     
     var body: some View {
@@ -86,9 +93,19 @@ struct CellView: View {
                             : .checkedForLetterChange
                         )
                     }
+            } else if cell.isImmutable && cell.role == .board && !cell.isEmpty {
+                cellPiece
+                    .onTapGesture {
+                        showWordDefinitions(row: cell.row, col: cell.col)
+                    }
             } else {
                 cellPiece
             }
+        } else if !cell.isEmpty {
+            cellPiece
+                .onTapGesture {
+                    showWordDefinitions(row: cell.row, col: cell.col)
+                }
         } else {
             cellPiece
         }
@@ -184,6 +201,28 @@ struct CellView: View {
             return nil
         }
     }
+    
+    @MainActor
+    private func showWordDefinitions(row: Int, col: Int) {
+        print("showWordDefinitions cell and count", row, col, commandViewModel.gameMoves.count)
+        
+        // TODO::20 - this is not working in some cases!
+        let allWords = commandViewModel.gameMoves.flatMap { $0.words }
+        
+        let wordsAtCell = allWords.filter { $0.isCellInWord(row: row, col: col) }
+        
+        var summary = [(String, WordInfo?, Int)]()
+        
+        wordsAtCell.forEach { word in
+            summary.append((word.word, word.wordDefinition, word.score))
+        }
+        
+        print("summary", summary)
+        
+        board.moveWordsSummary = summary
+        board.moveTotalScore = nil
+        board.moveInfoDialogPresented = true
+    }
 }
 
 struct CellDropDelegate: DropDelegate {
@@ -220,6 +259,6 @@ struct CellDropDelegate: DropDelegate {
     }
 }
 
-#Preview {
-    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-}
+//#Preview {
+//    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
+//}

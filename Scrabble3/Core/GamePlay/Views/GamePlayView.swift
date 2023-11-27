@@ -31,18 +31,18 @@ struct GamePlayView: View {
         GeometryReader { proxy in
             if (isLandscape(proxy.size)) {
                 HStack {
-                    BoardView(boardIsLocked: !hasTurn, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                    BoardView(boardIsLocked: !hasTurn, boardViewModel: boardViewModel, rackViewModel: rackViewModel, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                    RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                     CommandView(gameId: game.id, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                 }
             } else {
                 VStack {
-                    BoardView(boardIsLocked: !hasTurn, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                    BoardView(boardIsLocked: !hasTurn, boardViewModel: boardViewModel, rackViewModel: rackViewModel, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                    RackView(boardViewModel: boardViewModel, rackViewModel: rackViewModel, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                     CommandView(gameId: game.id, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)

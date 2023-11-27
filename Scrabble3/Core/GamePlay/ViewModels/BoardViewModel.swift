@@ -16,7 +16,7 @@ class BoardViewModel: LetterStoreBase {
     
     @Published var moveInfoDialogPresented: Bool = false
     var moveWordsSummary: [(String, WordInfo?, Int)] = []
-    var moveTotalScore: Int = 0
+    var moveTotalScore: Int? = nil
     var moveBonus: Int? = nil
     
     override init(lang: GameLanguage) {

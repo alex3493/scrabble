@@ -13,13 +13,15 @@ struct BoardView: View {
     
     @StateObject private var boardViewModel: BoardViewModel
     @StateObject private var rackViewModel: RackViewModel
+    @StateObject private var commandViewModel: CommandViewModel
     
     let boardIsLocked: Bool
     
-    init(boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
+    init(boardIsLocked: Bool, boardViewModel: BoardViewModel, rackViewModel: RackViewModel, commandViewModel: CommandViewModel) {
         self.boardIsLocked = boardIsLocked
         _boardViewModel = StateObject(wrappedValue: boardViewModel)
         _rackViewModel = StateObject(wrappedValue: rackViewModel)
+        _commandViewModel = StateObject(wrappedValue: commandViewModel)
     }
     
     var body: some View {
@@ -28,7 +30,7 @@ struct BoardView: View {
                 HStack(spacing: 1) {
                     ForEach(0...LetterStoreBase.cols - 1, id: \.self) { col in
                         let cell = boardViewModel.cellByPosition(row: row, col: col)
-                        CellView(cell: cell, boardIsLocked: boardIsLocked, boardViewModel: boardViewModel, rackViewModel: rackViewModel)
+                        CellView(cell: cell, boardIsLocked: boardIsLocked, commandViewModel: commandViewModel)
                             .frame(width: idealCellSize, height: idealCellSize)
                     }
                 }
@@ -49,6 +51,6 @@ struct BoardView: View {
     }
 }
 
-#Preview {
-    BoardView(boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-}
+//#Preview {
+//    BoardView(boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
+//}
