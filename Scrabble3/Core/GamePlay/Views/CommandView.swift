@@ -64,16 +64,16 @@ struct CommandView: View {
                 
                 ActionImageButton(label: "", action: {
                     await viewModel.validateMove(gameId: game.id)
-                }, buttonSystemImage: "info", backGroundColor: Color(.systemGray), maxWidth: false)
-                
-                ActionImageButton(label: "", action: {
-                    do {
-                        try await viewModel.submitMove(gameId: game.id)
-                    } catch {
-                        print("DEBUG :: Error submitting move: \(error.localizedDescription)")
-                        errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
-                    }
                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
+                
+//                ActionImageButton(label: "", action: {
+//                    do {
+//                        try await viewModel.submitMove(gameId: game.id)
+//                    } catch {
+//                        print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+//                        errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
+//                    }
+//                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
             }
         }
     }

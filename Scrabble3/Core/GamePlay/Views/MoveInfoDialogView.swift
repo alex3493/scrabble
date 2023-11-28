@@ -13,6 +13,10 @@ struct MoveInfoDialogView: View {
     let score: Int?
     let bonus: Int?
     
+    let commandViewModel: CommandViewModel
+    
+    let errorStore = ErrorStore.shared
+    
     @Binding var isPresented: Bool
     
     var body: some View {
@@ -48,7 +52,7 @@ struct MoveInfoDialogView: View {
                                                 .frame(maxWidth: 100, maxHeight: 100)
                                         },
                                         placeholder: {
-                                            // ProgressView()
+                                            ProgressView()
                                         }
                                     )
                                     
@@ -71,20 +75,57 @@ struct MoveInfoDialogView: View {
             
             Spacer()
             
-            Button {
-                isPresented = false
-            } label: {
-                HStack(spacing: 3) {
-                    Text("ЗАКРЫТЬ")
-                        .fontWeight(.bold)
+            HStack {
+                if showSubmitButton, let game = commandViewModel.game {
+                    Button {
+                        Task {
+                            do {
+                                try await commandViewModel.nextTurn(gameId: game.id)
+                            } catch {
+                                print("DEBUG :: Error submitting move: \(error.localizedDescription)")
+                                errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
+                            }
+                            isPresented = false
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "paperplane.fill")
+                                .resizable()
+                                .frame(width: 32, height: 32)
+                                .scaledToFit()
+                            Text("ОТПРАВИТЬ")
+                                .fontWeight(.bold)
+                        }
+                        .font(.system(size: 24))
+                    }
+                    .padding()
                 }
-                .font(.system(size: 14))
+                
+                Spacer()
+                
+                Button {
+                    isPresented = false
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .scaledToFit()
+                        Text("ЗАКРЫТЬ")
+                            .fontWeight(.bold)
+                    }
+                    .font(.system(size: 24))
+                }
+                .padding()
             }
-            .padding()
         }
+    }
+    
+    var showSubmitButton: Bool {
+        return score != nil
     }
 }
 
 #Preview {
-    MoveInfoDialogView(words: [("Word", WordInfo(term: "Word", definition: "Definition"), 10)], score: 10, bonus: nil, isPresented: .constant(false))
+    MoveInfoDialogView(words: [("Word", WordInfo(term: "Word", definition: "Definition"), 10)], score: 10, bonus: nil, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)), isPresented: .constant(false))
 }

@@ -42,7 +42,7 @@ struct BoardView: View {
             AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!, boardViewModel: boardViewModel)
         }
         .fullScreenCover(isPresented: $boardViewModel.moveInfoDialogPresented) {
-            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, bonus: boardViewModel.getMoveBonus, isPresented: $boardViewModel.moveInfoDialogPresented)
+            MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, bonus: boardViewModel.getMoveBonus, commandViewModel: commandViewModel, isPresented: $boardViewModel.moveInfoDialogPresented)
         }
     }
     

@@ -94,20 +94,5 @@ final class GameListViewModel: ObservableObject {
     deinit {
         print("***** GameListViewModel DESTROYED")
     }
-    
-    // TODO: just testing resource access.
-    //    func test() throws {
-    //        let url = Bundle.main.url(forResource: "russian", withExtension: "dic", subdirectory: "Dic")
-    //        if let url = url, try url.checkResourceIsReachable() {
-    //            print("file exist")
-    //            if let fileContents = try? String(contentsOf: url) {
-    //                // we loaded the file into a string!
-    //                print("file loaded")
-    //                print("Content:", fileContents)
-    //            }
-    //        } else {
-    //            print("file is not found")
-    //        }
-    //
-    //    }
+
 }

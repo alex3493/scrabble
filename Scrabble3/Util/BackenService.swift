@@ -221,18 +221,21 @@ struct Api {
         
         switch lang {
         case .ru:
-            response = await ApiRussian.validateWord(word: word)
+            // response = await ApiRussian.validateWord(word: word)
+            response = LocalDictServiceRussian.validateWord(word: word)
             break
         case .en:
-            response = await ApiEnglish.validateWord(word: word)
+            // response = await ApiEnglish.validateWord(word: word)
+            response = LocalDictServiceEnglish.validateWord(word: word)
             break
         case .es:
-            response = await ApiSpanish.validateWord(word: word)
+            // response = await ApiSpanish.validateWord(word: word)
+            response = LocalDictServiceSpanish.validateWord(word: word)
             break
         }
         
         if let response {
-            print("DEBUG :: Validation response", response.wordDefinition as Any)
+            print("DEBUG :: Word definition response", response.wordDefinition as Any)
         }
         
         return response
