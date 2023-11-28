@@ -82,6 +82,9 @@ struct CellView: View {
                 // Exchange asterisk on board (rack --> board move).
                 cellPiece
                     .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self, commandViewModel: commandViewModel))
+                    .onTapGesture {
+                        showWordDefinitions(row: cell.row, col: cell.col)
+                    }
             } else if (isCellReadyForLetterChange) {
                 // Check tiles for letter change action.
                 cellPiece
