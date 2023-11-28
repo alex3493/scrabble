@@ -24,6 +24,7 @@ class LocalDictService {
                     print("File loaded")
                     
                     LocalDictService.dictionary = fileContents
+                    LocalDictService.lang = lang
                 }
             } else {
                 throw URLError(.fileDoesNotExist)
@@ -33,11 +34,14 @@ class LocalDictService {
         }
     }
     
+    static var lang = ""
     static var dictionary: String = ""
     
     static func validateWord(word: String, lang: String) -> LocalDictServiceResponse {
         
-        if dictionary.isEmpty {
+        // If dictionary was not loaded yet or we have changed the language
+        // make sure that we init the dictionary.
+        if dictionary.isEmpty || lang != self.lang {
             loadDictionary(lang: lang)
         }
         
