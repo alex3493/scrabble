@@ -70,18 +70,18 @@ struct CellView: View {
             if (cell.cellStatus == .empty) {
                 // Empty tile - can accept moves.
                 cellPiece
-                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
+                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self, commandViewModel: commandViewModel))
             } else if (!cell.isImmutable && !isCellReadyForLetterChange) {
                 // Current move board or rack tiles - free move on board, in rack and between board and rack.
                 cellPiece
                     .onDrag {
                         NSItemProvider(object: NSString(string: cell.fingerprint))
                     }
-                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
+                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self, commandViewModel: commandViewModel))
             } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
                 // Exchange asterisk on board (rack --> board move).
                 cellPiece
-                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self))
+                    .onDrop(of: [.text], delegate: CellDropDelegate(drop: cell, viewModel: self, commandViewModel: commandViewModel))
             } else if (isCellReadyForLetterChange) {
                 // Check tiles for letter change action.
                 cellPiece
@@ -229,6 +229,8 @@ struct CellDropDelegate: DropDelegate {
     let drop: CellModel // Target cell.
     let viewModel: CellView
     
+    let commandViewModel: CommandViewModel
+    
     func performDrop(info: DropInfo) -> Bool {
         
         let provider = info.itemProviders(for: [.text]).first
@@ -248,6 +250,19 @@ struct CellDropDelegate: DropDelegate {
                 }
                 
                 viewModel.moveCell(drag: drag, drop: drop)
+                
+                // TODO: in order to validate words in real time we must have a synchronous validateMove method.
+                // TODO: this feature has evident performance impact! Check...
+                // We are trying to perform validation in another thread, however we are not sure
+                // that is solves performance issues...
+                // We can also try a timeout approach (debounce) here.
+//                Task {
+//                    do {
+//                        try await commandViewModel.validateMove()
+//                    } catch {
+//                        print("DEBUG :: Error during internal validation")
+//                    }
+//                }
             }
         }
         
@@ -259,6 +274,6 @@ struct CellDropDelegate: DropDelegate {
     }
 }
 
-//#Preview {
-//    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru))
-//}
+#Preview {
+    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
+}

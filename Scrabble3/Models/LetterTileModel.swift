@@ -145,7 +145,7 @@ struct LetterBank {
         LetterTile(char: "X", score: 8, probability: 1, isAsterisk: false, lang: .es),
         LetterTile(char: "Y", score: 4, probability: 1, isAsterisk: false, lang: .es),
         LetterTile(char: "Z", score: 10, probability: 1, isAsterisk: false, lang: .es),
-        LetterTile(char: "*", score: 0, probability: 5, isAsterisk: true, lang: .es),
+        LetterTile(char: "*", score: 0, probability: 50, isAsterisk: true, lang: .es),
     ]
     
     static func getAllTilesShuffled(lang: GameLanguage) -> [LetterTile] {

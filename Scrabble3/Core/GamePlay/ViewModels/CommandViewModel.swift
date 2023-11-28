@@ -164,22 +164,6 @@ final class CommandViewModel: ObservableObject {
             throw ValidationError.hangingWords(words: hanging.map { $0.word })
         }
         
-        var invalidWords = [WordModel]()
-        for word in words {
-            let response = await Api.validateWord(word: word.word, lang: game.lang)
-            if (response == nil || !response!.isValid) {
-                invalidWords.append(word)
-            } else {
-                // Add word definition to dictionary for future use (on submit move).
-                wordDefinitionsDict[word.getHash()] = response!.wordDefinition
-            }
-        }
-        
-        if (invalidWords.count > 0) {
-            boardViewModel.highlightWords(words: invalidWords, status: .error)
-            throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
-        }
-        
         // Check for repeated words.
         var repeatedWords = [WordModel]()
         
@@ -208,6 +192,22 @@ final class CommandViewModel: ObservableObject {
         if (repeatedWords.count > 0) {
             boardViewModel.highlightWords(words: repeatedWords, status: .error)
             throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
+        }
+        
+        var invalidWords = [WordModel]()
+        for word in words {
+            let response = await Api.validateWord(word: word.word, lang: game.lang)
+            if (response == nil || !response!.isValid) {
+                invalidWords.append(word)
+            } else {
+                // Add word definition to dictionary for future use (on submit move).
+                wordDefinitionsDict[word.getHash()] = response!.wordDefinition
+            }
+        }
+        
+        if (invalidWords.count > 0) {
+            boardViewModel.highlightWords(words: invalidWords, status: .error)
+            throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
         }
     }
     
