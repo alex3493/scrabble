@@ -229,6 +229,7 @@ struct CellDropDelegate: DropDelegate {
     let drop: CellModel // Target cell.
     let viewModel: CellView
     
+    // Interact with game controller.
     let commandViewModel: CommandViewModel
     
     func performDrop(info: DropInfo) -> Bool {
@@ -251,18 +252,18 @@ struct CellDropDelegate: DropDelegate {
                 
                 viewModel.moveCell(drag: drag, drop: drop)
                 
-                // TODO: in order to validate words in real time we must have a synchronous validateMove method.
-                // TODO: this feature has evident performance impact! Check...
-                // We are trying to perform validation in another thread, however we are not sure
-                // that is solves performance issues...
-                // We can also try a timeout approach (debounce) here.
-//                Task {
-//                    do {
-//                        try await commandViewModel.validateMove()
-//                    } catch {
-//                        print("DEBUG :: Error during internal validation")
-//                    }
-//                }
+                // Debounce automatic validation.
+                let debounce = Debounce(duration: 1)
+                debounce.submit {
+                    Task {
+                        do {
+                            try await commandViewModel.validateMove()
+                        } catch {
+                            // We swallow exception here, later we may change it...
+                            print("DEBUG :: Error during internal validation", error.localizedDescription)
+                        }
+                    }
+                }
             }
         }
         
@@ -271,6 +272,34 @@ struct CellDropDelegate: DropDelegate {
     
     func dropUpdated(info: DropInfo) -> DropProposal? {
         return DropProposal(operation: .move)
+    }
+}
+
+
+class Debounce {
+    private let duration: TimeInterval
+    private var task: Task<Void, Error>?
+    
+    init(duration: TimeInterval) {
+        self.duration = duration
+    }
+    
+    func submit(operation: @escaping () async -> Void) {
+        debounce(operation: operation)
+    }
+    
+    private func debounce(operation: @escaping () async -> Void) {
+        task?.cancel()
+        
+        task = Task {
+            try await sleep()
+            await operation()
+            task = nil
+        }
+    }
+    
+    private func sleep() async throws {
+        try await Task.sleep(nanoseconds: UInt64(duration * TimeInterval(NSEC_PER_SEC)))
     }
 }
 
