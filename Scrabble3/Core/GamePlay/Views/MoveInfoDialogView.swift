@@ -76,6 +76,23 @@ struct MoveInfoDialogView: View {
             Spacer()
             
             HStack {
+                Button {
+                    isPresented = false
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .scaledToFit()
+                        Text("ВЕРНУТЬСЯ")
+                            .fontWeight(.bold)
+                    }
+                    .font(.system(size: 24))
+                }
+                .padding()
+                
+                Spacer()
+                
                 if showSubmitButton, let game = commandViewModel.game {
                     Button {
                         Task {
@@ -100,23 +117,6 @@ struct MoveInfoDialogView: View {
                     }
                     .padding()
                 }
-                
-                Spacer()
-                
-                Button {
-                    isPresented = false
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .frame(width: 32, height: 32)
-                            .scaledToFit()
-                        Text("ЗАКРЫТЬ")
-                            .fontWeight(.bold)
-                    }
-                    .font(.system(size: 24))
-                }
-                .padding()
             }
         }
     }

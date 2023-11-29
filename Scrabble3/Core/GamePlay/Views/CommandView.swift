@@ -52,7 +52,7 @@ struct CommandView: View {
                         print("DEBUG :: Error changing letter: \(error.localizedDescription)")
                         errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
                     }
-                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemPink), maxWidth: false, disabled: !rackViewModel.hasLettersMarkedForChange)
+                }, buttonSystemImage: "arrow.2.circlepath", backGroundColor: Color(.systemPink), maxWidth: false, disabled: !rackViewModel.hasLettersMarkedForChange)
                 
                 ActionImageButton(label: "", action: {
                     viewModel.setChangeLettersMode(mode: false)
