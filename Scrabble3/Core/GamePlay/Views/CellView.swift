@@ -263,6 +263,7 @@ struct CellDropDelegate: DropDelegate {
                             try await commandViewModel.validateMove()
                         } catch {
                             // We swallow exception here, later we may change it...
+                            // TODO: this is not OK. We should consume this exception in model in order to update view...
                             print("DEBUG :: Error during internal validation", error.localizedDescription)
                         }
                     }

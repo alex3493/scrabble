@@ -33,9 +33,18 @@ struct CommandView: View {
             ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                 HStack(spacing: 12) {
                     Image(systemName: game.turn == index ? "person.fill" : "person")
-                    Text(item.user.name != nil && item.user.name!.count > 5 ? item.user.initials : item.user.name ?? "")
+                    Text(item.user.initials)
                     Spacer()
                     Text("\(item.score)")
+                    
+                    // For current turn player we show provisional score (current move).
+                    if game.turn == index {
+                        if let tempScore = viewModel.tempScores[index] {
+                            Text(("\(tempScore)"))
+                        } else {
+                            Text("---")
+                        }
+                    }
                 }
             }
         }
