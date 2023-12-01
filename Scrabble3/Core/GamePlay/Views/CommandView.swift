@@ -38,11 +38,11 @@ struct CommandView: View {
                     Text("\(item.score)")
                     
                     // For current turn player we show provisional score (current move).
-                    if game.turn == index {
+                    if game.turn == index, item.id == authViewModel.currentUser?.userId {
                         if let tempScore = viewModel.tempScores[index] {
-                            Text(("\(tempScore)"))
+                            Text("(+\(tempScore))")
                         } else {
-                            Text("---")
+                            Text("(---)")
                         }
                     }
                 }

@@ -216,14 +216,10 @@ final class CommandViewModel: ObservableObject {
         
         // We have a valid move here.
         
-        let totalScore = words.reduce(0) { $0 + $1.score }
-        print("*** Valid move - score:", totalScore)
+        let moveScore = words.reduce(0) { $0 + $1.score }
+        print("*** Valid move - score:", moveScore)
         
-        // let player = game.players[game.turn]
-        
-        // print("*** Current user:", player.user.email as Any)
-        
-        tempScores[game.turn] = game.players[game.turn].score + totalScore
+        tempScores[game.turn] = moveScore
         
         // TODO: better tempScores management.
 
