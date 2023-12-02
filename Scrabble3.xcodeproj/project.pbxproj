@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FA024E282AA392B00099BAAA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA024E272AA392AF0099BAAA /* GoogleService-Info.plist */; };
+		FA1809C02B1A39BB0090EE2F /* Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1809BF2B1A39BB0090EE2F /* Debounce.swift */; };
 		FA4F5E1B2AD2E71C00A39306 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = FA4F5E1A2AD2E71C00A39306 /* FirebaseAnalytics */; };
 		FA4F5E1D2AD2E71C00A39306 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FA4F5E1C2AD2E71C00A39306 /* FirebaseAnalyticsSwift */; };
 		FA4F5E1F2AD2F13900A39306 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */; };
@@ -93,6 +94,7 @@
 
 /* Begin PBXFileReference section */
 		FA024E272AA392AF0099BAAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FA1809BF2B1A39BB0090EE2F /* Debounce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debounce.swift; sourceTree = "<group>"; };
 		FA4F5E1E2AD2F13900A39306 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		FA56A06E2B0F40DA0089C405 /* ArchivedGameListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedGameListView.swift; sourceTree = "<group>"; };
 		FA56A0702B0F40F20089C405 /* ArchivedGameListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedGameListViewModel.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				FA75459E2AEE808800B58EFC /* BackenService.swift */,
 				FA6483272AF39CA100A9DBAA /* Utils.swift */,
 				FA56A0722B14FF590089C405 /* LocalDictService.swift */,
+				FA1809BF2B1A39BB0090EE2F /* Debounce.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -610,6 +613,7 @@
 				FA7545902AED566A00B58EFC /* LetterStoreBase.swift in Sources */,
 				FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */,
 				FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */,
+				FA1809C02B1A39BB0090EE2F /* Debounce.swift in Sources */,
 				FA75457D2AEA589D00B58EFC /* MoveModel.swift in Sources */,
 				FA64832A2AF4FA4500A9DBAA /* MoveInfoDialogView.swift in Sources */,
 				FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */,

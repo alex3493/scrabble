@@ -193,6 +193,11 @@ class BoardViewModel: LetterStoreBase {
             uniqueWords[word.getHash()] = word
         }
         
+        // Filter move words: words with pending asterisk tiles should not be included.
+        uniqueWords = uniqueWords.filter { $0.value.cells.allSatisfy { cell in
+            return cell.letterTile != nil && !cell.letterTile!.hasAsteriskChar
+        }}
+        
         return Array(uniqueWords.values)
     }
     

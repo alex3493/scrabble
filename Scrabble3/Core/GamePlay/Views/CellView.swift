@@ -263,7 +263,8 @@ struct CellDropDelegate: DropDelegate {
                             try await commandViewModel.validateMove()
                         } catch {
                             // We swallow exception here, later we may change it...
-                            print("DEBUG :: Error during internal validation", error.localizedDescription)
+                            // TODO: this is not OK. We should consume this exception in model in order to update view...
+                            print("On-the-fly validation failed", error.localizedDescription)
                         }
                     }
                 }
@@ -275,34 +276,6 @@ struct CellDropDelegate: DropDelegate {
     
     func dropUpdated(info: DropInfo) -> DropProposal? {
         return DropProposal(operation: .move)
-    }
-}
-
-
-class Debounce {
-    private let duration: TimeInterval
-    private var task: Task<Void, Error>?
-    
-    init(duration: TimeInterval) {
-        self.duration = duration
-    }
-    
-    func submit(operation: @escaping () async -> Void) {
-        debounce(operation: operation)
-    }
-    
-    private func debounce(operation: @escaping () async -> Void) {
-        task?.cancel()
-        
-        task = Task {
-            try await sleep()
-            await operation()
-            task = nil
-        }
-    }
-    
-    private func sleep() async throws {
-        try await Task.sleep(nanoseconds: UInt64(duration * TimeInterval(NSEC_PER_SEC)))
     }
 }
 

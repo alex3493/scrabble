@@ -14,13 +14,15 @@ struct AsteriskDialogView: View {
     let asteriskCol: Int
     
     @StateObject private var boardViewModel: BoardViewModel
+    @StateObject private var commandViewModel: CommandViewModel
     
-    init(asteriskDialogPresented: Binding<Bool>, asteriskRow: Int, asteriskCol: Int, boardViewModel: BoardViewModel) {
+    init(asteriskDialogPresented: Binding<Bool>, asteriskRow: Int, asteriskCol: Int, commandViewModel: CommandViewModel) {
         self.asteriskRow = asteriskRow
         self.asteriskCol = asteriskCol
         
         _asteriskDialogPresented = asteriskDialogPresented
-        _boardViewModel = StateObject(wrappedValue: boardViewModel)
+        _commandViewModel = StateObject(wrappedValue: commandViewModel)
+        _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
     }
     
     var body: some View {
@@ -39,6 +41,19 @@ struct AsteriskDialogView: View {
                             asteriskDialogPresented = false
                             
                             boardViewModel.setLetterTileByPosition(row: asteriskRow, col: asteriskCol, letterTile: asteriskTile)
+                            
+                            let debounce = Debounce(duration: 1)
+                            debounce.submit {
+                                Task {
+                                    do {
+                                        try await commandViewModel.validateMove()
+                                    } catch {
+                                        // We swallow exception here, later we may change it...
+                                        // TODO: this is not OK. We should consume this exception in model in order to update view...
+                                        print("DEBUG :: Error during internal validation", error.localizedDescription)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -62,5 +77,5 @@ struct AsteriskDialogView: View {
 }
 
 #Preview {
-    AsteriskDialogView(asteriskDialogPresented: .constant(false), asteriskRow: 0, asteriskCol: 0, boardViewModel: BoardViewModel(lang: .ru))
+    AsteriskDialogView(asteriskDialogPresented: .constant(false), asteriskRow: 0, asteriskCol: 0, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
 }

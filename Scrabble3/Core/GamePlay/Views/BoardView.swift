@@ -39,7 +39,7 @@ struct BoardView: View {
         .padding()
         .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
         .fullScreenCover(isPresented: $boardViewModel.asteriskDialogPresented) {
-            AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!, boardViewModel: boardViewModel)
+            AsteriskDialogView(asteriskDialogPresented: $boardViewModel.asteriskDialogPresented, asteriskRow: boardViewModel.asteriskRow!, asteriskCol: boardViewModel.asteriskCol!, commandViewModel: commandViewModel)
         }
         .fullScreenCover(isPresented: $boardViewModel.moveInfoDialogPresented) {
             MoveInfoDialogView(words: boardViewModel.moveWordsSummary, score: boardViewModel.moveTotalScore, bonus: boardViewModel.getMoveBonus, commandViewModel: commandViewModel, isPresented: $boardViewModel.moveInfoDialogPresented)

@@ -18,6 +18,8 @@ final class CommandViewModel: ObservableObject {
     @Published var game: GameModel?
     @Published var gameMoves: [MoveModel] = []
     
+    @Published var tempScores: [Int: Int] = [:]
+    
     private var cancellables = Set<AnyCancellable>()
     
     var currentUser: DBUser? = nil
@@ -154,6 +156,8 @@ final class CommandViewModel: ObservableObject {
             return
         }
         
+        tempScores = [:]
+        
         let words = try boardViewModel.getMoveWords()
         
         boardViewModel.resetCellsStatus()
@@ -209,6 +213,13 @@ final class CommandViewModel: ObservableObject {
             boardViewModel.highlightWords(words: invalidWords, status: .error)
             throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
         }
+        
+        // We have a valid move here.
+        let moveScore = words.reduce(0) { $0 + $1.score }
+        print("Valid move - score:", moveScore)
+        
+        tempScores[game.turn] = moveScore
+
     }
     
     func submitMove() async -> Bool {
@@ -261,6 +272,8 @@ final class CommandViewModel: ObservableObject {
         
         boardViewModel.confirmMove()
         
+        tempScores = [:]
+        
         try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells)
     }
     
@@ -269,6 +282,8 @@ final class CommandViewModel: ObservableObject {
             rackViewModel.insertLetterTileByPos(pos: 0, letterTile: cell.letterTile!, emptyPromisePos: nil)
             boardViewModel.setLetterTileByPosition(row: cell.row, col: cell.col, letterTile: nil)
         }
+        
+        tempScores = [:]
     }
     
     func addListenerForMoves(gameId: String?) {
