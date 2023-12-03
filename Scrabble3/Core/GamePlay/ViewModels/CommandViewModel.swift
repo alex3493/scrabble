@@ -251,8 +251,7 @@ final class CommandViewModel: ObservableObject {
         guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser else { return }
         
         if rackViewModel.isEmpty {
-            // TODO: move to settings.
-            moveScore += 15
+            moveScore += Constants.Game.bonusFullRackMove
         }
         
         // Inject word definitions obtained during API validation.

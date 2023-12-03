@@ -23,10 +23,10 @@ class BoardViewModel: LetterStoreBase {
         print("BoardViewModel INIT")
         
         super.init(lang: lang)
-        let numCells: Int = LetterStoreBase.rows * LetterStoreBase.cols;
+        let numCells: Int = Constants.Game.Board.rows * Constants.Game.Board.cols;
         for i in 0...numCells - 1 {
-            let row = i / LetterStoreBase.rows
-            let col = i % LetterStoreBase.rows
+            let row = i / Constants.Game.Board.rows
+            let col = i % Constants.Game.Board.rows
             
             cells.append(CellModel(
                 row: row,
@@ -53,7 +53,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     func cellByPosition(row: Int, col: Int) -> CellModel {
-        let index = row * LetterStoreBase.cols + col
+        let index = row * Constants.Game.Board.cols + col
         return cells[index]
     }
     
@@ -64,13 +64,13 @@ class BoardViewModel: LetterStoreBase {
             asteriskCol = col
         }
         
-        let index = row * LetterStoreBase.cols + col
+        let index = row * Constants.Game.Board.cols + col
         cells[index].setTile(tile: letterTile)
         cells[index].setCellStatus(status: !cells[index].isEmpty ? .currentMove : .empty)
     }
     
     func setCellStatusByPosition(row: Int, col: Int, status: CellModel.CellStatus = .error) {
-        let index = row * LetterStoreBase.cols + col
+        let index = row * Constants.Game.Board.cols + col
         cells[index].setCellStatus(status: status)
     }
     
@@ -102,7 +102,7 @@ class BoardViewModel: LetterStoreBase {
     }
     
     var getMoveBonus: Int? {
-        return currentMoveCells.count == LetterStoreBase.size ? 15 : nil
+        return currentMoveCells.count == Constants.Game.Rack.size ? 15 : nil
     }
     
     func getMoveWords() throws -> [WordModel] {
@@ -263,7 +263,7 @@ class BoardViewModel: LetterStoreBase {
     
     func confirmMove() {
         for cell in currentMoveCells {
-            let index = cell.row * LetterStoreBase.cols + cell.col
+            let index = cell.row * Constants.Game.Board.cols + cell.col
             cells[index].setCellStatus(status: .immutable)
             cells[index].isImmutable = true
         }
@@ -281,7 +281,7 @@ class BoardViewModel: LetterStoreBase {
 //    }
     
     func setCellByPosition(row: Int, col: Int, cell: CellModel) {
-        let index = row * LetterStoreBase.cols + col
+        let index = row * Constants.Game.Board.cols + col
         cells[index] = cell
     }
 }

@@ -26,9 +26,9 @@ struct BoardView: View {
     
     var body: some View {
         VStack(spacing: 1) {
-            ForEach(0...LetterStoreBase.rows - 1, id: \.self) { row in
+            ForEach(0...Constants.Game.Board.rows - 1, id: \.self) { row in
                 HStack(spacing: 1) {
-                    ForEach(0...LetterStoreBase.cols - 1, id: \.self) { col in
+                    ForEach(0...Constants.Game.Board.cols - 1, id: \.self) { col in
                         let cell = boardViewModel.cellByPosition(row: row, col: col)
                         CellView(cell: cell, boardIsLocked: boardIsLocked, commandViewModel: commandViewModel)
                             .frame(width: idealCellSize, height: idealCellSize)

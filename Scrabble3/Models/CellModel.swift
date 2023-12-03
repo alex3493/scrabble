@@ -82,7 +82,7 @@ struct CellModel: Codable, Hashable {
     @MainActor
     var isCenterCell: Bool {
         // return true
-        return Int(ceil(Double(LetterStoreBase.rows / 2))) == row && Int(ceil(Double(LetterStoreBase.cols / 2))) == col
+        return Int(ceil(Double(Constants.Game.Board.rows / 2))) == row && Int(ceil(Double(Constants.Game.Board.cols / 2))) == col
     }
     
     @MainActor
