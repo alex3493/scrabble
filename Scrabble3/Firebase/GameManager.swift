@@ -240,7 +240,7 @@ final class GameManager {
         let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
         
         var rack = [CellModel]()
-        for pos in 0..<LetterStoreBase.size {
+        for pos in 0..<Constants.Game.Rack.size {
             rack.append(CellModel(row: -1, col: -1, pos: pos, letterTile: letterBank[pos], cellStatus: .currentMove, role: .rack))
         }
         

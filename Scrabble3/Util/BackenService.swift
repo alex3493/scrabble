@@ -31,35 +31,6 @@ struct WordDefinitionRussian: Codable, WordDefinition {
     let imageURL: String?
 }
 
-//struct WordDefinitionEnglish: Codable, WordDefinition {
-//    var term: String {
-//        return word
-//    }
-//
-//    var imageURL: String? {
-//        return nil
-//    }
-//
-//    let word: String
-//    let definition: String
-//    let inflection: String
-//    let wordSize: Int
-//    let wordScore: Int
-//}
-
-//struct WordDefinitionEnglish: Codable, WordDefinition {
-//    var term: String {
-//        return name
-//    }
-//
-//    var imageURL: String? {
-//        return nil
-//    }
-//
-//    let name: String
-//    let definition: String
-//}
-
 struct WordDefinitionSpanish: Codable, WordDefinition {
     var term: String {
         return text
@@ -107,20 +78,6 @@ struct ValidationResponseRussian: Codable, ValidationResponse {
     }
 }
 
-//struct ValidationResponseEnglish: Codable, ValidationResponse {
-//    let success: Bool
-//    let data: [WordDefinitionEnglish]
-//
-//    var isValid: Bool {
-//        return success
-//    }
-//
-//    var definition: WordDefinition? {
-//        guard !data.isEmpty else { return nil }
-//        return WordInfo(term: data[0].term, definition: data[0].definition, imageURL: data[0].imageURL)
-//    }
-//}
-
 struct ValidationResponseEnglish: Codable, ValidationResponse {
     let name: String
     let definition: String
@@ -152,7 +109,7 @@ struct ApiRussian {
     @MainActor
     static func validateWord(word: String) async -> ValidationResponse? {
         let query = URLQueryItem(name: "word", value: word)
-        guard var url = URL(string: "https://erugame.ru/dictionary/backend.php?mode=new") else {
+        guard var url = Constants.Api.Validation.getUrl(lang: .ru) else {
             return nil
         }
         url.append(queryItems: [query])
@@ -171,13 +128,9 @@ struct ApiEnglish {
     @MainActor
     static func validateWord(word: String) async -> ValidationResponse? {
         
-        guard var url = URL(string: "https://s3-us-west-2.amazonaws.com/words.alexmeub.com/nwl20/") else {
+        guard var url = Constants.Api.Validation.getUrl(lang: .en) else {
             return nil
         }
-        
-        //        guard var url = URL(string: "https://shop.hasbro.com/api/scrabble/dictionary/") else {
-        //            return nil
-        //        }
         
         url.append(path: word.lowercased())
         url.appendPathExtension("json")
@@ -196,10 +149,10 @@ struct ApiSpanish {
     @MainActor
     static func validateWord(word: String) async -> ValidationResponse? {
         let query = URLQueryItem(name: "text", value: word)
-        let keyQuery = URLQueryItem(name: "key", value: "dict.1.1.20231125T101354Z.02e231dd0878d9ec.4ea53be52aea0fd9b6ecb0b965d7582cfd872539")
+        let keyQuery = URLQueryItem(name: "key", value: Constants.Api.Validation.dictKeyYandex)
         let langQuery = URLQueryItem(name: "lang", value: "es-en")
         
-        guard var url = URL(string: "https://dictionary.yandex.net/api/v1/dicservice.json/lookup") else {
+        guard var url = Constants.Api.Validation.getUrl(lang: .es) else {
             return nil
         }
         url.append(queryItems: [query, keyQuery, langQuery])

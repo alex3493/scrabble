@@ -26,7 +26,7 @@ struct RackView: View {
             if (isLandscape) {
                 VStack() {
                     Group {
-                        ForEach(0..<LetterStoreBase.size, id: \.self) { pos in
+                        ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
                             CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
@@ -38,7 +38,7 @@ struct RackView: View {
             } else {
                 HStack() {
                     Group {
-                        ForEach(0..<LetterStoreBase.size, id: \.self) { pos in
+                        ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
                             CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
