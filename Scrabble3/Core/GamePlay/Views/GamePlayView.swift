@@ -53,13 +53,6 @@ struct GamePlayView: View {
             commandViewModel.currentUser = authViewModel.currentUser
             print("GamePlayView APPEARED")
         }
-        .task {
-            commandViewModel.addListenerForMoves(gameId: game.id)
-        }
-        .onDisappear() {
-            commandViewModel.removeListenerForMoves()
-            print("GamePlayView DISAPPEARED")
-        }
     }
     
     func isLandscape(_ size: CGSize) -> Bool {

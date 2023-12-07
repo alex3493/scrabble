@@ -147,14 +147,14 @@ final class CommandViewModel: ObservableObject {
             gameMoves = allMoves.sorted { lhs, rhs in
                 return lhs.createdAt < rhs.createdAt
             }
-        }
-        
-        if let recentMove = gameMoves.last {
-            boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
             
-            if currentUser?.userId != recentMove.user.userId {
-                let systemSoundID: SystemSoundID = 1008
-                AudioServicesPlaySystemSound(systemSoundID)
+            if let recentMove = gameMoves.last {
+                boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
+                
+                if currentUser?.userId != recentMove.user.userId {
+                    let systemSoundID: SystemSoundID = 1008
+                    AudioServicesPlaySystemSound(systemSoundID)
+                }
             }
         }
     }
@@ -293,26 +293,7 @@ final class CommandViewModel: ObservableObject {
         
         tempScores = [:]
     }
-    
-    func addListenerForMoves(gameId: String?) {
-        guard let gameId = gameId else { return }
-        
-        MoveManager.shared.addListenerForMoves(gameId: gameId)
-            .sink { completion in
-                
-            } receiveValue: { [weak self] moves in
-                print("MOVE LISTENER :: Game ID \(gameId) moves updated count: \(moves.count)")
-                self?.gameMoves = moves.sorted { lhs, rhs in
-                    return lhs.createdAt < rhs.createdAt
-                }
-                self?.existingWords = self?.gameMoves.flatMap { $0.words } ?? []
-            }
-            .store(in: &cancellables)
-    }
-    
-    func removeListenerForMoves() {
-        MoveManager.shared.removeListenerForMoves()
-    }
+
     
     deinit {
         print("***** CommandViewModel DESTROYED")

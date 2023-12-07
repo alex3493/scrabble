@@ -55,19 +55,7 @@ final class MoveManager {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
-    
-    func addListenerForMoves(gameId: String) -> AnyPublisher<[MoveModel], Error> {
-        let (publisher, listener) = getGameMoves(gameId: gameId)
-            .addListSnapshotListener(as: MoveModel.self)
         
-        self.movesListener = listener
-        return publisher
-    }
-    
-    func removeListenerForMoves() {
-        movesListener?.remove()
-    }
-    
 }
 
 
