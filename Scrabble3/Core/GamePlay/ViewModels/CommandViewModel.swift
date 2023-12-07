@@ -140,6 +140,15 @@ final class CommandViewModel: ObservableObject {
         
         boardViewModel.cells = game.boardCells
         
+        // TODO: checking issue 22.
+        Task {
+            let allMoves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
+            
+            gameMoves = allMoves.sorted { lhs, rhs in
+                return lhs.createdAt < rhs.createdAt
+            }
+        }
+        
         if let recentMove = gameMoves.last {
             boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
             
