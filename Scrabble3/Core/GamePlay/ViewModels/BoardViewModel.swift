@@ -284,6 +284,10 @@ class BoardViewModel: LetterStoreBase {
         let index = row * Constants.Game.Board.cols + col
         cells[index] = cell
     }
+    
+    deinit {
+        print("***** BoardViewModel DESTROYED")
+    }
 }
 
 struct BonusCell {

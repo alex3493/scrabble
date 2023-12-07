@@ -305,4 +305,8 @@ final class CommandViewModel: ObservableObject {
         MoveManager.shared.removeListenerForMoves()
     }
     
+    deinit {
+        print("***** CommandViewModel DESTROYED")
+    }
+    
 }
