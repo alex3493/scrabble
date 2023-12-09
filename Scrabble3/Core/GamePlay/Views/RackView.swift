@@ -30,6 +30,7 @@ struct RackView: View {
                             ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
                                 let cell = rackViewModel.cellByPosition(pos: pos)
                                 CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
+                                    .frame(width: idealCellSize, height: idealCellSize)
                                     .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                             }
                         }
@@ -45,8 +46,7 @@ struct RackView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.top, 40)
+                    .padding()
                 }
                 
                 // Text("Rack: \(proxy.size.width) x \(proxy.size.height)")
@@ -58,17 +58,17 @@ struct RackView: View {
         return size.width > size.height
     }
     
-//    func idealCellSize(size: CGSize) -> CGFloat {
-//        return (min(size.width, size.height) - 80) / CGFloat(Constants.Game.Rack.size)
-//    }
+    func idealCellSize(size: CGSize) -> CGFloat {
+        return (min(size.width, size.height) - 80) / CGFloat(Constants.Game.Rack.size)
+    }
     
 //    var isLandscape: Bool {
 //        return mainWindowSize.width > mainWindowSize.height
 //    }
     
-//    var idealCellSize: CGFloat {
-//        return (min(mainWindowSize.width, mainWindowSize.height) - 40) / 15
-//    }
+    var idealCellSize: CGFloat {
+        return (min(mainWindowSize.width, mainWindowSize.height) - 40) / 15
+    }
     
     var isLettersChangeMode: Bool {
         return rackViewModel.changeLettersMode

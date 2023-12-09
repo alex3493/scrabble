@@ -37,6 +37,8 @@ class BoardViewModel: LetterStoreBase {
                 role: .board,
                 cellBonus: getCellBonus(row: row, col: col) ?? CellModel.Bonus.none)
             )
+            
+            cellFrames.append(nil)
         }
     }
     

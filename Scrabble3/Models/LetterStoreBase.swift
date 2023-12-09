@@ -21,4 +21,19 @@ class LetterStoreBase: ObservableObject {
         self.lang = lang
     }
     
+    var cellFrames: [CGRect?] = []
+    
+    func setFrame(index: Int, frame: CGRect?) {
+        self.cellFrames[index] = frame
+    }
+    
+    func cellIndexFromPoint(_ x: CGFloat, _ y: CGFloat) -> Int? {
+        
+        return cellFrames.firstIndex { frame in
+            guard let frame = frame else { return false }
+            
+            return x > frame.minX && x < frame.maxX && y > frame.minY && y < frame.maxY
+        }
+    }
+    
 }

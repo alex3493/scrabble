@@ -49,7 +49,6 @@ struct GamePlayView: View {
                     BoardView(boardIsLocked: !hasTurn, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                     RackView(commandViewModel: commandViewModel)
-                        .frame(alignment: .center)
                         .environment(\.mainWindowSize, proxy.size)
                     PlayerListView(viewModel: commandViewModel)
                         .padding()
