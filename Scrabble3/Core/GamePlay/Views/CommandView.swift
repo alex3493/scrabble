@@ -28,28 +28,6 @@ struct CommandView: View {
         _viewModel = StateObject(wrappedValue: commandViewModel)
     }
     
-    func playerList(game: GameModel) -> some View {
-        List {
-            ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
-                HStack(spacing: 12) {
-                    Image(systemName: game.turn == index ? "person.fill" : "person")
-                    Text(item.user.initials)
-                    Spacer()
-                    Text("\(item.score)")
-                    
-                    // For current turn player we show provisional score (current move).
-                    if game.turn == index, item.id == authViewModel.currentUser?.userId {
-                        if let tempScore = viewModel.tempScores[index] {
-                            Text("+\(tempScore)")
-                                .foregroundStyle(.red)
-                        }
-                    }
-                }
-            }
-        }
-        .listStyle(.plain)
-    }
-    
     func hasTurnButtons(game: GameModel, isInChangeLetterMode: Bool) -> some View {
         Group {
             if isInChangeLetterMode {
@@ -73,15 +51,6 @@ struct CommandView: View {
                 ActionImageButton(label: "", action: {
                     await viewModel.validateMove(gameId: game.id)
                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
-                
-//                ActionImageButton(label: "", action: {
-//                    do {
-//                        try await viewModel.submitMove(gameId: game.id)
-//                    } catch {
-//                        print("DEBUG :: Error submitting move: \(error.localizedDescription)")
-//                        errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
-//                    }
-//                }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
             }
         }
     }
@@ -99,42 +68,23 @@ struct CommandView: View {
     }
     
     var body: some View {
-        ZStack {
+        GeometryReader { proxy in
             if let game = viewModel.game {
-                if isLandscape {
-                    VStack(alignment: .trailing, spacing: 12) {
-                        // TODO: Spacer() has no effect here! Check why...
-                        playerList(game: game)
-                            .frame(maxWidth: .infinity)
+                HStack(alignment: .top) {
+                    if !isInChangeLetterMode {
+                        Spacer()
                         
-                        if !isInChangeLetterMode {
-                            exitGameButtons(game: game)
-                        }
-                        
-                        if hasTurn {
-                            hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
-                        }
+                        exitGameButtons(game: game)
                     }
-                    .padding()
-                } else {
-                    HStack(alignment: .top, spacing: 12) {
-                        playerList(game: game)
-                            .frame(maxWidth: mainWindowSize.width / 2)
+                    
+                    if hasTurn {
+                        Spacer()
                         
-                        if !isInChangeLetterMode {
-                            Spacer()
-                            
-                            exitGameButtons(game: game)
-                        }
-                        
-                        if hasTurn {
-                            Spacer()
-                            
-                            hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
-                        }
+                        hasTurnButtons(game: game, isInChangeLetterMode: isInChangeLetterMode)
                     }
-                    .padding()
                 }
+                .padding()
+                // Text("Command: \(proxy.size.width) x \(proxy.size.height)")
             }
         }
         .onAppear() {
@@ -144,10 +94,6 @@ struct CommandView: View {
             await viewModel.loadGame(gameId: gameId)
             viewModel.addListenerForGame()
         }
-    }
-    
-    var isLandscape: Bool {
-        return mainWindowSize.width > mainWindowSize.height
     }
     
     var isInChangeLetterMode: Bool {

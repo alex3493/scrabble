@@ -140,7 +140,7 @@ final class CommandViewModel: ObservableObject {
         
         boardViewModel.cells = game.boardCells
         
-        // TODO: checking issue 22.
+        // TODO::22 - checking checking for a solution.
         Task {
             let allMoves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
             
