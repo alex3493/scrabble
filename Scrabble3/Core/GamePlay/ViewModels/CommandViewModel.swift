@@ -148,6 +148,8 @@ final class CommandViewModel: ObservableObject {
                 return lhs.createdAt < rhs.createdAt
             }
             
+            existingWords = gameMoves.flatMap { $0.words }
+            
             if let recentMove = gameMoves.last {
                 boardViewModel.highlightWords(words: recentMove.words, status: CellModel.CellStatus.moveHistory)
                 
