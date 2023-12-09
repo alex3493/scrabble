@@ -174,8 +174,8 @@ struct Api {
         
         switch lang {
         case .ru:
-            // response = await ApiRussian.validateWord(word: word)
-            response = LocalDictServiceRussian.validateWord(word: word)
+            response = await ApiRussian.validateWord(word: word)
+            // response = LocalDictServiceRussian.validateWord(word: word)
             break
         case .en:
             // response = await ApiEnglish.validateWord(word: word)

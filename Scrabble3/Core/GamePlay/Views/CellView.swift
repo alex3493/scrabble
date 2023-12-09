@@ -55,8 +55,6 @@ struct CellView: View {
                 }
                 .colorInvert()
                 .font(.system(size: idealCellSize / 2))
-                // TODO: Make it better!
-                .frame(width: idealCellSize, height: idealCellSize)
             } else {
                 Text(!cell.isEmpty
                      ? cell.letterTile!.char

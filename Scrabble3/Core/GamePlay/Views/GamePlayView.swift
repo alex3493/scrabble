@@ -30,20 +30,29 @@ struct GamePlayView: View {
     var body: some View {
         GeometryReader { proxy in
             if (isLandscape(proxy.size)) {
-                HStack {
+                HStack(alignment: .top) {
                     BoardView(boardIsLocked: !hasTurn, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    RackView(commandViewModel: commandViewModel)
-                        .environment(\.mainWindowSize, proxy.size)
-                    CommandView(gameId: game.id, commandViewModel: commandViewModel)
-                        .environment(\.mainWindowSize, proxy.size)
+                    VStack(alignment: .trailing) {
+                        PlayerListView(viewModel: commandViewModel)
+                            .padding()
+                        RackView(commandViewModel: commandViewModel)
+                            .environment(\.mainWindowSize, proxy.size)
+                        CommandView(gameId: game.id, commandViewModel: commandViewModel)
+                            // TODO: make it better!
+                            .frame(maxWidth: .infinity, maxHeight: 100)
+                            .environment(\.mainWindowSize, proxy.size)
+                    }
                 }
             } else {
                 VStack {
                     BoardView(boardIsLocked: !hasTurn, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                     RackView(commandViewModel: commandViewModel)
+                        .frame(alignment: .center)
                         .environment(\.mainWindowSize, proxy.size)
+                    PlayerListView(viewModel: commandViewModel)
+                        .padding()
                     CommandView(gameId: game.id, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                 }
@@ -52,13 +61,6 @@ struct GamePlayView: View {
         .onAppear() {
             commandViewModel.currentUser = authViewModel.currentUser
             print("GamePlayView APPEARED")
-        }
-        .task {
-            commandViewModel.addListenerForMoves(gameId: game.id)
-        }
-        .onDisappear() {
-            commandViewModel.removeListenerForMoves()
-            print("GamePlayView DISAPPEARED")
         }
     }
     
