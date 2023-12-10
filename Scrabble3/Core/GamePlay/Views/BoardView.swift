@@ -34,6 +34,7 @@ struct BoardView: View {
                             .frame(width: idealCellSize, height: idealCellSize)
                     }
                 }
+                .zIndex(Double(Constants.Game.Board.rows - row))
             }
         }
         .padding()

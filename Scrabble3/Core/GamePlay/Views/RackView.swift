@@ -15,6 +15,8 @@ struct RackView: View {
     @StateObject private var rackViewModel: RackViewModel
     @StateObject private var commandViewModel: CommandViewModel
     
+    @State var zIndex: Double? = nil
+    
     init(commandViewModel: CommandViewModel) {
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
@@ -45,9 +47,10 @@ struct RackView: View {
                     .padding()
                 }
                 
-                // Text("Rack: \(proxy.size.width) x \(proxy.size.height)")
+                Text("Rack zIndex: \(zIndex ?? 0)")
             }
         }
+        .zIndex(zIndex ?? 0)
     }
     
     func isLandscape(size: CGSize) -> Bool {
