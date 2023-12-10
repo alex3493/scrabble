@@ -71,7 +71,7 @@ struct CellView: View {
         GeometryReader { geometry in
             let cellPiece = ZStack {
                 RoundedRectangle(cornerRadius: 5)
-                    .fill(cell.isEmpty && cell.isCenterCell ? .gray : cellFill)
+                    .fill(dragState.isDragging ? Color.red : (cell.isEmpty && cell.isCenterCell ? Color.gray : cellFill))
                     .onAppear() {
                         let frame = geometry.frame(in: .global)
                         
@@ -100,8 +100,8 @@ struct CellView: View {
                              : " "
                         )
                     }
-                    .colorInvert()
                     .font(.system(size: idealCellSize / 2))
+                    .colorInvert()
                 } else {
                     Text(!cell.isEmpty
                          ? cell.letterTile!.char
@@ -111,6 +111,7 @@ struct CellView: View {
                     .colorInvert()
                 }
             }
+            
             if !boardIsLocked {
                 if cell.cellStatus == .empty {
                     // Empty tile.
@@ -122,8 +123,8 @@ struct CellView: View {
                         .gesture(LongPressGesture(minimumDuration: 0.01)
                             .sequenced(before: DragGesture(coordinateSpace: .global)
                                 .onEnded { gesture in
+                                    print("Drag stopped!")
                                     onDrop(value: gesture.location, cell: cell)
-                                    
                                 })
                                 .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
                                     switch currentState {
@@ -131,6 +132,7 @@ struct CellView: View {
                                         print("Drag started!")
                                         gestureState = .pressing
                                     case .second(true, let drag):
+                                        // print("Dragging!", self.dragState.isDragging)
                                         gestureState = .dragging(translation: drag?.translation ?? .zero)
                                     default:
                                         break
@@ -171,6 +173,7 @@ struct CellView: View {
                 cellPiece
             }
         }
+        .zIndex(dragState.isDragging ? 1 : 0)
     }
     
     func onDrop(value: CGPoint, cell drag: CellModel) {
@@ -333,57 +336,6 @@ struct CellView: View {
         board.moveInfoDialogPresented = true
     }
 }
-
-//struct CellDropDelegate: DropDelegate {
-//    let drop: CellModel // Target cell.
-//    let viewModel: CellView
-//    
-//    // Interact with game controller.
-//    let commandViewModel: CommandViewModel
-//    
-//    func performDrop(info: DropInfo) -> Bool {
-//        
-//        let provider = info.itemProviders(for: [.text]).first
-//        
-//        provider?.loadObject(ofClass: NSString.self) { fingerprint, _ in
-//            DispatchQueue.main.async {
-//                guard
-//                    // Get drag source cell from DropInfo.
-//                    let fingerprint = fingerprint,
-//                    let drag = viewModel.cellItem(fromFingerprint: String(fingerprint as! Substring))
-//                else { return }
-//                
-//                // Special case: asterisk exchange - we check for extra conditions.
-//                if drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk && drop.letterTile!.char != drag.letterTile!.char {
-//                    // Trying to exchange asterisk for a wrong letter - no action.
-//                    return
-//                }
-//                
-//                viewModel.moveCell(drag: drag, drop: drop)
-//                
-//                // Debounce automatic validation.
-//                let debounce = Debounce(duration: 1)
-//                debounce.submit {
-//                    Task {
-//                        do {
-//                            try await commandViewModel.validateMove()
-//                        } catch {
-//                            // We swallow exception here, later we may change it...
-//                            // TODO: this is not OK. We should consume this exception in model in order to update view...
-//                            print("On-the-fly validation failed", error.localizedDescription)
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        
-//        return true
-//    }
-//    
-//    func dropUpdated(info: DropInfo) -> DropProposal? {
-//        return DropProposal(operation: .move)
-//    }
-//}
 
 #Preview {
     CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))

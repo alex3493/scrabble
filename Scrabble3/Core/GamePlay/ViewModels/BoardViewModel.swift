@@ -24,7 +24,7 @@ class BoardViewModel: LetterStoreBase {
         
         super.init(lang: lang)
         let numCells: Int = Constants.Game.Board.rows * Constants.Game.Board.cols;
-        for i in 0...numCells - 1 {
+        for i in 0..<numCells {
             let row = i / Constants.Game.Board.rows
             let col = i % Constants.Game.Board.rows
             
