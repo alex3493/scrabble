@@ -19,7 +19,11 @@ struct RackView: View {
     
     @StateObject private var moveCellHelper: MoveCellHelper
     
-    init(commandViewModel: CommandViewModel) {
+    let boardIsLocked: Bool
+    
+    init(boardIsLocked: Bool, commandViewModel: CommandViewModel) {
+        self.boardIsLocked = boardIsLocked
+        
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
@@ -30,8 +34,11 @@ struct RackView: View {
     var body: some View {
         GeometryReader { proxy in
             if rackViewModel.cells.count > 0 {
-                if (isLandscape(size: proxy.size)) {
-                    HStack() {
+                
+                let layout = isLandscape(size: proxy.size) ? AnyLayout(HStackLayout(spacing: 4)) : AnyLayout(VStackLayout(spacing: 4))
+                
+                Group {
+                    layout {
                         ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
                             
@@ -51,7 +58,7 @@ struct RackView: View {
                                             .onEnded { gesture in
                                                 print("Drag stopped!", gesture.location)
                                                 
-                                                moveCellHelper.onPerformDrop(value: gesture.location, cell: cell)
+                                                moveCellHelper.onPerformDrop(value: gesture.location, cell: cell, boardIsLocked: boardIsLocked)
                                             }
                                     )
                                 
@@ -61,42 +68,8 @@ struct RackView: View {
                             }
                         }
                     }
-                    .padding()
-                } else {
-                    VStack(spacing: 4) {
-                        ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
-                            let cell = rackViewModel.cellByPosition(pos: pos)
-                            
-                            let cellView = CellView(cell: cell, commandViewModel: commandViewModel)
-                                .frame(width: idealCellSize, height: idealCellSize)
-                                .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                                .zIndex(dragState.isDraggingCell(cell: cell) ? 1 : 0)
-                                .offset(x: dragState.cellTranslation(cell: cell).width, y: dragState.cellTranslation(cell: cell).height)
-                            
-                            if !cell.isEmpty {
-                                cellView
-                                    .gesture(
-                                        DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
-                                            .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
-                                                gestureState = .dragging(translation: currentState.translation, selectedItem: cell)
-                                            })
-                                            .onEnded { gesture in
-                                                print("Drag stopped!", gesture.location)
-                                                
-                                                moveCellHelper.onPerformDrop(value: gesture.location, cell: cell)
-                                            }
-                                    )
-                                
-                                
-                            } else {
-                                cellView
-                            }
-                        }
-                    }
-                    .padding()
                 }
-                
-                
+                .padding()
             }
         }
         .zIndex(dragState.isDragging ? -1 : 0)
@@ -125,6 +98,6 @@ struct RackView: View {
 }
 
 #Preview {
-    RackView(commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
+    RackView(boardIsLocked: false, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
 }
 

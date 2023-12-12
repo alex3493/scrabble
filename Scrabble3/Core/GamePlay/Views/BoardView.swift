@@ -23,6 +23,7 @@ struct BoardView: View {
     
     init(boardIsLocked: Bool, commandViewModel: CommandViewModel) {
         self.boardIsLocked = boardIsLocked
+        
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
@@ -52,7 +53,7 @@ struct BoardView: View {
                                         .onEnded { gesture in
                                             print("Drag stopped!", gesture.location)
                                             
-                                            moveCellHelper.onPerformDrop(value: gesture.location, cell: cell)
+                                            moveCellHelper.onPerformDrop(value: gesture.location, cell: cell, boardIsLocked: boardIsLocked)
                                         }
                                 )
                         } else {

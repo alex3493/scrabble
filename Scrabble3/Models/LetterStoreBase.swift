@@ -51,52 +51,56 @@ class MoveCellHelper: ObservableObject {
         self.commandViewModel = commandViewModel
     }
     
-    func onPerformDrop(value: CGPoint, cell drag: CellModel) {
+    func onPerformDrop(value: CGPoint, cell drag: CellModel, boardIsLocked: Bool) {
         print("On drop", value, drag.pos, drag.row, drag.col)
         
-        // TODO: add logic!
-        // if !boardIsLocked {
-            
-            let rackDropCellIndex = rackViewModel.cellIndexFromPoint(value.x, value.y)
-            let boardDropCellIndex = boardViewModel.cellIndexFromPoint(value.x, value.y)
-            
-            print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
-            
-            var drop: CellModel? = nil
-            
-            if let rackDropCellIndex = rackDropCellIndex {
-                drop = rackViewModel.cells[rackDropCellIndex]
-            }
-            
-            if let boardDropCellIndex = boardDropCellIndex {
-                drop = boardViewModel.cells[boardDropCellIndex]
-            }
-            
-            guard let drop = drop else { return }
-            
-            if drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk && drop.letterTile!.char != drag.letterTile!.char {
-                // Trying to exchange asterisk for a wrong letter - no action.
+        let rackDropCellIndex = rackViewModel.cellIndexFromPoint(value.x, value.y)
+        let boardDropCellIndex = boardViewModel.cellIndexFromPoint(value.x, value.y)
+        
+        print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
+        
+        var drop: CellModel? = nil
+        
+        if let rackDropCellIndex = rackDropCellIndex {
+            drop = rackViewModel.cells[rackDropCellIndex]
+        }
+        
+        if let boardDropCellIndex = boardDropCellIndex {
+            drop = boardViewModel.cells[boardDropCellIndex]
+        }
+        
+        guard let drop = drop else { return }
+        
+        if boardIsLocked && drop.role == .board {
+            return
+        }
+        
+        if drop.role == .board && drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk {
+            if drop.letterTile!.char == drag.letterTile!.char {
+                // Asterisk exchange.
+                moveCell(drag: drag, drop: drop)
+            } else {
                 return
             }
+        }
+        
+        if drop.cellStatus == .empty || (!drop.isImmutable && !isReadyForLetterChange) {
+            moveCell(drag: drag, drop: drop)
             
-            if drop.cellStatus == .empty || (!drop.isImmutable && !isReadyForLetterChange) {
-                moveCell(drag: drag, drop: drop)
-                
-                // Debounce automatic validation.
-                let debounce = Debounce(duration: 1)
-                debounce.submit {
-                    Task {
-                        do {
-                            try await self.commandViewModel.validateMove()
-                        } catch {
-                            // We swallow exception here, later we may change it...
-                            // TODO: this is not OK. We should consume this exception in model in order to update view...
-                            print("On-the-fly validation failed", error.localizedDescription)
-                        }
+            // Debounce automatic validation.
+            let debounce = Debounce(duration: 1)
+            debounce.submit {
+                Task {
+                    do {
+                        try await self.commandViewModel.validateMove()
+                    } catch {
+                        // We swallow exception here, later we may change it...
+                        // TODO: this is not OK. We should consume this exception in model in order to update view...
+                        print("On-the-fly validation failed", error.localizedDescription)
                     }
                 }
             }
-        // }
+        }
     }
     
     func moveCell(drag: CellModel, drop: CellModel) {
