@@ -44,7 +44,7 @@ struct BoardView: View {
                         
                         if !cell.isEmpty && !cell.isImmutable {
                             cellView
-                                .offset(x: dragState.cellTranslation(cell: cell).width, y: dragState.cellTranslation(cell: cell).height)
+                                .offset(dragState.cellTranslation(cell: cell))
                                 .gesture(
                                     DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
                                         .updating(self.$dragState, body: { (currentState, gestureState, transaction) in

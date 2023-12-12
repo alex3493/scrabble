@@ -26,6 +26,7 @@ struct CellView: View {
     
     init(cell: CellModel, commandViewModel: CommandViewModel) {
         self.cell = cell
+        
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _board = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rack = StateObject(wrappedValue: commandViewModel.rackViewModel)

@@ -46,10 +46,10 @@ struct RackView: View {
                                 .frame(width: idealCellSize, height: idealCellSize)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .zIndex(dragState.isDraggingCell(cell: cell) ? 1 : 0)
-                                .offset(x: dragState.cellTranslation(cell: cell).width, y: dragState.cellTranslation(cell: cell).height)
                             
                             if !cell.isEmpty {
                                 cellView
+                                    .offset(dragState.cellTranslation(cell: cell))
                                     .gesture(
                                         DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
                                             .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
