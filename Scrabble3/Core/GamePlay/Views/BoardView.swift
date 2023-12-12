@@ -15,6 +15,10 @@ struct BoardView: View {
     @StateObject private var rackViewModel: RackViewModel
     @StateObject private var commandViewModel: CommandViewModel
     
+    @GestureState private var dragState = DragState.inactive
+    
+    @StateObject private var moveCellHelper: MoveCellHelper
+    
     let boardIsLocked: Bool
     
     init(boardIsLocked: Bool, commandViewModel: CommandViewModel) {
@@ -22,6 +26,8 @@ struct BoardView: View {
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
+        
+        _moveCellHelper = StateObject(wrappedValue: MoveCellHelper(rackViewModel: commandViewModel.rackViewModel, boardViewModel: commandViewModel.boardViewModel, commandViewModel: commandViewModel))
     }
     
     var body: some View {
@@ -30,13 +36,34 @@ struct BoardView: View {
                 HStack(spacing: 1) {
                     ForEach(0..<Constants.Game.Board.cols, id: \.self) { col in
                         let cell = boardViewModel.cellByPosition(row: row, col: col)
-                        CellView(cell: cell, boardIsLocked: boardIsLocked, commandViewModel: commandViewModel)
+                        
+                        let cellView = CellView(cell: cell, commandViewModel: commandViewModel)
                             .frame(width: idealCellSize, height: idealCellSize)
+                            .zIndex(dragState.isDraggingCell(cell: cell) ? 1 : 0)
+                        
+                        if !cell.isEmpty && !cell.isImmutable {
+                            cellView
+                                .offset(x: dragState.cellTranslation(cell: cell).width, y: dragState.cellTranslation(cell: cell).height)
+                                .gesture(
+                                    DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
+                                        .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
+                                            gestureState = .dragging(translation: currentState.translation, selectedItem: cell)
+                                        })
+                                        .onEnded { gesture in
+                                            print("Drag stopped!", gesture.location)
+                                            
+                                            moveCellHelper.onPerformDrop(value: gesture.location, cell: cell)
+                                        }
+                                )
+                        } else {
+                            cellView
+                        }
                     }
                 }
-                .zIndex(Double(Constants.Game.Board.rows - row))
+                .zIndex(dragState.isDraggingFromRow(row: row) ? 1 : 0)
             }
         }
+        .zIndex(dragState.isDragging ? 1 : -1)
         .padding()
         .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
         .fullScreenCover(isPresented: $boardViewModel.asteriskDialogPresented) {

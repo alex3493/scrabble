@@ -7,46 +7,11 @@
 
 import SwiftUI
 
-enum DragState {
-    case inactive
-    case pressing
-    case dragging(translation: CGSize)
-    
-    var translation: CGSize {
-        switch self {
-        case .inactive, .pressing:
-            return .zero
-        case .dragging(let translation):
-            return translation
-        }
-    }
-    
-    var isDragging: Bool {
-        switch self {
-        case .dragging:
-            return true
-        case .pressing, .inactive:
-            return false
-        }
-    }
-    
-    var isPressing: Bool {
-        switch self {
-        case .inactive:
-            return false
-        case .pressing, .dragging:
-            return true
-        }
-    }
-}
-
 struct CellView: View {
     
     @Environment(\.mainWindowSize) var mainWindowSize
     
     var cell: CellModel
-    
-    var boardIsLocked: Bool
     
     @State var isWordsInfoPresented = false
     
@@ -59,9 +24,8 @@ struct CellView: View {
     
     @GestureState private var dragState = DragState.inactive
     
-    init(cell: CellModel, boardIsLocked: Bool, commandViewModel: CommandViewModel) {
+    init(cell: CellModel, commandViewModel: CommandViewModel) {
         self.cell = cell
-        self.boardIsLocked = boardIsLocked
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _board = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rack = StateObject(wrappedValue: commandViewModel.rackViewModel)
@@ -71,7 +35,7 @@ struct CellView: View {
         GeometryReader { geometry in
             let cellPiece = ZStack {
                 RoundedRectangle(cornerRadius: 5)
-                    .fill(dragState.isDragging ? Color.red : (cell.isEmpty && cell.isCenterCell ? Color.gray : cellFill))
+                    .fill(cell.isEmpty && cell.isCenterCell ? Color.gray : cellFill)
                     .onAppear() {
                         let frame = geometry.frame(in: .global)
                         
@@ -112,142 +76,26 @@ struct CellView: View {
                 }
             }
             
-            if !boardIsLocked {
-                if cell.cellStatus == .empty {
-                    // Empty tile.
-                    cellPiece
-                } else if !cell.isImmutable && !isCellReadyForLetterChange {
-                    // Current move board or rack tiles - free move on board, in rack and between board and rack.
-                    cellPiece
-                        .offset(x: self.dragState.translation.width, y: self.dragState.translation.height)
-                        .gesture(LongPressGesture(minimumDuration: 0.01)
-                            .sequenced(before: DragGesture(coordinateSpace: .global)
-                                .onEnded { gesture in
-                                    print("Drag stopped!")
-                                    onDrop(value: gesture.location, cell: cell)
-                                })
-                                .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
-                                    switch currentState {
-                                    case .first:
-                                        print("Drag started!")
-                                        gestureState = .pressing
-                                    case .second(true, let drag):
-                                        // print("Dragging!", self.dragState.isDragging)
-                                        gestureState = .dragging(translation: drag?.translation ?? .zero)
-                                    default:
-                                        break
-                                    }
-                                })
-                        )
-                } else if cell.isImmutable && cell.role == .board && cell.letterTile != nil && cell.letterTile!.isAsterisk {
-                    // Exchange asterisk on board (rack --> board move).
-                    cellPiece
-                        .onTapGesture {
-                            showWordDefinitions(row: cell.row, col: cell.col)
-                        }
-                } else if (isCellReadyForLetterChange) {
-                    // Check tiles for letter change action.
-                    cellPiece
-                        .onTapGesture {
-                            rack.setCellStatusByPosition(
-                                pos: cell.pos,
-                                status: cell.cellStatus == .checkedForLetterChange
-                                ? .currentMove
-                                : .checkedForLetterChange
-                            )
-                        }
-                } else if cell.isImmutable && cell.role == .board && !cell.isEmpty {
-                    cellPiece
-                        .onTapGesture {
-                            showWordDefinitions(row: cell.row, col: cell.col)
-                        }
-                } else {
-                    cellPiece
-                }
-            } else if !cell.isEmpty {
+            if cell.isImmutable && cell.role == .board && !cell.isEmpty {
+                // Existing word - show definitions.
                 cellPiece
                     .onTapGesture {
                         showWordDefinitions(row: cell.row, col: cell.col)
                     }
+            } else if (isCellReadyForLetterChange) {
+                // Check tiles for letter change action.
+                cellPiece
+                    .onTapGesture {
+                        rack.setCellStatusByPosition(
+                            pos: cell.pos,
+                            status: cell.cellStatus == .checkedForLetterChange
+                            ? .currentMove
+                            : .checkedForLetterChange
+                        )
+                    }
             } else {
                 cellPiece
             }
-        }
-        .zIndex(dragState.isDragging ? 1 : 0)
-    }
-    
-    func onDrop(value: CGPoint, cell drag: CellModel) {
-        print("On drop", value, cell.pos, cell.row, cell.col)
-        
-        if !boardIsLocked {
-            
-            let rackDropCellIndex = rack.cellIndexFromPoint(value.x, value.y)
-            let boardDropCellIndex = board.cellIndexFromPoint(value.x, value.y)
-            
-            print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
-            
-            var drop: CellModel? = nil
-            
-            if let rackDropCellIndex = rackDropCellIndex {
-                drop = rack.cells[rackDropCellIndex]
-            }
-            
-            if let boardDropCellIndex = boardDropCellIndex {
-                drop = board.cells[boardDropCellIndex]
-            }
-            
-            guard let drop = drop else { return }
-            
-            if drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk && drop.letterTile!.char != drag.letterTile!.char {
-                // Trying to exchange asterisk for a wrong letter - no action.
-                return
-            }
-            
-            if drop.cellStatus == .empty || (!drop.isImmutable && !isCellReadyForLetterChange) {
-                moveCell(drag: drag, drop: drop)
-                
-                // Debounce automatic validation.
-                let debounce = Debounce(duration: 1)
-                debounce.submit {
-                    Task {
-                        do {
-                            try await commandViewModel.validateMove()
-                        } catch {
-                            // We swallow exception here, later we may change it...
-                            // TODO: this is not OK. We should consume this exception in model in order to update view...
-                            print("On-the-fly validation failed", error.localizedDescription)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    func moveCell(drag: CellModel, drop: CellModel) {
-        if (drag.role == .board && drop.role == .board) {
-            // Board to board.
-            board.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
-            if (drop.letterTile != nil) {
-                board.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: drop.letterTile!)
-            } else {
-                board.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: nil)
-            }
-        } else if (drag.role == .rack && drop.role == .board) {
-            // Rack to board.
-            board.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
-            if (!drop.isEmpty) {
-                rack.setLetterTileByPosition(pos: drag.pos, letterTile: drop.letterTile!)
-            } else {
-                rack.emptyCellByPosition(pos: drag.pos)
-            }
-        } else if (drag.role == .board && drop.role == .rack) {
-            // Board to rack.
-            rack.insertLetterTileByPos(pos: drop.pos, letterTile: drag.letterTile!, emptyPromisePos: nil)
-            board.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: nil)
-        } else {
-            // Rack to rack.
-            rack.insertLetterTileByPos(pos: drop.pos, letterTile: drag.letterTile!, emptyPromisePos: drag.pos)
         }
     }
     
@@ -338,5 +186,5 @@ struct CellView: View {
 }
 
 #Preview {
-    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), boardIsLocked: false, commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
+    CellView(cell: CellModel(row: 0, col: 0, pos: -1, letterTile: nil), commandViewModel: CommandViewModel(boardViewModel: BoardViewModel(lang: .ru), rackViewModel: RackViewModel(lang: .ru)))
 }

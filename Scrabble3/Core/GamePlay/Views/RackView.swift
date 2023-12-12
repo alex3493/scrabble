@@ -15,12 +15,16 @@ struct RackView: View {
     @StateObject private var rackViewModel: RackViewModel
     @StateObject private var commandViewModel: CommandViewModel
     
-    @State var zIndex: Double? = nil
+    @GestureState private var dragState = DragState.inactive
+    
+    @StateObject private var moveCellHelper: MoveCellHelper
     
     init(commandViewModel: CommandViewModel) {
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
+        
+        _moveCellHelper = StateObject(wrappedValue: MoveCellHelper(rackViewModel: commandViewModel.rackViewModel, boardViewModel: commandViewModel.boardViewModel, commandViewModel: commandViewModel))
     }
     
     var body: some View {
@@ -30,9 +34,31 @@ struct RackView: View {
                     HStack() {
                         ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
-                            CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
+                            
+                            let cellView = CellView(cell: cell, commandViewModel: commandViewModel)
                                 .frame(width: idealCellSize, height: idealCellSize)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                .zIndex(dragState.isDraggingCell(cell: cell) ? 1 : 0)
+                                .offset(x: dragState.cellTranslation(cell: cell).width, y: dragState.cellTranslation(cell: cell).height)
+                            
+                            if !cell.isEmpty {
+                                cellView
+                                    .gesture(
+                                        DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
+                                            .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
+                                                gestureState = .dragging(translation: currentState.translation, selectedItem: cell)
+                                            })
+                                            .onEnded { gesture in
+                                                print("Drag stopped!", gesture.location)
+                                                
+                                                moveCellHelper.onPerformDrop(value: gesture.location, cell: cell)
+                                            }
+                                    )
+                                
+                                
+                            } else {
+                                cellView
+                            }
                         }
                     }
                     .padding()
@@ -40,17 +66,40 @@ struct RackView: View {
                     VStack(spacing: 4) {
                         ForEach(0..<Constants.Game.Rack.size, id: \.self) { pos in
                             let cell = rackViewModel.cellByPosition(pos: pos)
-                            CellView(cell: cell, boardIsLocked: false, commandViewModel: commandViewModel)
+                            
+                            let cellView = CellView(cell: cell, commandViewModel: commandViewModel)
+                                .frame(width: idealCellSize, height: idealCellSize)
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                                .zIndex(dragState.isDraggingCell(cell: cell) ? 1 : 0)
+                                .offset(x: dragState.cellTranslation(cell: cell).width, y: dragState.cellTranslation(cell: cell).height)
+                            
+                            if !cell.isEmpty {
+                                cellView
+                                    .gesture(
+                                        DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
+                                            .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
+                                                gestureState = .dragging(translation: currentState.translation, selectedItem: cell)
+                                            })
+                                            .onEnded { gesture in
+                                                print("Drag stopped!", gesture.location)
+                                                
+                                                moveCellHelper.onPerformDrop(value: gesture.location, cell: cell)
+                                            }
+                                    )
+                                
+                                
+                            } else {
+                                cellView
+                            }
                         }
                     }
                     .padding()
                 }
                 
-                Text("Rack zIndex: \(zIndex ?? 0)")
+                
             }
         }
-        .zIndex(zIndex ?? 0)
+        .zIndex(dragState.isDragging ? -1 : 0)
     }
     
     func isLandscape(size: CGSize) -> Bool {
@@ -72,6 +121,7 @@ struct RackView: View {
     var isLettersChangeMode: Bool {
         return rackViewModel.changeLettersMode
     }
+    
 }
 
 #Preview {

@@ -37,3 +37,149 @@ class LetterStoreBase: ObservableObject {
     }
     
 }
+
+@MainActor
+class MoveCellHelper: ObservableObject {
+    let rackViewModel: RackViewModel
+    let boardViewModel: BoardViewModel
+    
+    let commandViewModel: CommandViewModel
+    
+    init(rackViewModel: RackViewModel, boardViewModel: BoardViewModel, commandViewModel: CommandViewModel) {
+        self.rackViewModel = rackViewModel
+        self.boardViewModel = boardViewModel
+        self.commandViewModel = commandViewModel
+    }
+    
+    func onPerformDrop(value: CGPoint, cell drag: CellModel) {
+        print("On drop", value, drag.pos, drag.row, drag.col)
+        
+        // TODO: add logic!
+        // if !boardIsLocked {
+            
+            let rackDropCellIndex = rackViewModel.cellIndexFromPoint(value.x, value.y)
+            let boardDropCellIndex = boardViewModel.cellIndexFromPoint(value.x, value.y)
+            
+            print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
+            
+            var drop: CellModel? = nil
+            
+            if let rackDropCellIndex = rackDropCellIndex {
+                drop = rackViewModel.cells[rackDropCellIndex]
+            }
+            
+            if let boardDropCellIndex = boardDropCellIndex {
+                drop = boardViewModel.cells[boardDropCellIndex]
+            }
+            
+            guard let drop = drop else { return }
+            
+            if drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk && drop.letterTile!.char != drag.letterTile!.char {
+                // Trying to exchange asterisk for a wrong letter - no action.
+                return
+            }
+            
+            if drop.cellStatus == .empty || (!drop.isImmutable && !isReadyForLetterChange) {
+                moveCell(drag: drag, drop: drop)
+                
+                // Debounce automatic validation.
+                let debounce = Debounce(duration: 1)
+                debounce.submit {
+                    Task {
+                        do {
+                            try await self.commandViewModel.validateMove()
+                        } catch {
+                            // We swallow exception here, later we may change it...
+                            // TODO: this is not OK. We should consume this exception in model in order to update view...
+                            print("On-the-fly validation failed", error.localizedDescription)
+                        }
+                    }
+                }
+            }
+        // }
+    }
+    
+    func moveCell(drag: CellModel, drop: CellModel) {
+        if (drag.role == .board && drop.role == .board) {
+            // Board to board.
+            boardViewModel.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
+            if (drop.letterTile != nil) {
+                boardViewModel.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: drop.letterTile!)
+            } else {
+                boardViewModel.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: nil)
+            }
+        } else if (drag.role == .rack && drop.role == .board) {
+            // Rack to board.
+            boardViewModel.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
+            if (!drop.isEmpty) {
+                rackViewModel.setLetterTileByPosition(pos: drag.pos, letterTile: drop.letterTile!)
+            } else {
+                rackViewModel.emptyCellByPosition(pos: drag.pos)
+            }
+        } else if (drag.role == .board && drop.role == .rack) {
+            // Board to rack.
+            rackViewModel.insertLetterTileByPos(pos: drop.pos, letterTile: drag.letterTile!, emptyPromisePos: nil)
+            boardViewModel.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: nil)
+        } else {
+            // Rack to rack.
+            rackViewModel.insertLetterTileByPos(pos: drop.pos, letterTile: drag.letterTile!, emptyPromisePos: drag.pos)
+        }
+    }
+    
+    private var isReadyForLetterChange: Bool {
+        return rackViewModel.changeLettersMode
+    }
+}
+
+enum DragState {
+    case inactive
+    case dragging(translation: CGSize, selectedItem: CellModel)
+    
+    var translation: CGSize {
+        switch self {
+        case .inactive:
+            return .zero
+        case .dragging(let translation, _):
+            return translation
+        }
+    }
+    
+    var selectedItem: CellModel? {
+        switch self {
+        case .inactive:
+            return nil
+        case .dragging(_, let selectedItem):
+            return selectedItem
+        }
+    }
+    
+    var isDragging: Bool {
+        switch self {
+        case .dragging:
+            return true
+        case .inactive:
+            return false
+        }
+    }
+    
+    func isDraggingFromRow(row: Int) -> Bool {
+        guard let item = selectedItem else { return false }
+        
+        return item.row == row
+    }
+    
+    func isDraggingCell(cell: CellModel) -> Bool {
+        guard let item = selectedItem else { return false }
+        
+        return item == cell
+    }
+    
+    func cellTranslation(cell: CellModel) -> CGSize {
+        if isDraggingCell(cell: cell) {
+            return translation
+        }
+        
+        return .zero
+    }
+    
+}
