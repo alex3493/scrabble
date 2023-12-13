@@ -43,7 +43,7 @@ struct RackView: View {
                                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                                 .zIndex(dragState.isDraggingCell(cell: cell) ? 1 : 0)
                             
-                            if !cell.isEmpty {
+                            if !cell.isEmpty && !isLettersChangeMode {
                                 cellView
                                     .offset(dragState.cellTranslation(cell: cell))
                                     .gesture(
@@ -61,8 +61,6 @@ struct RackView: View {
                                                 commandViewModel.onPerformDrop(value: gesture.location, cell: cell, boardIsLocked: boardIsLocked)
                                             }
                                     )
-                                
-                                
                             } else {
                                 cellView
                             }
