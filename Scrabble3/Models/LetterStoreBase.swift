@@ -79,24 +79,31 @@ class MoveCellHelper: ObservableObject {
             if drop.letterTile!.char == drag.letterTile!.char {
                 // Asterisk exchange.
                 moveCell(drag: drag, drop: drop)
+                // Keep cell as immutable after asterisk exchange.
+                boardViewModel.setCellStatusByPosition(row: drop.row, col: drop.col, status: .immutable)
             } else {
+                // Attempt to exchange for a wrong letter - nothing to do.
                 return
             }
         }
         
+        // Check conditions before we move cell.
         if drop.cellStatus == .empty || (!drop.isImmutable && !isReadyForLetterChange) {
             moveCell(drag: drag, drop: drop)
             
-            // Debounce automatic validation.
-            let debounce = Debounce(duration: 1)
-            debounce.submit {
-                Task {
-                    do {
-                        try await self.commandViewModel.validateMove()
-                    } catch {
-                        // We swallow exception here, later we may change it...
-                        // TODO: this is not OK. We should consume this exception in model in order to update view...
-                        print("On-the-fly validation failed", error.localizedDescription)
+            // Only validate words if board words have changed.
+            if drop.role == .board || drag.role == .board {
+                // Debounce automatic validation.
+                let debounce = Debounce(duration: 1)
+                debounce.submit {
+                    Task {
+                        do {
+                            try await self.commandViewModel.validateMove()
+                        } catch {
+                            // We swallow exception here, later we may change it...
+                            // TODO: this is not OK. We should consume this exception in model in order to update view...
+                            print("On-the-fly validation failed", error.localizedDescription)
+                        }
                     }
                 }
             }
