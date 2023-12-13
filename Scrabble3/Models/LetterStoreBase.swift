@@ -79,11 +79,15 @@ class MoveCellHelper: ObservableObject {
             if drop.letterTile!.char == drag.letterTile!.char {
                 // Asterisk exchange.
                 moveCell(drag: drag, drop: drop)
+                // Keep cell as immutable after asterisk exchange.
+                boardViewModel.setCellStatusByPosition(row: drop.row, col: drop.col, status: .immutable)
             } else {
+                // Attempt to exchange for a wrong letter - nothing to do.
                 return
             }
         }
         
+        // Check conditions before we move cell.
         if drop.cellStatus == .empty || (!drop.isImmutable && !isReadyForLetterChange) {
             moveCell(drag: drag, drop: drop)
             

@@ -42,9 +42,13 @@ struct CellView: View {
                         
                         if cell.role == .board {
                             let index = cell.row * Constants.Game.Board.cols + cell.col
-                            self.board.cellFrames[index] = frame
+                            if board.cellFrames.indices.contains(index) {
+                                self.board.cellFrames[index] = frame
+                            }
                         } else {
-                            self.rack.cellFrames[cell.pos] = frame
+                            if rack.cellFrames.indices.contains(cell.pos) {
+                                self.rack.cellFrames[cell.pos] = frame
+                            }
                         }
                     }
                 
