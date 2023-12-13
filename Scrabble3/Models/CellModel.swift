@@ -10,6 +10,7 @@ import CoreTransferable
 import UniformTypeIdentifiers
 
 struct CellModel: Codable, Hashable {
+    
     let row: Int
     let col: Int
     let pos: Int

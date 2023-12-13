@@ -3,19 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.json</string>
-			</array>
-			<key>UTTypeIconFiles</key>
-			<array/>
-			<key>UTTypeIdentifier</key>
-			<string>org.scrabble.cell</string>
-			<key>UTTypeTagSpecification</key>
-			<dict/>
-		</dict>
-	</array>
+	<array/>
 </dict>
 </plist>

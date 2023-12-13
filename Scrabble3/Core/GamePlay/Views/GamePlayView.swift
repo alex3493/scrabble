@@ -36,7 +36,7 @@ struct GamePlayView: View {
                     VStack(alignment: .trailing) {
                         PlayerListView(viewModel: commandViewModel)
                             .padding()
-                        RackView(commandViewModel: commandViewModel)
+                        RackView(boardIsLocked: !hasTurn, commandViewModel: commandViewModel)
                             .environment(\.mainWindowSize, proxy.size)
                         CommandView(gameId: game.id, commandViewModel: commandViewModel)
                             // TODO: make it better!
@@ -48,8 +48,7 @@ struct GamePlayView: View {
                 VStack {
                     BoardView(boardIsLocked: !hasTurn, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
-                    RackView(commandViewModel: commandViewModel)
-                        .frame(alignment: .center)
+                    RackView(boardIsLocked: !hasTurn, commandViewModel: commandViewModel)
                         .environment(\.mainWindowSize, proxy.size)
                     PlayerListView(viewModel: commandViewModel)
                         .padding()

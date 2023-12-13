@@ -40,7 +40,7 @@ class ArchivedGameListViewModel: ObservableObject {
             // Always list games created by me, even if no other players are connected.
             let emails = Array(Set(initiatorEmails + counterpartEmails + [currentUser.email ?? ""]))
             
-            let (newGames, lastDocument) = try await GameManager.shared.getArchivedGames(limit: 2, includeEmails: emails, afterDocument: lastDocument)
+            let (newGames, lastDocument) = try await GameManager.shared.getArchivedGames(limit: 20, includeEmails: emails, afterDocument: lastDocument)
             
             games.append(contentsOf: newGames)
             

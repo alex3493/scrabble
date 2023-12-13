@@ -16,6 +16,8 @@ class RackViewModel: LetterStoreBase {
         for i in 0..<Constants.Game.Rack.size {
             let cell = CellModel(row: -1, col: -1, pos: Int(i), letterTile: nil, cellStatus: .empty, role: .rack)
             cells.append(cell)
+            
+            cellFrames.append(nil)
         }
     }
     
