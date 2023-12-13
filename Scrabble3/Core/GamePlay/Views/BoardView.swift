@@ -48,6 +48,10 @@ struct BoardView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0.01, coordinateSpace: .global)
                                         .updating(self.$dragState, body: { (currentState, gestureState, transaction) in
+                                            if dragState.isDragging && dragState.selectedItem != cell {
+                                                // Already dragging another cell - nothing to do.
+                                                return
+                                            }
                                             gestureState = .dragging(translation: currentState.translation, selectedItem: cell)
                                         })
                                         .onEnded { gesture in
