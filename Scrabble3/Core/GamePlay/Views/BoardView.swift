@@ -17,8 +17,6 @@ struct BoardView: View {
     
     @GestureState private var dragState = DragState.inactive
     
-    @StateObject private var moveCellHelper: MoveCellHelper
-    
     let boardIsLocked: Bool
     
     init(boardIsLocked: Bool, commandViewModel: CommandViewModel) {
@@ -27,8 +25,6 @@ struct BoardView: View {
         _commandViewModel = StateObject(wrappedValue: commandViewModel)
         _boardViewModel = StateObject(wrappedValue: commandViewModel.boardViewModel)
         _rackViewModel = StateObject(wrappedValue: commandViewModel.rackViewModel)
-        
-        _moveCellHelper = StateObject(wrappedValue: MoveCellHelper(rackViewModel: commandViewModel.rackViewModel, boardViewModel: commandViewModel.boardViewModel, commandViewModel: commandViewModel))
     }
     
     var body: some View {
@@ -72,7 +68,7 @@ struct BoardView: View {
                                             .onEnded { gesture in
                                                 print("Drag stopped!", gesture.location)
                                                 
-                                                moveCellHelper.onPerformDrop(value: gesture.location, cell: cell, boardIsLocked: boardIsLocked)
+                                                commandViewModel.onPerformDrop(value: gesture.location, cell: cell, boardIsLocked: boardIsLocked)
                                             }
                                     )
                             } else {
