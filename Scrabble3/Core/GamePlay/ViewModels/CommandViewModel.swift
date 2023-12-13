@@ -295,7 +295,96 @@ final class CommandViewModel: ObservableObject {
         
         tempScores = [:]
     }
-
+    
+    func onPerformDrop(value: CGPoint, cell drag: CellModel, boardIsLocked: Bool) {
+        print("On drop", value, drag.pos, drag.row, drag.col)
+        
+        let rackDropCellIndex = rackViewModel.cellIndexFromPoint(value.x, value.y)
+        let boardDropCellIndex = boardViewModel.cellIndexFromPoint(value.x, value.y)
+        
+        print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
+        
+        var drop: CellModel? = nil
+        
+        if let rackDropCellIndex = rackDropCellIndex {
+            drop = rackViewModel.cells[rackDropCellIndex]
+        }
+        
+        if let boardDropCellIndex = boardDropCellIndex {
+            drop = boardViewModel.cells[boardDropCellIndex]
+        }
+        
+        guard let drop = drop else { return }
+        
+        if boardIsLocked && drop.role == .board {
+            return
+        }
+        
+        if drop.role == .board && drop.isImmutable && drop.letterTile != nil && drop.letterTile!.isAsterisk {
+            if drop.letterTile!.char == drag.letterTile!.char {
+                // Asterisk exchange.
+                moveCell(drag: drag, drop: drop)
+                // Keep cell as immutable after asterisk exchange.
+                boardViewModel.setCellStatusByPosition(row: drop.row, col: drop.col, status: .immutable)
+            } else {
+                // Attempt to exchange for a wrong letter - nothing to do.
+                return
+            }
+        }
+        
+        // Check conditions before we move cell.
+        if drop.cellStatus == .empty || (!drop.isImmutable && !isReadyForLetterChange) {
+            moveCell(drag: drag, drop: drop)
+            
+            // Only validate words if board words have changed.
+            if drop.role == .board || drag.role == .board {
+                // Debounce automatic validation.
+                let debounce = Debounce(duration: 1)
+                debounce.submit {
+                    Task {
+                        do {
+                            try await self.validateMove()
+                        } catch {
+                            // We swallow exception here, later we may change it...
+                            // TODO: this is not OK. We should consume this exception in model in order to update view...
+                            print("On-the-fly validation failed", error.localizedDescription)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func moveCell(drag: CellModel, drop: CellModel) {
+        if (drag.role == .board && drop.role == .board) {
+            // Board to board.
+            boardViewModel.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
+            if (drop.letterTile != nil) {
+                boardViewModel.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: drop.letterTile!)
+            } else {
+                boardViewModel.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: nil)
+            }
+        } else if (drag.role == .rack && drop.role == .board) {
+            // Rack to board.
+            boardViewModel.setLetterTileByPosition(row: drop.row, col: drop.col, letterTile: drag.letterTile!)
+            if (!drop.isEmpty) {
+                rackViewModel.setLetterTileByPosition(pos: drag.pos, letterTile: drop.letterTile!)
+            } else {
+                rackViewModel.emptyCellByPosition(pos: drag.pos)
+            }
+        } else if (drag.role == .board && drop.role == .rack) {
+            // Board to rack.
+            rackViewModel.insertLetterTileByPos(pos: drop.pos, letterTile: drag.letterTile!, emptyPromisePos: nil)
+            boardViewModel.setLetterTileByPosition(row: drag.row, col: drag.col, letterTile: nil)
+        } else {
+            // Rack to rack.
+            rackViewModel.insertLetterTileByPos(pos: drop.pos, letterTile: drag.letterTile!, emptyPromisePos: drag.pos)
+        }
+    }
+    
+    private var isReadyForLetterChange: Bool {
+        return rackViewModel.changeLettersMode
+    }
     
     deinit {
         print("***** CommandViewModel DESTROYED")
