@@ -127,7 +127,7 @@ class BoardViewModel: LetterStoreBase {
             }
             word = WordModel(anchorRow: cell.row, anchorCol: anchorCol, direction: .horizontal)
             wordBonusK = 1
-            for col in (anchorCol...14) {
+            for col in (anchorCol..<Constants.Game.Board.cols) {
                 if (cellByPosition(row: cell.row, col: col).isEmpty) {
                     break
                 } else {
@@ -161,7 +161,7 @@ class BoardViewModel: LetterStoreBase {
             word = WordModel(anchorRow: anchorRow, anchorCol: cell.col, direction: .vertical)
             wordBonusK = 1
             
-            for row in (anchorRow...14) {
+            for row in (anchorRow..<Constants.Game.Board.rows) {
                 if (cellByPosition(row: row, col: cell.col).isEmpty) {
                     break
                 } else {

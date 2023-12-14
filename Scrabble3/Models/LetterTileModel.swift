@@ -154,7 +154,7 @@ struct LetterBank {
         let letterBank = LetterTileBank(lang: lang).tiles
         
         letterBank.forEach({ tile in
-            for _ in 0...tile.probability {
+            for _ in 0..<tile.probability {
                 store.append(LetterTile(char: tile.char, score: tile.score, probability: tile.probability, isAsterisk: tile.isAsterisk, lang: tile.lang))
             }
         })
