@@ -71,13 +71,14 @@ struct CellModel: Codable, Hashable {
         cellStatus = .empty
     }
     
+    @MainActor
     var isEmpty: Bool {
         return letterTile == nil
     }
     
     @MainActor
     var isCurrentMove: Bool {
-        return !isImmutable && cellStatus != .empty && role == .board
+        return !isImmutable && cellStatus != .empty && !isEmpty && role == .board
     }
     
     @MainActor

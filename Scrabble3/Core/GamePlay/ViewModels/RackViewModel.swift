@@ -131,33 +131,31 @@ class RackViewModel: LetterStoreBase {
     }
     
     func insertLetterTileByPos(pos: Int, letterTile: LetterTile, emptyPromisePos: Int?) {
-        let emptyPos = getFirstEmptyCellIndex(fromPos: pos, emptyPromisePos: emptyPromisePos)
+        guard let emptyPos = getFirstEmptyCellIndex(fromPos: pos, emptyPromisePos: emptyPromisePos) else { return }
         
-        if (emptyPos != nil) {
-            if (emptyPromisePos != nil) {
-                // When moving tiles rack-to-rack always clear "drag" cell.
-                emptyCellByPosition(pos: emptyPromisePos!)
+        if (emptyPromisePos != nil) {
+            // When moving tiles rack-to-rack always clear "drag" cell.
+            emptyCellByPosition(pos: emptyPromisePos!)
+        }
+        if (emptyPos == pos) {
+            // Inserting to an empty position - just set tile, no need to move other tiles.
+            setLetterTileByPosition(pos: emptyPos, letterTile: letterTile)
+        } else if (emptyPos < pos) {
+            // Shifting tiles to the left.
+            for i in (emptyPos + 1...pos) {
+                setLetterTileByPosition(pos: i - 1, letterTile: cells[i].letterTile)
             }
-            if (emptyPos == pos) {
-                // Inserting to an empty position - just set tile, no need to move other tiles.
-                setLetterTileByPosition(pos: emptyPos!, letterTile: letterTile)
-            } else if (emptyPos! < pos) {
-                // Shifting tiles to the left.
-                for i in (emptyPos! + 1...pos) {
-                    setLetterTileByPosition(pos: i - 1, letterTile: cells[i].letterTile)
-                }
-            } else {
-                // Shifting tiles to the right.
-                for i in (pos...emptyPos! - 1).reversed() {
-                    setLetterTileByPosition(pos: i + 1, letterTile: cells[i].letterTile)
-                }
+        } else {
+            // Shifting tiles to the right.
+            for i in (pos...emptyPos - 1).reversed() {
+                setLetterTileByPosition(pos: i + 1, letterTile: cells[i].letterTile)
             }
-            if letterTile.isAsterisk {
-                let letterTile = LetterTile(char: "*", score: 0, probability: letterTile.probability, isAsterisk: true, lang: letterTile.lang)
-                setLetterTileByPosition(pos: pos, letterTile: letterTile)
-            } else {
-                setLetterTileByPosition(pos: pos, letterTile: letterTile)
-            }
+        }
+        if letterTile.isAsterisk {
+            let letterTile = LetterTile(char: "*", score: 0, probability: letterTile.probability, isAsterisk: true, lang: letterTile.lang)
+            setLetterTileByPosition(pos: pos, letterTile: letterTile)
+        } else {
+            setLetterTileByPosition(pos: pos, letterTile: letterTile)
         }
     }
     

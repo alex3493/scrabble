@@ -51,6 +51,7 @@ final class GameManager {
     func getArchivedGames(limit: Int, includeEmails: [String], afterDocument: DocumentSnapshot?) async throws -> (items: [GameModel], lastDocument: DocumentSnapshot?) {
         
         return try await archivedGameCollection(includeEmails: includeEmails)
+            .order(by: GameModel.CodingKeys.createdAt.rawValue, descending: true)
             .limit(to: limit)
             .startOptionally(afterDocument: afterDocument)
             .getDocumentsWithSnapshot(as: GameModel.self)

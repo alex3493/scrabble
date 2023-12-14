@@ -127,7 +127,7 @@ class BoardViewModel: LetterStoreBase {
             }
             word = WordModel(anchorRow: cell.row, anchorCol: anchorCol, direction: .horizontal)
             wordBonusK = 1
-            for col in (anchorCol...14) {
+            for col in (anchorCol..<Constants.Game.Board.cols) {
                 if (cellByPosition(row: cell.row, col: col).isEmpty) {
                     break
                 } else {
@@ -161,7 +161,7 @@ class BoardViewModel: LetterStoreBase {
             word = WordModel(anchorRow: anchorRow, anchorCol: cell.col, direction: .vertical)
             wordBonusK = 1
             
-            for row in (anchorRow...14) {
+            for row in (anchorRow..<Constants.Game.Board.rows) {
                 if (cellByPosition(row: row, col: cell.col).isEmpty) {
                     break
                 } else {
@@ -182,6 +182,8 @@ class BoardViewModel: LetterStoreBase {
                 cellConnected -= 1
             }
             
+            // TODO: issue here - we may have cell with letterTile == nil
+            // Check: somehow currentMoveCells contain tiles without letter!?
             if (cellConnected == 0) {
                 highlightCell(cell: cell)
                 throw ValidationError.invalidLetterTilePosition(cell: cell.letterTile!.char)
@@ -272,15 +274,15 @@ class BoardViewModel: LetterStoreBase {
         resetCellsStatus()
     }
     
-//    func setWordsToBoard(words: [WordModel]) {
-//        for word in words {
-//            for var cell in word.cells {
-//                cell.isImmutable = true
-//                cell.setCellStatus(status: .immutable)
-//                setCellByPosition(row: cell.row, col: cell.col, cell: cell)
-//            }
-//        }
-//    }
+    //    func setWordsToBoard(words: [WordModel]) {
+    //        for word in words {
+    //            for var cell in word.cells {
+    //                cell.isImmutable = true
+    //                cell.setCellStatus(status: .immutable)
+    //                setCellByPosition(row: cell.row, col: cell.col, cell: cell)
+    //            }
+    //        }
+    //    }
     
     func setCellByPosition(row: Int, col: Int, cell: CellModel) {
         let index = row * Constants.Game.Board.cols + col
