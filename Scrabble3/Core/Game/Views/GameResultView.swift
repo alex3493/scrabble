@@ -21,6 +21,8 @@ struct GameResultView: View {
     
     @State var currentUser: DBUser? = nil
     
+    @State var gameMoves: [String: [MoveModel]] = [:]
+    
     @State var gameWords: [String: [WordModel]] = [:]
     
     var body: some View {
@@ -57,16 +59,34 @@ struct GameResultView: View {
                             }
                             .fontWeight(.bold)
                             Divider()
-                            if !getPlayerWords(playerId: item.id).isEmpty {
-                                ForEach(Array(getPlayerWords(playerId: item.id).enumerated()), id: \.offset) { index, item in
-                                    HStack {
-                                        Text("\(item.word)")
-                                        Spacer()
-                                        Text("\(item.score)")
+                            if !getPlayerMoves(playerId: item.id).isEmpty {
+                                ForEach(Array(getPlayerMoves(playerId: item.id).enumerated()), id: \.offset) { index, move in
+                                    if move.words.count > 0 {
+                                        VStack {
+                                            ForEach(move.words, id: \.self) { word in
+                                                HStack {
+                                                    Text(word.word)
+                                                    Spacer()
+                                                    Text("\(word.score)")
+                                                }
+                                            }
+                                            HStack {
+                                                Spacer()
+                                                Text("\(move.score)")
+                                                    .fontWeight(.bold)
+                                            }
+                                        }
+                                        //  ("\(Utils.formatTransactionTimestamp(item.createdAt))")
+                                    } else {
+                                        HStack {
+                                            Spacer()
+                                            Text("Ход пропущен")
+                                        }
                                     }
+                                    Divider()
                                 }
                             } else {
-                                Text("Игрок не поставил ни одного слова")
+                                Text("Игрок не сделал ни одного хода")
                                     .fontWeight(.bold)
                             }
                         }
@@ -106,9 +126,10 @@ struct GameResultView: View {
         }
         .task {
             do {
-                try await fetchGameWords()
+                try await fetchGameMoves()
+                // try await fetchGameWords()
             } catch {
-                print("DEBUG :: Error fetching game words", error.localizedDescription)
+                print("DEBUG :: Error fetching game moves", error.localizedDescription)
             }
         }
     }
@@ -136,6 +157,16 @@ struct GameResultView: View {
         return nil
     }
     
+    func fetchGameMoves() async throws {
+        gameMoves = [:]
+        
+        let moves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
+        
+        game.players.forEach { player in
+            gameMoves[player.id] = moves.filter { $0.user.userId == player.id }
+        }
+    }
+    
     func fetchGameWords() async throws {
         gameWords = [:]
         
@@ -151,6 +182,15 @@ struct GameResultView: View {
         guard !gameWords.isEmpty, let words = gameWords[playerId] else { return [] }
         
         return words
+    }
+    
+    func getPlayerMoves(playerId: String) -> [MoveModel] {
+        guard !gameMoves.isEmpty, let moves = gameMoves[playerId] else { return [] }
+        
+        // Order ascending.
+        return moves.sorted { lhs, rhs in
+            return lhs.createdAt < rhs.createdAt
+        }
     }
 }
 
