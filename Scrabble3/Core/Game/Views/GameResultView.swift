@@ -23,7 +23,7 @@ struct GameResultView: View {
     
     @State var gameMoves: [String: [MoveModel]] = [:]
     
-    @State var gameWords: [String: [WordModel]] = [:]
+    // @State var gameWords: [String: [WordModel]] = [:]
     
     var body: some View {
         VStack {
@@ -58,9 +58,11 @@ struct GameResultView: View {
                                 Text("\(item.score)")
                             }
                             .fontWeight(.bold)
-                            Divider()
+                            .padding()
+                            .background(Color.yellow)
                             if !getPlayerMoves(playerId: item.id).isEmpty {
                                 ForEach(Array(getPlayerMoves(playerId: item.id).enumerated()), id: \.offset) { index, move in
+                                    Divider()
                                     if move.words.count > 0 {
                                         VStack {
                                             ForEach(move.words, id: \.self) { word in
@@ -70,20 +72,27 @@ struct GameResultView: View {
                                                     Text("\(word.score)")
                                                 }
                                             }
+                                            if move.hasBonus {
+                                                HStack {
+                                                    Text("Бонус")
+                                                        .italic()
+                                                    Spacer()
+                                                    Text("\(Constants.Game.bonusFullRackMove)")
+                                                }
+                                            }
                                             HStack {
                                                 Spacer()
                                                 Text("\(move.score)")
                                                     .fontWeight(.bold)
                                             }
                                         }
-                                        //  ("\(Utils.formatTransactionTimestamp(item.createdAt))")
                                     } else {
                                         HStack {
                                             Spacer()
                                             Text("Ход пропущен")
+                                                .italic()
                                         }
                                     }
-                                    Divider()
                                 }
                             } else {
                                 Text("Игрок не сделал ни одного хода")
@@ -121,13 +130,11 @@ struct GameResultView: View {
             .padding()
         }
         .onAppear() {
-            // print("Current user \(String(describing: authViewModel.currentUser))")
             currentUser = authViewModel.currentUser
         }
         .task {
             do {
                 try await fetchGameMoves()
-                // try await fetchGameWords()
             } catch {
                 print("DEBUG :: Error fetching game moves", error.localizedDescription)
             }
@@ -167,22 +174,22 @@ struct GameResultView: View {
         }
     }
     
-    func fetchGameWords() async throws {
-        gameWords = [:]
-        
-        let moves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
-        
-        game.players.forEach { player in
-            let playerMoves = moves.filter { $0.user.userId == player.id }
-            gameWords[player.id] = playerMoves.flatMap{ $0.words }
-        }
-    }
+//    func fetchGameWords() async throws {
+//        gameWords = [:]
+//        
+//        let moves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
+//        
+//        game.players.forEach { player in
+//            let playerMoves = moves.filter { $0.user.userId == player.id }
+//            gameWords[player.id] = playerMoves.flatMap{ $0.words }
+//        }
+//    }
     
-    func getPlayerWords(playerId: String) -> [WordModel] {
-        guard !gameWords.isEmpty, let words = gameWords[playerId] else { return [] }
-        
-        return words
-    }
+//    func getPlayerWords(playerId: String) -> [WordModel] {
+//        guard !gameWords.isEmpty, let words = gameWords[playerId] else { return [] }
+//        
+//        return words
+//    }
     
     func getPlayerMoves(playerId: String) -> [MoveModel] {
         guard !gameMoves.isEmpty, let moves = gameMoves[playerId] else { return [] }
