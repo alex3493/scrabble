@@ -38,7 +38,7 @@ class RackViewModel: LetterStoreBase {
         var cell = cells[pos]
         if letterTile != nil && letterTile!.isAsterisk {
             // If we have asterisk exchange we should reset tile to pure asterisk before putting to rack.
-            cell.letterTile = LetterTile(char: "*", score: 0, probability: letterTile!.probability, isAsterisk: true, lang: letterTile!.lang)
+            cell.letterTile = LetterTile(char: "*", score: 0, quantity: letterTile!.quantity, isAsterisk: true, lang: letterTile!.lang)
         } else {
             // Normal flow.
             cell.letterTile = letterTile
@@ -52,16 +52,20 @@ class RackViewModel: LetterStoreBase {
         cells[pos].setCellStatus(status: status)
     }
     
-    func changeLetters() {
+    func changeLetters(game: GameModel) -> [LetterTile] {
         let markedForChange = cells.filter({ cell in
             return cell.cellStatus == .checkedForLetterChange
         })
+        
+        var updatedGame = game
+        
+        updatedGame.putLettersToBank(tiles: markedForChange.compactMap { $0.letterTile })
         
         for cell in markedForChange {
             cells[cell.pos].letterTile = nil
         }
         
-        fillRack()
+        return fillRack(game: updatedGame)
     }
     
     var hasLettersMarkedForChange: Bool {
@@ -78,11 +82,6 @@ class RackViewModel: LetterStoreBase {
         }
     }
     
-    func initRack() {
-        clearRack()
-        fillRack()
-    }
-    
     func setChangeLettersMode(mode: Bool) {
         self.changeLettersMode = mode
         if (!mode) {
@@ -94,35 +93,22 @@ class RackViewModel: LetterStoreBase {
         }
     }
     
-    func fillRack() {
-        let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
-        
-        for cell in cells {
-            if (cell.isEmpty) {
-                setLetterTileByPosition(pos: cell.pos, letterTile: letterBank[cell.pos])
-            }
-        }
-    }
-    
-    func exportRackTiles() -> [LetterTile] {
-        var exported: [LetterTile] = []
-        
-        cells.forEach({ cell in
-            if (!cell.isEmpty) {
-                exported.append(cell.letterTile!)
-            }
+    func fillRack(game: GameModel) -> [LetterTile] {
+        let emptyCells = cells.filter({ cell in
+            return cell.isEmpty
         })
         
-        return exported
-    }
-    
-    func importRackTiles(letterTiles: [LetterTile]) {
-        clearRack()
-        for idx in letterTiles.indices {
-            cells[idx].setTile(tile: letterTiles[idx])
-            cells[idx].cellStatus = .currentMove
+        var game = game
+        
+        let tiles = game.pullLettersFromBank(count: emptyCells.count)
+        
+        for index in emptyCells.indices {
+            if index < tiles.count {
+                setLetterTileByPosition(pos: emptyCells[index].pos, letterTile: tiles[index])
+            }
         }
-        fillRack()
+        
+        return game.letterBank
     }
     
     func emptyCellByPosition(pos: Int) {
@@ -152,7 +138,7 @@ class RackViewModel: LetterStoreBase {
             }
         }
         if letterTile.isAsterisk {
-            let letterTile = LetterTile(char: "*", score: 0, probability: letterTile.probability, isAsterisk: true, lang: letterTile.lang)
+            let letterTile = LetterTile(char: "*", score: 0, quantity: letterTile.quantity, isAsterisk: true, lang: letterTile.lang)
             setLetterTileByPosition(pos: pos, letterTile: letterTile)
         } else {
             setLetterTileByPosition(pos: pos, letterTile: letterTile)

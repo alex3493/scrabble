@@ -57,6 +57,7 @@
 		FAB872602AA2586C0015D0FA /* Scrabble3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8725F2AA2586C0015D0FA /* Scrabble3Tests.swift */; };
 		FAB8726A2AA2586C0015D0FA /* Scrabble3UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB872692AA2586C0015D0FA /* Scrabble3UITests.swift */; };
 		FAB8726C2AA2586C0015D0FA /* Scrabble3UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB8726B2AA2586C0015D0FA /* Scrabble3UITestsLaunchTests.swift */; };
+		FAC05E462B2B74340079FF42 /* ControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC05E452B2B74340079FF42 /* ControllerView.swift */; };
 		FAC114B52AD1AA07001152D8 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC114B42AD1AA07001152D8 /* LoginView.swift */; };
 		FAC114B72AD1AA6C001152D8 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC114B62AD1AA6C001152D8 /* RegistrationView.swift */; };
 		FAC114BA2AD1AB3D001152D8 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC114B92AD1AB3D001152D8 /* AuthenticationView.swift */; };
@@ -147,6 +148,7 @@
 		FAB872652AA2586C0015D0FA /* Scrabble3UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Scrabble3UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB872692AA2586C0015D0FA /* Scrabble3UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3UITests.swift; sourceTree = "<group>"; };
 		FAB8726B2AA2586C0015D0FA /* Scrabble3UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrabble3UITestsLaunchTests.swift; sourceTree = "<group>"; };
+		FAC05E452B2B74340079FF42 /* ControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerView.swift; sourceTree = "<group>"; };
 		FAC114B42AD1AA07001152D8 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		FAC114B62AD1AA6C001152D8 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		FAC114B92AD1AB3D001152D8 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
@@ -462,6 +464,7 @@
 				FA6483252AF24C0900A9DBAA /* AsteriskDialogView.swift */,
 				FA6483292AF4FA4500A9DBAA /* MoveInfoDialogView.swift */,
 				FAB2A7182B233E7400E5BCD7 /* PlayerListView.swift */,
+				FAC05E452B2B74340079FF42 /* ControllerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -623,6 +626,7 @@
 				FA75457D2AEA589D00B58EFC /* MoveModel.swift in Sources */,
 				FA64832A2AF4FA4500A9DBAA /* MoveInfoDialogView.swift in Sources */,
 				FAC46A002AD4590100AB3A8E /* AuthWithEmailViewModel.swift in Sources */,
+				FAC05E462B2B74340079FF42 /* ControllerView.swift in Sources */,
 				FA75459F2AEE808800B58EFC /* BackenService.swift in Sources */,
 				FA7545872AEC04B400B58EFC /* CommandView.swift in Sources */,
 				FA75457B2AEA589000B58EFC /* WordModel.swift in Sources */,

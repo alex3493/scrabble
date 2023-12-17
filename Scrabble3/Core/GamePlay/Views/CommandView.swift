@@ -33,7 +33,7 @@ struct CommandView: View {
             if isInChangeLetterMode {
                 ActionImageButton(label: "", action: {
                     do {
-                        try await viewModel.changeLetters(gameId: game.id, confirmed: true)
+                        try await viewModel.changeLetters(game: game, confirmed: true)
                     } catch {
                         print("DEBUG :: Error changing letter: \(error.localizedDescription)")
                         errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)
@@ -84,7 +84,7 @@ struct CommandView: View {
                     }
                 }
                 .padding()
-                // Text("Command: \(proxy.size.width) x \(proxy.size.height)")
+                Text("Letter bank size: \(game.letterBank.count)")
             }
         }
         .onAppear() {

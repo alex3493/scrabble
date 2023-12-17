@@ -83,9 +83,12 @@ final class GameManager {
         // We need to init empty board.
         let boardMViewModel = BoardViewModel(lang: lang)
         
+        // We init new letter tile bank.
+        let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
+        
         let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: lang, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
-        ], turn: 0, boardCells: boardMViewModel.cells)
+        ], turn: 0, boardCells: boardMViewModel.cells, letterBank: letterBank)
         try document.setData(from: game, merge: false, encoder: encoder)
         
         return game
@@ -146,10 +149,8 @@ final class GameManager {
         
         game.gameStatus = .running
         
-        // Set letter racks for each player.
-        for playerIndex in game.players.indices {
-            game.players[playerIndex].letterRack = initRack(lang: game.lang)
-        }
+        // Set letter racks for each player.        
+        game.initPlayerRacks()
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)
@@ -183,7 +184,10 @@ final class GameManager {
         try await gameDocument(gameId: gameId).updateData(data)
     }
     
-    func nextTurn(gameId: String, score: Int, user: DBUser, userLetterRack: [CellModel], boardCells: [CellModel]) async throws {
+    // TODO: refactor - we should use game model as parameter, not gameId!
+    func nextTurn(gameId: String, score: Int, user: DBUser, userLetterRack: [CellModel], boardCells: [CellModel], letterBank: [LetterTile]) async throws {
+        
+        // TODO: there should be no need to load game.
         var game = try await gameDocument(gameId: gameId).getDocument(as: GameModel.self)
         
         // Save current player letter rack.
@@ -203,6 +207,8 @@ final class GameManager {
         }
         
         game.boardCells = boardCells
+        
+        game.letterBank = letterBank
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)
@@ -237,13 +243,21 @@ final class GameManager {
         gameListener?.remove()
     }
     
-    func initRack(lang: GameLanguage) -> [CellModel] {
-        let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
+    func initRack(game: inout GameModel) -> [CellModel] {
+        let letterBank = game.letterBank.shuffled()
+        
+        guard Constants.Game.Rack.size <= letterBank.count else {
+            print("DEBUG :: PANIC - not enought letter tiles for rack initialisation")
+            return []
+        }
         
         var rack = [CellModel]()
         for pos in 0..<Constants.Game.Rack.size {
             rack.append(CellModel(row: -1, col: -1, pos: pos, letterTile: letterBank[pos], cellStatus: .currentMove, role: .rack))
         }
+        
+        // Update game letter bank - remove used tiles.
+        game.letterBank = Array(game.letterBank[Constants.Game.Rack.size...])
         
         return rack
     }

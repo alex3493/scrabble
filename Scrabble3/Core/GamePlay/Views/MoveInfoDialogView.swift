@@ -97,7 +97,7 @@ struct MoveInfoDialogView: View {
                     Button {
                         Task {
                             do {
-                                try await commandViewModel.nextTurn(gameId: game.id)
+                                try await commandViewModel.nextTurn(game: game)
                             } catch {
                                 print("DEBUG :: Error submitting move: \(error.localizedDescription)")
                                 errorStore.showGamePlayAlertView(withMessage: error.localizedDescription)

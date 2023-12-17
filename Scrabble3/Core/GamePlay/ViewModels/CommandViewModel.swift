@@ -45,10 +45,11 @@ final class CommandViewModel: ObservableObject {
         rackViewModel.setChangeLettersMode(mode: mode)
     }
     
-    func changeLetters(gameId: String, confirmed: Bool) async throws {
+    func changeLetters(game: GameModel, confirmed: Bool) async throws {
+        var updatedGame = game
         if (confirmed) {
-            rackViewModel.changeLetters()
-            try await nextTurn(gameId: gameId)
+            updatedGame.letterBank = rackViewModel.changeLetters(game: updatedGame)
+            try await nextTurn(game: updatedGame)
         }
         rackViewModel.setChangeLettersMode(mode: false)
     }
@@ -83,12 +84,6 @@ final class CommandViewModel: ObservableObject {
         } catch {
             print("DEBUG :: Warning: \(error.localizedDescription)")
             // TODO: interpret exception.
-        }
-    }
-    
-    func submitMove(gameId: String) async throws {
-        if await submitMove() {
-            try await nextTurn(gameId: gameId)
         }
     }
     
@@ -140,7 +135,6 @@ final class CommandViewModel: ObservableObject {
         
         boardViewModel.cells = game.boardCells
         
-        // TODO::22 - checking checking for a solution.
         Task {
             let allMoves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
             
@@ -255,11 +249,13 @@ final class CommandViewModel: ObservableObject {
         }
     }
     
-    func nextTurn(gameId: String) async throws {
+    func nextTurn(game: GameModel) async throws {
         
         var moveScore = boardViewModel.getMoveScore()
         
         guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser else { return }
+        
+        var updatedGame = game
         
         if rackViewModel.isEmpty {
             moveScore += Constants.Game.bonusFullRackMove
@@ -274,17 +270,19 @@ final class CommandViewModel: ObservableObject {
             return withDefinition
         }
         
-        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
+        try MoveManager.shared.addMove(gameId: game.id, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
-        rackViewModel.fillRack()
+        
+        updatedGame.letterBank = rackViewModel.fillRack(game: updatedGame)
         
         boardViewModel.confirmMove()
         
         tempScores = [:]
         
-        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells)
+        
+        try await GameManager.shared.nextTurn(gameId: game.id, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells, letterBank: updatedGame.letterBank)
     }
     
     func resetMove() {

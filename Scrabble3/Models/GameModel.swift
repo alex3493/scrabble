@@ -22,6 +22,7 @@ struct GameModel: Identifiable, Codable, Equatable {
     let lang: GameLanguage
     var players: [Player]
     var boardCells: [CellModel]
+    var letterBank: [LetterTile]
     var turn: Int = 0
     var gameStatus: GameStatus = .waiting
     
@@ -36,6 +37,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         case lang
         case players
         case boardCells = "board_cells"
+        case letterBank = "letter_bank"
         case turn
         case gameStatus = "game_status"
     }
@@ -48,13 +50,14 @@ struct GameModel: Identifiable, Codable, Equatable {
         case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = []) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = [], letterBank: [LetterTile] = []) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
         self.lang = lang
         self.players = players
         self.boardCells = boardCells
+        self.letterBank = letterBank
         self.turn = turn
         self.gameStatus = gameStatus
     }
@@ -65,5 +68,46 @@ struct GameModel: Identifiable, Codable, Equatable {
         if turn >= players.count {
             turn = 0
         }
+    }
+    
+    mutating func initPlayerRacks() {
+        for index in players.indices {
+            
+            guard Constants.Game.Rack.size <= letterBank.count else {
+                print("DEBUG :: PANIC - not enough letter tiles for rack initialisation")
+                return
+            }
+            
+            let tiles = pullLettersFromBank(count: Constants.Game.Rack.size)
+            
+            var rack = [CellModel]()
+            for pos in 0..<tiles.count {
+                rack.append(CellModel(row: -1, col: -1, pos: pos, letterTile: tiles[pos], cellStatus: .currentMove, role: .rack))
+            }
+            
+            players[index].letterRack = rack
+        }
+    }
+    
+    mutating func pullLettersFromBank(count: Int) -> [LetterTile] {
+        var letterBank = letterBank.shuffled()
+        
+        let countToPull = min(count, letterBank.count)
+        
+        var tiles: [LetterTile] = []
+        
+        for _ in 0..<countToPull {
+            tiles.append(letterBank.remove(at: 0))
+        }
+        
+        self.letterBank = letterBank
+        
+        return tiles
+    }
+    
+    mutating func putLettersToBank(tiles: [LetterTile]) {
+        letterBank.append(contentsOf: tiles)
+        
+        letterBank = letterBank.shuffled()
     }
 }
