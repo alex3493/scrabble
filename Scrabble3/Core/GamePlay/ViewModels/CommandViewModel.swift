@@ -87,12 +87,6 @@ final class CommandViewModel: ObservableObject {
         }
     }
     
-//    func submitMove(gameId: String) async throws {
-//        if await submitMove() {
-//            try await nextTurn(gameId: gameId)
-//        }
-//    }
-    
     func addListenerForGame() {
         guard let game = game else { return }
         
