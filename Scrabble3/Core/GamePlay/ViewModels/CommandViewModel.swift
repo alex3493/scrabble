@@ -46,8 +46,9 @@ final class CommandViewModel: ObservableObject {
     }
     
     func changeLetters(gameId: String, confirmed: Bool) async throws {
+        guard game != nil else { return }
         if (confirmed) {
-            rackViewModel.changeLetters()
+            rackViewModel.changeLetters(game: &game!)
             try await nextTurn(gameId: gameId)
         }
         rackViewModel.setChangeLettersMode(mode: false)
@@ -140,7 +141,6 @@ final class CommandViewModel: ObservableObject {
         
         boardViewModel.cells = game.boardCells
         
-        // TODO::22 - checking checking for a solution.
         Task {
             let allMoves = try await MoveManager.shared.getGameMoves(gameId: game.id).getDocuments(as: MoveModel.self)
             
@@ -259,7 +259,7 @@ final class CommandViewModel: ObservableObject {
         
         var moveScore = boardViewModel.getMoveScore()
         
-        guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser else { return }
+        guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser, var updatedGame = game else { return }
         
         if rackViewModel.isEmpty {
             moveScore += Constants.Game.bonusFullRackMove
@@ -278,13 +278,14 @@ final class CommandViewModel: ObservableObject {
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
-        rackViewModel.fillRack()
+        rackViewModel.fillRack(game: &updatedGame)
         
         boardViewModel.confirmMove()
         
         tempScores = [:]
         
-        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells)
+        // TODO: here we always have game object, so gameId parameter may be rdundant.
+        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells, letterBank: updatedGame.letterBank)
     }
     
     func resetMove() {

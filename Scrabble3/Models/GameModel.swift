@@ -22,6 +22,7 @@ struct GameModel: Identifiable, Codable, Equatable {
     let lang: GameLanguage
     var players: [Player]
     var boardCells: [CellModel]
+    var letterBank: [LetterTile]
     var turn: Int = 0
     var gameStatus: GameStatus = .waiting
     
@@ -36,6 +37,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         case lang
         case players
         case boardCells = "board_cells"
+        case letterBank = "letter_bank"
         case turn
         case gameStatus = "game_status"
     }
@@ -48,13 +50,14 @@ struct GameModel: Identifiable, Codable, Equatable {
         case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = []) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = [], letterBank: [LetterTile] = []) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
         self.lang = lang
         self.players = players
         self.boardCells = boardCells
+        self.letterBank = letterBank
         self.turn = turn
         self.gameStatus = gameStatus
     }

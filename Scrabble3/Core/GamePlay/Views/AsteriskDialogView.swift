@@ -37,7 +37,7 @@ struct AsteriskDialogView: View {
                         }
                         .frame(width: 50, height: 50)
                         .onTapGesture {
-                            let asteriskTile = LetterTile(char: tile.char, score: tile.score, probability: tile.probability, isAsterisk: true, lang: tile.lang)
+                            let asteriskTile = LetterTile(char: tile.char, score: tile.score, quantity: tile.quantity, isAsterisk: true, lang: tile.lang)
                             asteriskDialogPresented = false
                             
                             boardViewModel.setLetterTileByPosition(row: asteriskRow, col: asteriskCol, letterTile: asteriskTile)

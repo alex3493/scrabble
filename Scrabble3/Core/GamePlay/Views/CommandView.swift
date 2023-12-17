@@ -84,7 +84,7 @@ struct CommandView: View {
                     }
                 }
                 .padding()
-                // Text("Command: \(proxy.size.width) x \(proxy.size.height)")
+                Text("Letter bank size: \(game.letterBank.count)")
             }
         }
         .onAppear() {
