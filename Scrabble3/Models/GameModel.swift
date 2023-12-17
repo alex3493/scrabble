@@ -69,4 +69,45 @@ struct GameModel: Identifiable, Codable, Equatable {
             turn = 0
         }
     }
+    
+    mutating func initPlayerRacks() {
+        for index in players.indices {
+            
+            guard Constants.Game.Rack.size <= letterBank.count else {
+                print("DEBUG :: PANIC - not enough letter tiles for rack initialisation")
+                return
+            }
+            
+            let tiles = pullLettersFromBank(count: Constants.Game.Rack.size)
+            
+            var rack = [CellModel]()
+            for pos in 0..<tiles.count {
+                rack.append(CellModel(row: -1, col: -1, pos: pos, letterTile: tiles[pos], cellStatus: .currentMove, role: .rack))
+            }
+            
+            players[index].letterRack = rack
+        }
+    }
+    
+    mutating func pullLettersFromBank(count: Int) -> [LetterTile] {
+        var letterBank = letterBank.shuffled()
+        
+        let countToPull = min(count, letterBank.count)
+        
+        var tiles: [LetterTile] = []
+        
+        for _ in 0..<countToPull {
+            tiles.append(letterBank.remove(at: 0))
+        }
+        
+        self.letterBank = letterBank
+        
+        return tiles
+    }
+    
+    mutating func putLettersToBank(tiles: [LetterTile]) {
+        letterBank.append(contentsOf: tiles)
+        
+        letterBank = letterBank.shuffled()
+    }
 }

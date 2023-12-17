@@ -45,11 +45,11 @@ final class CommandViewModel: ObservableObject {
         rackViewModel.setChangeLettersMode(mode: mode)
     }
     
-    func changeLetters(gameId: String, confirmed: Bool) async throws {
-        guard game != nil else { return }
+    func changeLetters(game: GameModel, confirmed: Bool) async throws {
+        var updatedGame = game
         if (confirmed) {
-            rackViewModel.changeLetters(game: &game!)
-            try await nextTurn(gameId: gameId)
+            updatedGame.letterBank = rackViewModel.changeLetters(game: updatedGame)
+            try await nextTurn(game: updatedGame)
         }
         rackViewModel.setChangeLettersMode(mode: false)
     }
@@ -87,11 +87,11 @@ final class CommandViewModel: ObservableObject {
         }
     }
     
-    func submitMove(gameId: String) async throws {
-        if await submitMove() {
-            try await nextTurn(gameId: gameId)
-        }
-    }
+//    func submitMove(gameId: String) async throws {
+//        if await submitMove() {
+//            try await nextTurn(gameId: gameId)
+//        }
+//    }
     
     func addListenerForGame() {
         guard let game = game else { return }
@@ -255,11 +255,13 @@ final class CommandViewModel: ObservableObject {
         }
     }
     
-    func nextTurn(gameId: String) async throws {
+    func nextTurn(game: GameModel) async throws {
         
         var moveScore = boardViewModel.getMoveScore()
         
-        guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser, var updatedGame = game else { return }
+        guard let moveWords = try? boardViewModel.getMoveWords(), let currentUser = currentUser else { return }
+        
+        var updatedGame = game
         
         if rackViewModel.isEmpty {
             moveScore += Constants.Game.bonusFullRackMove
@@ -274,18 +276,19 @@ final class CommandViewModel: ObservableObject {
             return withDefinition
         }
         
-        try MoveManager.shared.addMove(gameId: gameId, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
+        try MoveManager.shared.addMove(gameId: game.id, user: currentUser, words: wordsWithDefinitions, score: moveScore, hasBonus: rackViewModel.isEmpty)
         
         // Here rack contains letters for the player who just submitted the move.
         // Fill missing tiles.
-        rackViewModel.fillRack(game: &updatedGame)
+        
+        updatedGame.letterBank = rackViewModel.fillRack(game: updatedGame)
         
         boardViewModel.confirmMove()
         
         tempScores = [:]
         
-        // TODO: here we always have game object, so gameId parameter may be rdundant.
-        try await GameManager.shared.nextTurn(gameId: gameId, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells, letterBank: updatedGame.letterBank)
+        
+        try await GameManager.shared.nextTurn(gameId: game.id, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells, letterBank: updatedGame.letterBank)
     }
     
     func resetMove() {

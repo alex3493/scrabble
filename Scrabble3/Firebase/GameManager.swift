@@ -149,11 +149,8 @@ final class GameManager {
         
         game.gameStatus = .running
         
-        // Set letter racks for each player.
-        for playerIndex in game.players.indices {
-            // We update game available letters in letter bank.
-            game.players[playerIndex].letterRack = initRack(game: &game)
-        }
+        // Set letter racks for each player.        
+        game.initPlayerRacks()
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)

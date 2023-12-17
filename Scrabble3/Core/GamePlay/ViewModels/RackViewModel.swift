@@ -52,24 +52,20 @@ class RackViewModel: LetterStoreBase {
         cells[pos].setCellStatus(status: status)
     }
     
-    // TODO: refactor - return letter to game letter bank...
-    func changeLetters(game: inout GameModel) {
+    func changeLetters(game: GameModel) -> [LetterTile] {
         let markedForChange = cells.filter({ cell in
             return cell.cellStatus == .checkedForLetterChange
         })
         
-        var letterBank = game.letterBank
+        var updatedGame = game
+        
+        updatedGame.putLettersToBank(tiles: markedForChange.compactMap { $0.letterTile })
         
         for cell in markedForChange {
             cells[cell.pos].letterTile = nil
-            
-            // Put letters back to letter bank.
-            letterBank.append(cell.letterTile!)
         }
         
-        game.letterBank = letterBank.shuffled()
-        
-        fillRack(game: &game)
+        return fillRack(game: updatedGame)
     }
     
     var hasLettersMarkedForChange: Bool {
@@ -97,37 +93,22 @@ class RackViewModel: LetterStoreBase {
         }
     }
     
-    // TODO: refactor - pull letter tiles from game letter bank.
-    func fillRack(game: inout GameModel) {
-        var letterBank = game.letterBank.shuffled()
-        
+    func fillRack(game: GameModel) -> [LetterTile] {
         let emptyCells = cells.filter({ cell in
             return cell.isEmpty
         })
         
-        let maxCellsToFill = max(emptyCells.count, letterBank.count)
+        var game = game
+        
+        let tiles = game.pullLettersFromBank(count: emptyCells.count)
         
         for index in emptyCells.indices {
-            if index < maxCellsToFill {
-                // Move letter from letter bank to player rack.
-                setLetterTileByPosition(pos: emptyCells[index].pos, letterTile: letterBank.remove(at: 0))
+            if index < tiles.count {
+                setLetterTileByPosition(pos: emptyCells[index].pos, letterTile: tiles[index])
             }
         }
         
-        game.letterBank = letterBank
-        
-    }
-    
-    func exportRackTiles() -> [LetterTile] {
-        var exported: [LetterTile] = []
-        
-        cells.forEach({ cell in
-            if (!cell.isEmpty) {
-                exported.append(cell.letterTile!)
-            }
-        })
-        
-        return exported
+        return game.letterBank
     }
     
     func emptyCellByPosition(pos: Int) {
