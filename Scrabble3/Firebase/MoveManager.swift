@@ -21,6 +21,7 @@ final class MoveManager {
     
     func getGameMoves(gameId: String) -> Query {
         return moveCollection.whereField(MoveModel.CodingKeys.gameId.rawValue, isEqualTo: gameId)
+            .order(by: MoveModel.CodingKeys.createdAt.rawValue, descending: true)
     }
     
     func addMove(gameId: String, user: DBUser, words: [WordModel], score: Int, hasBonus: Bool) throws {

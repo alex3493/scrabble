@@ -57,8 +57,6 @@ final class GameManager {
             .getDocumentsWithSnapshot(as: GameModel.self)
     }
     
-    
-    
     private func gameDocument(gameId: String) -> DocumentReference {
         return gameCollection.document(gameId)
     }
@@ -201,7 +199,7 @@ final class GameManager {
         
         game.letterBank = letterBank
         
-        if isGameFinished(game: game) {
+        if try await isGameFinished(game: game) {
             game.gameStatus = .finished
             
             print("Game finished due to \(game.rules.rawValue) rule")
@@ -215,20 +213,31 @@ final class GameManager {
     }
     
     // TODO: refactor - move limits to Constants.
-    func isGameFinished(game: GameModel) -> Bool {
+    func isGameFinished(game: GameModel) async throws -> Bool {
         switch game.rules {
         case .express:
             return (game.fullMoveRounds ?? 0) >= 6
         case .full:
-            // TODO: here we should also detect maximum move passes from all players.
-            // We have to find optimal approach...
-            return game.letterBank.count == 0
+            if game.fullMoveRounds != nil {
+                let latestMoves = try await MoveManager.shared.getGameMoves(gameId: game.id)
+                    .limit(to: 3 * game.players.count).getDocuments(as: MoveModel.self)
+                if latestMoves.count == 3 * game.players.count {
+                    // We have at least 3 latest moves be each player.
+                    let totalScore = latestMoves.map({ $0.score }).reduce(0, +)
+                    // No scoring - finish the game.
+                    if totalScore == 0 {
+                        return true
+                    }
+                }
+                return game.letterBank.count == 0
+            }
+            return false
         case .score:
-            if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
-                // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
-                if (game.turn == 0 && maxScore >= 200) {
-                    // Game finished!
-                    return true
+            if game.fullMoveRounds != nil {
+                if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
+                    if maxScore >= 200 {
+                        return true
+                    }
                 }
             }
             return false
