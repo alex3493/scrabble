@@ -208,6 +208,6 @@ struct GameResultView_Previews: PreviewProvider {
     static var previews: some View {
         let uuid = UUID().uuidString
         let user = DBUser(userId: UUID().uuidString, email: "email@example.com", dateCreated: Date(), name: "Test user")
-        GameResultView(game: GameModel(id: uuid, createdAt: Timestamp(), creatorUser: user, lang: GameLanguage.ru, players: [Player(user: user, score: 0, letterRack: [])], turn: 0))
+        GameResultView(game: GameModel(id: uuid, createdAt: Timestamp(), creatorUser: user, lang: GameLanguage.ru, rules: .express, players: [Player(user: user, score: 0, letterRack: [])], turn: 0))
     }
 }

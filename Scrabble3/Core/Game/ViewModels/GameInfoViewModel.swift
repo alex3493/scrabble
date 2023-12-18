@@ -16,6 +16,8 @@ final class GameInfoViewModel: ObservableObject {
     
     let preferredLanguage = GameLanguage(rawValue: UserDefaults().string(forKey: "PreferredLang") ?? "ru")
     
+    let preferredRules = GameRules(rawValue: UserDefaults().string(forKey: "PreferredRules") ?? "express")
+    
     var currentUser: DBUser? = nil
     
     var isMeGameCreator: Bool {
@@ -120,7 +122,7 @@ final class GameInfoViewModel: ObservableObject {
     }
     
     func createGame(byUser user: DBUser) async throws -> String? {
-        self.game = try await GameManager.shared.createNewGame(creatorUser: user, lang: preferredLanguage ?? .ru)
+        self.game = try await GameManager.shared.createNewGame(creatorUser: user, lang: preferredLanguage ?? .ru, rules: preferredRules ?? .express)
         
         return self.game?.id
     }

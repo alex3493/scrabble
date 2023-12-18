@@ -25,7 +25,7 @@ final class GameManager {
         gameCollection(withCreatorEmails: includeEmails)
             .whereField(GameModel.CodingKeys.gameStatus.rawValue, in: ["running", "waiting", "suspended"])
             .whereField(GameModel.CodingKeys.lang.rawValue, isEqualTo: lang.rawValue)
-
+        
     }
     
     private func archivedGameCollection(includeEmails: [String]) -> Query {
@@ -76,7 +76,7 @@ final class GameManager {
     }()
     
     @MainActor
-    func createNewGame(creatorUser: DBUser, lang: GameLanguage) async throws -> GameModel {
+    func createNewGame(creatorUser: DBUser, lang: GameLanguage, rules: GameRules) async throws -> GameModel {
         let document = gameCollection.document()
         let documentId = document.documentID
         
@@ -86,7 +86,7 @@ final class GameManager {
         // We init new letter tile bank.
         let letterBank = LetterBank.getAllTilesShuffled(lang: lang)
         
-        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: lang, players: [
+        let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: lang, rules: rules, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
         ], turn: 0, boardCells: boardMViewModel.cells, letterBank: letterBank, numMoves: 0)
         try document.setData(from: game, merge: false, encoder: encoder)
@@ -149,7 +149,7 @@ final class GameManager {
         
         game.gameStatus = .running
         
-        // Set letter racks for each player.        
+        // Set letter racks for each player.
         game.initPlayerRacks()
         
         guard let data = try? encoder.encode(game) else {
@@ -197,35 +197,42 @@ final class GameManager {
         
         game.nextTurn(score: score, playerIndex: playerIndex)
         
-        // Finish game by score.
-        // TODO: refactor - make max score configurable.
-//        if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
-//            // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
-//            if (game.turn == 0 && maxScore >= 200) {
-//                // Game finished!
-//                game.gameStatus = .finished
-//            }
-//        }
-        
-        print("Calculated full rounds", game.fullMoveRounds ?? "wait for turn")
-        
-        // Finish game after a given number of moves by each player.
-        // TODO: refactor - make max rounds configurable.
-        if (game.fullMoveRounds ?? 0) >= 6 {
-            game.gameStatus = .finished
-            
-            print("Game finished after maximum moves limit")
-        }
-        
         game.boardCells = boardCells
         
         game.letterBank = letterBank
+        
+        if isGameFinished(game: game) {
+            game.gameStatus = .finished
+            
+            print("Game finished due to \(game.rules.rawValue) rule")
+        }
         
         guard let data = try? encoder.encode(game) else {
             throw URLError(.cannotDecodeRawData)
         }
         
         try await gameDocument(gameId: gameId).updateData(data)
+    }
+    
+    // TODO: refactor - move limits to Constants.
+    func isGameFinished(game: GameModel) -> Bool {
+        switch game.rules {
+        case .express:
+            return (game.fullMoveRounds ?? 0) >= 6
+        case .full:
+            // TODO: here we should also detect maximum move passes from all players.
+            // We have to find optimal approach...
+            return game.letterBank.count == 0
+        case .score:
+            if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
+                // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
+                if (game.turn == 0 && maxScore >= 200) {
+                    // Game finished!
+                    return true
+                }
+            }
+            return false
+        }
     }
     
     // Listen for active games.
