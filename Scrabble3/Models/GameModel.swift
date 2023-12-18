@@ -15,11 +15,18 @@ enum GameLanguage: String, Codable {
     case es
 }
 
+enum GameRules: String, Codable {
+    case express
+    case full
+    case score
+}
+
 struct GameModel: Identifiable, Codable, Equatable {
     let id: String
     let createdAt: Timestamp
     let creatorUser: DBUser
     let lang: GameLanguage
+    let rules: GameRules
     var players: [Player]
     var boardCells: [CellModel]
     var letterBank: [LetterTile]
@@ -36,6 +43,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         case createdAt = "created_at"
         case creatorUser = "creator_user"
         case lang
+        case rules
         case players
         case boardCells = "board_cells"
         case letterBank = "letter_bank"
@@ -52,11 +60,12 @@ struct GameModel: Identifiable, Codable, Equatable {
         case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = [], letterBank: [LetterTile] = [], numMoves: Int = 0) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, rules: GameRules, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = [], letterBank: [LetterTile] = [], numMoves: Int = 0) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
         self.lang = lang
+        self.rules = rules
         self.players = players
         self.boardCells = boardCells
         self.letterBank = letterBank

@@ -30,7 +30,14 @@ struct GameListView: View {
                             } label: {
                                 HStack {
                                     Text(item.creatorUser.name ?? "")
-                                    Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
+                                    Text("\(Utils.formatTransactionTimestamp(item.createdAt))")
+                                    if item.rules == .express {
+                                        Text("Express")
+                                    } else if item.rules == .full {
+                                        Text("Full")
+                                    } else {
+                                        Text("Up to 200 points")
+                                    }
                                     Spacer()
                                     HStack(spacing: 12) {
                                         Text(gameStatusLabel(game: item))

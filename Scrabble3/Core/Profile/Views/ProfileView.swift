@@ -12,6 +12,8 @@ struct ProfileView: View {
     
     @AppStorage("PreferredLang") var preferredLang: GameLanguage = .ru
     
+    @AppStorage("PreferredRules") var preferredRules: GameRules = .express
+    
     var body: some View {
         List {
             if let user = viewModel.currentUser {
@@ -55,6 +57,15 @@ struct ProfileView: View {
                         Text("Spanish").tag(GameLanguage.es)
                     } label: {
                         SettingsRowView(imageName: "character.book.closed", title: "Game Language", tintColor: Color(.systemGray))
+                        
+                    }
+                    
+                    Picker(selection: $preferredRules) {
+                        Text("Express").tag(GameRules.express)
+                        Text("Full").tag(GameRules.full)
+                        Text("Score").tag(GameRules.score)
+                    } label: {
+                        SettingsRowView(imageName: "speedometer", title: "Game rules", tintColor: Color(.systemGray))
                         
                     }
                 }
