@@ -88,7 +88,7 @@ final class GameManager {
         
         let game = GameModel(id: documentId, createdAt: Timestamp(), creatorUser: creatorUser, lang: lang, players: [
             Player(user: creatorUser, score: 0, letterRack: [])
-        ], turn: 0, boardCells: boardMViewModel.cells, letterBank: letterBank)
+        ], turn: 0, boardCells: boardMViewModel.cells, letterBank: letterBank, numMoves: 0)
         try document.setData(from: game, merge: false, encoder: encoder)
         
         return game
@@ -197,13 +197,24 @@ final class GameManager {
         
         game.nextTurn(score: score, playerIndex: playerIndex)
         
+        // Finish game by score.
         // TODO: refactor - make max score configurable.
-        if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
-            // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
-            if (game.turn == 0 && maxScore >= 200) {
-                // Game finished!
-                game.gameStatus = .finished
-            }
+//        if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
+//            // print("Next turn: check for game end :: \(String(describing: maxScore)) Current turn: \(game.turn)")
+//            if (game.turn == 0 && maxScore >= 200) {
+//                // Game finished!
+//                game.gameStatus = .finished
+//            }
+//        }
+        
+        print("Calculated full rounds", game.fullMoveRounds ?? "wait for turn")
+        
+        // Finish game after a given number of moves by each player.
+        // TODO: refactor - make max rounds configurable.
+        if (game.fullMoveRounds ?? 0) >= 6 {
+            game.gameStatus = .finished
+            
+            print("Game finished after maximum moves limit")
         }
         
         game.boardCells = boardCells

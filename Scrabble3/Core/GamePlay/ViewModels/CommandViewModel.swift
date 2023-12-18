@@ -281,6 +281,8 @@ final class CommandViewModel: ObservableObject {
         
         tempScores = [:]
         
+        // Now we store numMoves in game model.
+        // let movesCount = try await MoveManager.shared.getGameMoves(gameId: game.id).aggregateCount()
         
         try await GameManager.shared.nextTurn(gameId: game.id, score: moveScore, user: currentUser, userLetterRack: rackViewModel.cells, boardCells: boardViewModel.cells, letterBank: updatedGame.letterBank)
     }

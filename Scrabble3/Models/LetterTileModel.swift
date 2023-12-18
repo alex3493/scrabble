@@ -115,6 +115,45 @@ struct LetterBank {
         LetterTile(char: "*", score: 0, quantity: 3, isAsterisk: true, lang: .ru),
     ]
     
+    
+//    static let lettersRu: [LetterTile] = [
+//        LetterTile(char: "А", score: 1, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Б", score: 3, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "В", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Г", score: 3, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Д", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Е", score: 1, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ж", score: 5, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "З", score: 5, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "И", score: 1, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Й", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "К", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Л", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "М", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Н", score: 1, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "О", score: 1, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "П", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Р", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "С", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Т", score: 2, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "У", score: 3, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ф", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Х", score: 5, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ц", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ч", score: 5, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ш", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Щ", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ъ", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ы", score: 5, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ь", score: 5, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Э", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Ю", score: 10, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "Я", score: 3, quantity: 1, isAsterisk: false, lang: .ru),
+//        LetterTile(char: "*", score: 0, quantity: 10, isAsterisk: true, lang: .ru),
+//    ]
+    
+    
+    
     static let lettersEs: [LetterTile] = [
         LetterTile(char: "A", score: 1, quantity: 12, isAsterisk: false, lang: .es),
         LetterTile(char: "B", score: 3, quantity: 2, isAsterisk: false, lang: .es),

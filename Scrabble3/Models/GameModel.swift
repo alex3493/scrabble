@@ -25,6 +25,7 @@ struct GameModel: Identifiable, Codable, Equatable {
     var letterBank: [LetterTile]
     var turn: Int = 0
     var gameStatus: GameStatus = .waiting
+    var numMoves: Int = 0
     
     static func == (lhs: GameModel, rhs: GameModel) -> Bool {
         return lhs.id == rhs.id
@@ -40,6 +41,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         case letterBank = "letter_bank"
         case turn
         case gameStatus = "game_status"
+        case numMoves = "num_moves"
     }
     
     enum GameStatus: String, Codable {
@@ -50,7 +52,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         case aborted    // Game aborted by one of the players. Aborted games should never change status.
     }
     
-    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = [], letterBank: [LetterTile] = []) {
+    init(id: String, createdAt: Timestamp, creatorUser: DBUser, lang: GameLanguage, players: [Player], turn: Int, gameStatus: GameStatus = .waiting, boardCells: [CellModel] = [], letterBank: [LetterTile] = [], numMoves: Int = 0) {
         self.id = id
         self.createdAt = createdAt
         self.creatorUser = creatorUser
@@ -60,6 +62,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         self.letterBank = letterBank
         self.turn = turn
         self.gameStatus = gameStatus
+        self.numMoves = numMoves
     }
     
     mutating func nextTurn(score: Int, playerIndex: Int) {
@@ -68,6 +71,7 @@ struct GameModel: Identifiable, Codable, Equatable {
         if turn >= players.count {
             turn = 0
         }
+        numMoves += 1
     }
     
     mutating func initPlayerRacks() {
@@ -109,5 +113,21 @@ struct GameModel: Identifiable, Codable, Equatable {
         letterBank.append(contentsOf: tiles)
         
         letterBank = letterBank.shuffled()
+    }
+    
+    var fullMoveRounds: Int? {
+        guard players.count > 0 else { return nil }
+        
+        if turn != 0 {
+            return nil
+        }
+        
+        return numMoves / players.count
+    }
+    
+    var partialMoveRounds: Int {
+        guard players.count > 0 else { return 0 }
+        
+        return Int(numMoves / players.count)
     }
 }

@@ -38,6 +38,12 @@ struct PlayerListView: View {
                     }
                     Divider()
                 }
+                HStack {
+                    // TODO: refactor - make max rounds configurable.
+                    Text("Осталось раундов: \(6 - game.partialMoveRounds)")
+                        .foregroundStyle(game.partialMoveRounds == 5 ? .red : .black)
+                    Spacer()
+                }
             }
             .padding(.bottom, 20)
         }
