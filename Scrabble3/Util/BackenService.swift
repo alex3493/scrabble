@@ -187,9 +187,9 @@ struct Api {
             break
         }
         
-        if let response {
-            print("DEBUG :: Word definition response", response.wordDefinition as Any)
-        }
+//        if let response {
+//            print("DEBUG :: Word definition response", response.wordDefinition as Any)
+//        }
         
         return response
     }

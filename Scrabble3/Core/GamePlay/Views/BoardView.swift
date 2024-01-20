@@ -66,7 +66,7 @@ struct BoardView: View {
                                                 gestureState = .dragging(translation: currentState.translation, selectedItem: cell)
                                             })
                                             .onEnded { gesture in
-                                                print("Drag stopped!", gesture.location)
+                                                // print("Drag stopped!", gesture.location)
                                                 
                                                 commandViewModel.onPerformDrop(value: gesture.location, cell: cell, boardIsLocked: boardIsLocked)
                                             }

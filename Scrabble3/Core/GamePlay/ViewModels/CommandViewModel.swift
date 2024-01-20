@@ -28,6 +28,8 @@ final class CommandViewModel: ObservableObject {
     
     private var wordDefinitionsDict: [String: WordDefinition] = [:]
     
+    private var wordValidationCache: [String: ValidationResponse] = [:]
+    
     init(boardViewModel: BoardViewModel, rackViewModel: RackViewModel) {
         print("CommandViewModel INIT")
         
@@ -205,13 +207,26 @@ final class CommandViewModel: ObservableObject {
         
         var invalidWords = [WordModel]()
         for word in words {
-            let response = await Api.validateWord(word: word.word, lang: game.lang)
+            var response: ValidationResponse? = wordValidationCache[word.word]
+            
+            if response == nil {
+                print("Getting validation response from API", word.word)
+                response = await Api.validateWord(word: word.word, lang: game.lang)
+            } else {
+                print("Getting validation response from cache", word.word)
+            }
+            
             if (response == nil || !response!.isValid) {
                 invalidWords.append(word)
             } else {
                 // Add word definition to dictionary for future use (on submit move).
                 wordDefinitionsDict[word.getHash()] = response!.wordDefinition
             }
+            
+            // Add validation response to cache.
+            wordValidationCache[word.word] = response
+            
+            print("DEBUG :: Word definition response", response?.wordDefinition as Any)
         }
         
         if (invalidWords.count > 0) {
@@ -297,12 +312,12 @@ final class CommandViewModel: ObservableObject {
     }
     
     func onPerformDrop(value: CGPoint, cell drag: CellModel, boardIsLocked: Bool) {
-        print("On drop", value, drag.pos, drag.row, drag.col)
+        // print("On drop", value, drag.pos, drag.row, drag.col)
         
         let rackDropCellIndex = rackViewModel.cellIndexFromPoint(value.x, value.y)
         let boardDropCellIndex = boardViewModel.cellIndexFromPoint(value.x, value.y)
         
-        print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
+        // print("Cell indices: rack / board", rackDropCellIndex ?? "N/A", boardDropCellIndex ?? "N/A")
         
         var drop: CellModel? = nil
         
