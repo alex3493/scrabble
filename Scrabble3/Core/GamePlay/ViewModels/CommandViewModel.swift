@@ -62,15 +62,15 @@ final class CommandViewModel: ObservableObject {
                 let moveWords = try boardViewModel.getMoveWords()
                 
                 // We can also show definitions in current move info.
-//                let wordsWithDefinitions = moveWords.map { word in
-//                    var withDefinition = word
-//                    if let definition = wordDefinitionsDict[word.getHash()] {
-//                        withDefinition.setWordInfo(definition: definition)
-//                    }
-//                    return withDefinition
-//                }
-//                
-//                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
+                //                let wordsWithDefinitions = moveWords.map { word in
+                //                    var withDefinition = word
+                //                    if let definition = wordDefinitionsDict[word.getHash()] {
+                //                        withDefinition.setWordInfo(definition: definition)
+                //                    }
+                //                    return withDefinition
+                //                }
+                //
+                //                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
                 
                 // For current move words check we do not inject word definitions.
                 let wordsSummary = moveWords.map { ($0.word, $0.wordDefinition, $0.score) }
@@ -205,6 +205,8 @@ final class CommandViewModel: ObservableObject {
             throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
         }
         
+        // TODO: do not await for API validation. We should use a Future here and apply validation results at a later point.
+        
         var invalidWords = [WordModel]()
         for word in words {
             var response: ValidationResponse? = wordValidationCache[word.word]
@@ -239,7 +241,7 @@ final class CommandViewModel: ObservableObject {
         print("Valid move - score:", moveScore)
         
         tempScores[game.turn] = moveScore
-
+        
     }
     
     func submitMove() async -> Bool {
