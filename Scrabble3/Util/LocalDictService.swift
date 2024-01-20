@@ -50,7 +50,7 @@ class LocalDictService {
         return LocalDictServiceResponse(isValid: result)
     }
     
-    private static func checkWord(word: String) -> Bool {
+    class func checkWord(word: String) -> Bool {
         guard !dictionary.isEmpty else { return false }
         
         let pattern = "\\s\(word)\\s"
@@ -72,7 +72,21 @@ class LocalDictServiceRussian: LocalDictService {
 
 class LocalDictServiceEnglish: LocalDictService {
     static func validateWord(word: String) -> LocalDictServiceResponse {
-        return super.validateWord(word: word, lang: "english")
+        return validateWord(word: word, lang: "english")
+    }
+    
+    // Currently used english dictionary requires custom regex.
+    override static func checkWord(word: String) -> Bool {
+        guard !dictionary.isEmpty else { return false }
+        
+        let pattern = "\\s\(word)="
+        do {
+            let regex = try Regex(pattern)
+            return dictionary.contains(regex)
+        } catch {
+            print("DEBUG :: Error setting up search", error.localizedDescription)
+            return false
+        }
     }
 }
 
