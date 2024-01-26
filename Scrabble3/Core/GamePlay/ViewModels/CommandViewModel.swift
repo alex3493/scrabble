@@ -205,8 +205,6 @@ final class CommandViewModel: ObservableObject {
             throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
         }
         
-        // TODO: do not await for API validation. We should use a Future here and apply validation results at a later point.
-        
         var invalidWords = [WordModel]()
         for word in words {
             var response: ValidationResponse? = wordValidationCache[word.word]
