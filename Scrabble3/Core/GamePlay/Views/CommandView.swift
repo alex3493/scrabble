@@ -49,7 +49,7 @@ struct CommandView: View {
                 }, buttonSystemImage: "arrow.2.circlepath", backGroundColor: Color(.systemOrange), maxWidth: false)
                 
                 ActionImageButton(label: "", action: {
-                    await viewModel.validateMove(gameId: game.id)
+                    await viewModel.validateMove()
                 }, buttonSystemImage: "checkmark", backGroundColor: Color(.systemGreen), maxWidth: false)
             }
         }

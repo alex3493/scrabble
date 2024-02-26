@@ -46,7 +46,7 @@ struct AsteriskDialogView: View {
                             debounce.submit {
                                 Task {
                                     do {
-                                        try await commandViewModel.validateMove()
+                                        try await commandViewModel.validateMoveWords()
                                     } catch {
                                         // We swallow exception here, later we may change it...
                                         // TODO: this is not OK. We should consume this exception in model in order to update view...

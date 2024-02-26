@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Combine
 
-protocol ValidationResponse {
+protocol ValidationResponse: Codable {
     var isValid: Bool { get }
     var wordDefinition: WordDefinition? { get }
 }
@@ -178,19 +179,87 @@ struct Api {
             // response = LocalDictServiceRussian.validateWord(word: word)
             break
         case .en:
-            // response = await ApiEnglish.validateWord(word: word)
-            response = LocalDictServiceEnglish.validateWord(word: word)
+            response = await ApiEnglish.validateWord(word: word)
+            // response = LocalDictServiceEnglish.validateWord(word: word)
             break
         case .es:
-            // response = await ApiSpanish.validateWord(word: word)
-            response = LocalDictServiceSpanish.validateWord(word: word)
+            response = await ApiSpanish.validateWord(word: word)
+            // response = LocalDictServiceSpanish.validateWord(word: word)
             break
         }
         
-//        if let response {
-//            print("DEBUG :: Word definition response", response.wordDefinition as Any)
-//        }
+        //        if let response {
+        //            print("DEBUG :: Word definition response", response.wordDefinition as Any)
+        //        }
         
         return response
+    }
+    
+    static private func prepareURL(word: String, lang: GameLanguage) -> URL? {
+        guard var url = Constants.Api.Validation.getUrl(lang: lang) else {
+            return nil
+        }
+        
+        switch lang {
+        case .en:
+            url.append(path: word.lowercased())
+            url.appendPathExtension("json")
+        case .ru:
+            let query = URLQueryItem(name: "word", value: word)
+            url.append(queryItems: [query])
+        case .es:
+            let query = URLQueryItem(name: "text", value: word)
+            let keyQuery = URLQueryItem(name: "key", value: Constants.Api.Validation.dictKeyYandex)
+            let langQuery = URLQueryItem(name: "lang", value: "es-en")
+            url.append(queryItems: [query, keyQuery, langQuery])
+        }
+        
+        return url
+    }
+    
+    static func validateWordDataTask(word: String, lang: GameLanguage, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask? {
+        let url = Api.prepareURL(word: word, lang: lang)
+        
+        guard let url = url else { return nil }
+        
+        return URLSession.shared.dataTask(with: url, completionHandler: completion)
+    }
+    
+    
+    static func validateWordsPublishers<T>(words: [String], cache: [String: ValidationResponse], lang: GameLanguage, as type: T.Type) -> [AnyPublisher<T, Error>] where T : ValidationResponse {
+        
+        var publishers: [AnyPublisher<T, Error>] = []
+        
+        for word in words {
+            if let cachedValidation = cache[word] {
+//                let publisher = Just<T>(cachedValidation as! T)
+//                    .mapError { _ -> Error in }
+//                    .eraseToAnyPublisher()
+                
+                let publisher = CurrentValueSubject<T, Error>(cachedValidation as! T)
+                    // .mapError { _ -> Error in }
+                    .eraseToAnyPublisher()
+                
+                publishers.append(publisher)
+            } else {
+                let url = Api.prepareURL(word: word, lang: lang)
+                
+                if let url = url {
+                    let publisher = URLSession.shared.dataTaskPublisher(for: url)
+                        .tryMap { result in
+                            guard let response = result.response as? HTTPURLResponse, response.statusCode == 200 else {
+                                throw URLError(.badServerResponse)
+                            }
+                            return result.data
+                        }
+                        .decode(type: T.self, decoder: JSONDecoder())
+                        .eraseToAnyPublisher()
+                    
+                    publishers.append(publisher)
+                }
+            }
+        }
+        
+        return publishers
     }
 }
