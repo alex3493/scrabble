@@ -243,6 +243,13 @@ final class Api {
         
         cancellables = []
         
+        if words.isEmpty {
+            // If there are no words in move there is nothing to validate.
+            return CurrentValueSubject<[ValidationResponse], Error>([])
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        }
+        
         let publishers = words.compactMap {
             validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
         }
