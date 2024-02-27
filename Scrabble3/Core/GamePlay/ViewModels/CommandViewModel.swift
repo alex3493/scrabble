@@ -166,6 +166,8 @@ final class CommandViewModel: ObservableObject {
         let publisher = PassthroughSubject<[ValidationResponse], ValidationError>()
         
         var words: [WordModel] = []
+        
+        // Get move words and check for hanging letters.
         do {
             words = try boardViewModel.getMoveWords()
         } catch (ValidationError.invalidLetterTilePosition(let cell)) {
@@ -211,248 +213,80 @@ final class CommandViewModel: ObservableObject {
         
         var invalidWords = [WordModel]()
         
-        var validationResponses = [ValidationResponse]()
+        var apiPublisher: AnyPublisher<[ValidationResponse], Error>
         
-        for word in words {
-            if let cached = wordValidationCache[word.word] {
-                validationResponses.append(cached)
-            } else {
-                let task = Api.validateWordDataTask(word: word.word, lang: game.lang) { data, response, error in
-                    if let data = data, let decodedResponse = try? JSONDecoder().decode(ValidationResponseRussian.self, from: data) {
-                        self.wordValidationCache[word.word] = decodedResponse
-                        validationResponses.append(decodedResponse)
-                        
-                        print("***** Task response:", word.word, decodedResponse)
-                    }
-                    
-                    if validationResponses.count == words.count {
-                        print("*****All tasks ready!")
-                        
-                        publisher.send(validationResponses)
-                    }
-                }
-                task?.resume()
-            }
+        switch game.lang {
+        case .ru:
+            apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseRussian.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
+        case .en:
+            apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseEnglish.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
+        case .es:
+            apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseSpanish.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
         }
         
-        // let pendingWords = words.filter { !wordValidationCache.keys.contains($0.word) }
-        
-//        let publishers = Api.validateWordsPublishers(words: words.map { $0.word }, cache: wordValidationCache, lang: game.lang, as: ValidationResponseRussian.self)
-        
-//        Publishers.Sequence<[AnyPublisher<ValidationResponseRussian, Error>], Error>(sequence: publishers)
-//            .flatMap({ $0 })
-//            .collect()
-//            .receive(on: RunLoop.main)
-        
-//        Publishers.MergeMany(publishers)
-//            .sink { completion in
-//                
-//            } receiveValue: { [weak self] result in
-//                print("***** Validate publishers collection values: ", result)
-                
-//                for res in result {
-//                    if !res.isValid {
-//                        if let invalidWord = words.first(where: { $0.word == res.word}) {
-//                            invalidWords.append(invalidWord)
-//                        }
-//                    }
-//                    self?.wordValidationCache[res.word] = res
-//                }
-//                
-//                if (!invalidWords.isEmpty) {
-//                    publisher.send(completion: .failure(ValidationError.invalidWords(words: invalidWords.map { $0.word })))
-//                    return
-//                }
-                
-                
-//                if !result.isValid {
-//                    if let invalidWord = words.first(where: { $0.word == result.word}) {
-//                        invalidWords.append(invalidWord)
-//                    }
-//                }
-//                self?.wordValidationCache[result.word] = result
-//                
-//                if (!invalidWords.isEmpty) {
-//                    publisher.send(completion: .failure(ValidationError.invalidWords(words: invalidWords.map { $0.word })))
-//                    return
-//                }
-//                
-//                let moveWords = words.map { $0.word }
-//                let valid = self?.wordValidationCache.filter { entry in
-//                    moveWords.contains { word in
-//                        word == entry.key
-//                    }
-//                }
-//                
-//                if let valid = valid {
-//                    publisher.send(Array(valid.values))
-//                } else {
-//                    publisher.send([])
-//                }
-//            }
-//            .store(in: &cancellables)
+        apiValidateSubscription = apiPublisher.sink(receiveCompletion: { completion in
+            // Do we ever get here?
+        }, receiveValue: { [weak self] validations in
+            print("validateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
+            
+            for validation in validations {
+                if let word = words.first(where: { $0.word == validation.word }) {
+                    if !validation.isValid {
+                        invalidWords.append(word)
+                    } else {
+                        self?.wordDefinitionsDict[word.getHash()] = validation.wordDefinition
+                    }
+                    self?.wordValidationCache[validation.word] = validation
+                }
+            }
+            
+            if !invalidWords.isEmpty {
+                publisher.send(completion: .failure(.invalidWords(words: invalidWords.map { $0.word })))
+            } else {
+                publisher.send(validations)
+            }
+        })
         
         return publisher
     }
     
-    func validateMoveWords() async throws {
-        guard let game else {
-            print("PANIC :: game not defined!")
-            return
-        }
-        
-        tempScores = [:]
-        
-        let words = try boardViewModel.getMoveWords()
-        
-        boardViewModel.resetCellsStatus()
-        
-        // Check for hanging words.
-        let hanging = boardViewModel.checkWordsConnection(words: words)
-        if (hanging.count > 0) {
-            boardViewModel.highlightWords(words: hanging, status: .error)
-            throw ValidationError.hangingWords(words: hanging.map { $0.word })
-        }
-        
-        // Check for repeated words.
-        var repeatedWords = [WordModel]()
-        
-        // Current move.
-        var currentWordsArray = [String]()
-        for word in words {
-            if (currentWordsArray.firstIndex(of: word.word) != nil) {
-                repeatedWords.append(word)
-            } else {
-                currentWordsArray.append(word.word)
-            }
-        }
-        
-        // All moves.
-        var existingWordsArray = [String]()
-        for existingWord in existingWords {
-            existingWordsArray.append(existingWord.word)
-        }
-        
-        for word in words {
-            if (existingWordsArray.firstIndex(of: word.word) != nil) {
-                repeatedWords.append(word)
-            }
-        }
-        
-        if (repeatedWords.count > 0) {
-            boardViewModel.highlightWords(words: repeatedWords, status: .error)
-            throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
-        }
-        
-        var invalidWords = [WordModel]()
-        
-        //        let pendingWords = words.map { $0.word }.filter { wordValidationCache.keys.contains($0) }
-        //
-        //        let publishers = Api.validateWordsPublishers(words: pendingWords, lang: game.lang, as: ValidationResponseRussian.self)
-        
-        //        Publishers.MergeMany(publishers)
-        //            .sink { completion in
-        //
-        //            } receiveValue: { [weak self] results in
-        //                print("***** Validate publishers collection values: ", results.word)
-        //            }
-        //            .store(in: &cancellables)
-        
-        //        Publishers.Sequence<[AnyPublisher<ValidationResponseRussian, Error>], Error>(sequence: publishers)
-        //            .flatMap({ $0 })
-        //            .collect()
-        //            .receive(on: RunLoop.main)
-        //            .sink { completion in
-        //
-        //            } receiveValue: { [weak self] results in
-        //                print("***** Validate publishers collection values: ", results.map { ($0.result, $0.word) })
-        //            }
-        //            .store(in: &cancellables)
-        
-        //        for publisher in publishers {
-        //            publisher
-        //                .sink { completion in
-        //
-        //                } receiveValue: { [weak self] results in
-        //                    print("Validate publishers collection values: ", results)
-        //                }
-        //                .store(in: &cancellables)
-        //        }
-        
-        
-        for word in words {
-            var response: ValidationResponse? = wordValidationCache[word.word]
-            
-            if response == nil {
-                print("Getting validation response from API", word.word)
-                response = await Api.validateWord(word: word.word, lang: game.lang)
-            } else {
-                print("Getting validation response from cache", word.word)
-            }
-            
-            if (response == nil || !response!.isValid) {
-                invalidWords.append(word)
-            } else {
-                // Add word definition to dictionary for future use (on submit move).
-                wordDefinitionsDict[word.getHash()] = response!.wordDefinition
-            }
-            
-            // Add validation response to cache.
-            wordValidationCache[word.word] = response
-            
-            print("DEBUG :: Word definition response", response?.wordDefinition as Any)
-        }
-        
-        if (invalidWords.count > 0) {
-            boardViewModel.highlightWords(words: invalidWords, status: .error)
-            throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
-        }
-        
-        // We have a valid move here.
-        let moveScore = words.reduce(0) { $0 + $1.score }
-        print("Valid move - score:", moveScore)
-        
-        tempScores[game.turn] = moveScore
-        
-    }
+    var validateSubscription: AnyCancellable? = nil
+    var apiValidateSubscription: AnyCancellable? = nil
     
     func submitMove() async -> Bool {
         
+        guard let game else {
+            print("PANIC :: game not defined!")
+            return false
+        }
+        
         let publisher = validateMovePublisher()
         
-        publisher?.sink(receiveCompletion: { completion in
+        validateSubscription = publisher?.sink(receiveCompletion: { [weak self] completion in
             print("validateMovePublisher completion", completion)
-        }, receiveValue: { validations in
-            print("validateMovePublisher validations", validations)
+            switch completion {
+            case .failure(let error):
+                switch error {
+                case .invalidLetterTilePosition(let cell):
+                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: cell))
+                case .hangingWords(let words):
+                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
+                case .repeatedWords(let words):
+                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
+                case .invalidWords(let words):
+                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
+                }
+            default:
+                break
+            }
+        }, receiveValue: { [weak self] validations in
+            print("validateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
+            
+            // There are no errors, so we can proceed with submit move...
         })
         
-        // TODO: issue here - cancellables grow on each validation attempt!
-        .store(in: &cancellables)
-        
-        
-        
-        
-//        do {
-//            try await validateMoveWords()
-//            return true
-//        } catch(ValidationError.hangingWords (let words)) {
-//            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
-//            return false
-//        } catch(ValidationError.invalidWords (let words)) {
-//            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
-//            return false
-//        } catch(ValidationError.repeatedWords (let words)) {
-//            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
-//            return false
-//        } catch(ValidationError.invalidLetterTilePosition (let char)) {
-//            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: char))
-//            return false
-//        } catch {
-//            // Unknown error.
-//            return false
-//        }
-        
-        return true
+        // TODO: temporary block!
+        return false
     }
     
     func nextTurn(game: GameModel) async throws {

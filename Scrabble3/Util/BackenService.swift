@@ -10,6 +10,7 @@ import Combine
 
 protocol ValidationResponse: Codable {
     var isValid: Bool { get }
+    var word: String { get }
     var wordDefinition: WordDefinition? { get }
 }
 
@@ -87,6 +88,10 @@ struct ValidationResponseEnglish: Codable, ValidationResponse {
         return true
     }
     
+    var word: String {
+        return name
+    }
+    
     var wordDefinition: WordDefinition? {
         return WordInfo(term: name, definition: definition, imageURL: nil)
     }
@@ -97,6 +102,11 @@ struct ValidationResponseSpanish: Codable, ValidationResponse {
     
     var isValid: Bool {
         return !def.isEmpty
+    }
+    
+    var word: String {
+        // TODO: make it better!!!
+        return def[0].term
     }
     
     var wordDefinition: WordDefinition? {
@@ -168,9 +178,21 @@ struct ApiSpanish {
     }
 }
 
-struct Api {
+enum NetworkError: Error {
+    case invalidURL
+    case responseError(errorCode: Int?)
+    case unknown
+}
+
+final class Api {
+    
+    static let shared = Api()
+    private init() { }
+    
+    var cancellables = Set<AnyCancellable>()
+
     @MainActor
-    static func validateWord(word: String, lang: GameLanguage) async -> ValidationResponse? {
+    func validateWord(word: String, lang: GameLanguage) async -> ValidationResponse? {
         var response: ValidationResponse?
         
         switch lang {
@@ -195,7 +217,7 @@ struct Api {
         return response
     }
     
-    static private func prepareURL(word: String, lang: GameLanguage) -> URL? {
+    private func prepareURL(word: String, lang: GameLanguage) -> URL? {
         guard var url = Constants.Api.Validation.getUrl(lang: lang) else {
             return nil
         }
@@ -217,49 +239,64 @@ struct Api {
         return url
     }
     
-    static func validateWordDataTask(word: String, lang: GameLanguage, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask? {
-        let url = Api.prepareURL(word: word, lang: lang)
+    func validateWordsDataTaskPublisher<T: ValidationResponse>(as type: T.Type, words: [String], lang: GameLanguage, cache: [String: ValidationResponse]) -> AnyPublisher<[ValidationResponse], Error> {
         
-        guard let url = url else { return nil }
+        cancellables = []
         
-        return URLSession.shared.dataTask(with: url, completionHandler: completion)
-    }
-    
-    
-    static func validateWordsPublishers<T>(words: [String], cache: [String: ValidationResponse], lang: GameLanguage, as type: T.Type) -> [AnyPublisher<T, Error>] where T : ValidationResponse {
-        
-        var publishers: [AnyPublisher<T, Error>] = []
-        
-        for word in words {
-            if let cachedValidation = cache[word] {
-//                let publisher = Just<T>(cachedValidation as! T)
-//                    .mapError { _ -> Error in }
-//                    .eraseToAnyPublisher()
-                
-                let publisher = CurrentValueSubject<T, Error>(cachedValidation as! T)
-                    // .mapError { _ -> Error in }
-                    .eraseToAnyPublisher()
-                
-                publishers.append(publisher)
-            } else {
-                let url = Api.prepareURL(word: word, lang: lang)
-                
-                if let url = url {
-                    let publisher = URLSession.shared.dataTaskPublisher(for: url)
-                        .tryMap { result in
-                            guard let response = result.response as? HTTPURLResponse, response.statusCode == 200 else {
-                                throw URLError(.badServerResponse)
-                            }
-                            return result.data
-                        }
-                        .decode(type: T.self, decoder: JSONDecoder())
-                        .eraseToAnyPublisher()
-                    
-                    publishers.append(publisher)
-                }
-            }
+        let publishers = words.compactMap {
+            validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
         }
         
-        return publishers
+        let publisher = PassthroughSubject<[ValidationResponse], Error>()
+        
+        var responses: [ValidationResponse] = []
+        
+        for pub in publishers {
+            pub.sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let errorCode):
+                    print("Error \(errorCode)")
+                    publisher.send(completion: .failure(errorCode))
+                case .finished:
+                    break
+                }
+            }) { value in
+                responses.append(value)
+                
+                if responses.count == words.count {
+                    publisher.send(responses)
+                }
+            }
+            .store(in: &cancellables)
+        }
+        
+        return publisher.eraseToAnyPublisher()
     }
+    
+    func validateWordDataTaskPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> AnyPublisher<T, Error>? {
+        
+        var publisher: AnyPublisher<T, Error>?
+        
+        if let cached = cache[word] {
+            publisher = CurrentValueSubject<T, Error>(cached as! T)
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        } else {
+            guard let url = prepareURL(word: word, lang: lang) else { return nil }
+            
+            publisher = URLSession.shared.dataTaskPublisher(for: url)
+                .tryMap { (data, response) -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+                        throw NetworkError.responseError(errorCode: (response as? HTTPURLResponse)?.statusCode)
+                    }
+                    return data
+                }
+                .decode(type: T.self, decoder: JSONDecoder())
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        }
+        
+        return publisher?.eraseToAnyPublisher()
+    }
+    
 }
