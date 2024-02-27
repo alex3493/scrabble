@@ -8,8 +8,8 @@
 import Foundation
 
 enum ValidationError: Error {
-    case invalidLetterTilePosition(cell: String)
-    case hangingWords(words: [String])
-    case invalidWords(words: [String])
-    case repeatedWords(words: [String])
+    case invalidLetterTilePosition(cell: CellModel)
+    case hangingWords(words: [WordModel])
+    case invalidWords(words: [WordModel])
+    case repeatedWords(words: [WordModel])
 }

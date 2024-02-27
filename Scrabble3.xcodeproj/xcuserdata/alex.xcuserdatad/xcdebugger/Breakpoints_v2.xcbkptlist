@@ -14,9 +14,9 @@
             filePath = "Scrabble3/Core/GamePlay/ViewModels/CommandViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
-            landmarkName = "submitMove()"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
+            landmarkName = "submitMove(validateOnly:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

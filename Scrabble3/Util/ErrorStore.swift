@@ -54,15 +54,15 @@ enum AppError: LocalizedError {
             switch errorType {
                 
             case .invalidLetterTilePosition(cell: let cell):
-                return "Буква расположена неправильно: \(cell)"
+                return "Буква расположена неправильно: \(cell.letterTile!.char)"
             case .hangingWords(words: let words):
-                let words = words.joined(separator: ", ")
+                let words = words.map { $0.word }.joined(separator: ", ")
                 return "Слова расположены неправильно: \(words)"
             case .invalidWords(words: let words):
-                let words = words.joined(separator: ", ")
+                let words = words.map { $0.word }.joined(separator: ", ")
                 return "Слова не найдены в словаре: \(words)"
             case .repeatedWords(words: let words):
-                let words = words.joined(separator: ", ")
+                let words = words.map { $0.word }.joined(separator: ", ")
                 return "Слова уже использованы: \(words)"
             }
             

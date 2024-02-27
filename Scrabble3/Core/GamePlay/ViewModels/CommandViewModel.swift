@@ -56,39 +56,6 @@ final class CommandViewModel: ObservableObject {
         rackViewModel.setChangeLettersMode(mode: false)
     }
     
-    func validateMove() async {
-        do {
-            if await submitMove() {
-                let moveWords = try boardViewModel.getMoveWords()
-                
-                // We can also show definitions in current move info.
-                //                let wordsWithDefinitions = moveWords.map { word in
-                //                    var withDefinition = word
-                //                    if let definition = wordDefinitionsDict[word.getHash()] {
-                //                        withDefinition.setWordInfo(definition: definition)
-                //                    }
-                //                    return withDefinition
-                //                }
-                //
-                //                let wordsSummary = wordsWithDefinitions.map { ($0.word, $0.wordDefinition, $0.score) }
-                
-                // For current move words check we do not inject word definitions.
-                let wordsSummary = moveWords.map { ($0.word, $0.wordDefinition, $0.score) }
-                
-                let totalScore = moveWords.reduce(0) { $0 + $1.score }
-                
-                boardViewModel.moveWordsSummary = wordsSummary
-                boardViewModel.moveTotalScore = totalScore
-                boardViewModel.moveBonus = boardViewModel.getMoveBonus
-                
-                boardViewModel.moveInfoDialogPresented = true
-            }
-        } catch {
-            print("DEBUG :: Warning: \(error.localizedDescription)")
-            // TODO: interpret exception.
-        }
-    }
-    
     func addListenerForGame() {
         guard let game = game else { return }
         
@@ -179,7 +146,7 @@ final class CommandViewModel: ObservableObject {
         // Check for hanging words.
         let hanging = boardViewModel.checkWordsConnection(words: words)
         if (!hanging.isEmpty) {
-            publisher.send(completion: .failure(ValidationError.hangingWords(words: hanging.map { $0.word })))
+            publisher.send(completion: .failure(ValidationError.hangingWords(words: hanging)))
         }
         
         // Check for repeated words.
@@ -208,7 +175,7 @@ final class CommandViewModel: ObservableObject {
         }
         
         if (!repeatedWords.isEmpty) {
-            publisher.send(completion: .failure(ValidationError.repeatedWords(words: repeatedWords.map { $0.word })))
+            publisher.send(completion: .failure(ValidationError.repeatedWords(words: repeatedWords)))
         }
         
         var invalidWords = [WordModel]()
@@ -227,7 +194,7 @@ final class CommandViewModel: ObservableObject {
         apiValidateSubscription = apiPublisher.sink(receiveCompletion: { completion in
             // Do we ever get here?
         }, receiveValue: { [weak self] validations in
-            print("validateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
+            // print("API ValidateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
             
             for validation in validations {
                 if let word = words.first(where: { $0.word == validation.word }) {
@@ -241,7 +208,7 @@ final class CommandViewModel: ObservableObject {
             }
             
             if !invalidWords.isEmpty {
-                publisher.send(completion: .failure(.invalidWords(words: invalidWords.map { $0.word })))
+                publisher.send(completion: .failure(.invalidWords(words: invalidWords)))
             } else {
                 publisher.send(validations)
             }
@@ -253,12 +220,9 @@ final class CommandViewModel: ObservableObject {
     var validateSubscription: AnyCancellable? = nil
     var apiValidateSubscription: AnyCancellable? = nil
     
-    func submitMove() async -> Bool {
+    func submitMove(validateOnly: Bool = false) {
         
-        guard let game else {
-            print("PANIC :: game not defined!")
-            return false
-        }
+        boardViewModel.resetCellsStatus()
         
         let publisher = validateMovePublisher()
         
@@ -266,28 +230,182 @@ final class CommandViewModel: ObservableObject {
             print("validateMovePublisher completion", completion)
             switch completion {
             case .failure(let error):
+                self?.tempScores = [:]
+                
                 switch error {
                 case .invalidLetterTilePosition(let cell):
-                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: cell))
+                    if !validateOnly {
+                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: cell))
+                    }
+                    self?.boardViewModel.highlightCell(cell: cell)
                 case .hangingWords(let words):
-                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
+                    if !validateOnly {
+                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
+                    }
+                    self?.boardViewModel.highlightWords(words: words)
                 case .repeatedWords(let words):
-                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
+                    if !validateOnly {
+                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
+                    }
+                    self?.boardViewModel.highlightWords(words: words)
                 case .invalidWords(let words):
-                    ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
+                    if !validateOnly {
+                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
+                    }
+                    self?.boardViewModel.highlightWords(words: words)
                 }
             default:
                 break
             }
         }, receiveValue: { [weak self] validations in
-            print("validateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
+            print("Validations", validations.map { ($0.word, $0.isValid) })
             
             // There are no errors, so we can proceed with submit move...
+            self?.tempScores = [:]
+            
+            if let words = try? self?.boardViewModel.getMoveWords(), let game = self?.game {
+                let moveScore = words.reduce(0) { $0 + $1.score }
+                print("Valid move - score:", moveScore)
+                
+                self?.tempScores[game.turn] = moveScore
+                
+                if !validateOnly {
+                    // For current move words check we do not inject word definitions.
+                    let wordsSummary = words.map { ($0.word, $0.wordDefinition, $0.score) }
+                    
+                    let totalScore = words.reduce(0) { $0 + $1.score }
+                    
+                    self?.boardViewModel.moveWordsSummary = wordsSummary
+                    self?.boardViewModel.moveTotalScore = totalScore
+                    self?.boardViewModel.moveBonus = self?.boardViewModel.getMoveBonus
+                    
+                    self?.boardViewModel.moveInfoDialogPresented = true
+                }
+            }
         })
-        
-        // TODO: temporary block!
-        return false
     }
+    
+    
+    
+//    
+//    
+//    func validateMoveWords() async throws {
+//            guard let game else {
+//                print("PANIC :: game not defined!")
+//                return
+//            }
+//            
+//            tempScores = [:]
+//            
+//            let words = try boardViewModel.getMoveWords()
+//            
+//            boardViewModel.resetCellsStatus()
+//            
+//            // Check for hanging words.
+//            let hanging = boardViewModel.checkWordsConnection(words: words)
+//            if (hanging.count > 0) {
+//                boardViewModel.highlightWords(words: hanging, status: .error)
+//                throw ValidationError.hangingWords(words: hanging.map { $0.word })
+//            }
+//            
+//            // Check for repeated words.
+//            var repeatedWords = [WordModel]()
+//            
+//            // Current move.
+//            var currentWordsArray = [String]()
+//            for word in words {
+//                if (currentWordsArray.firstIndex(of: word.word) != nil) {
+//                    repeatedWords.append(word)
+//                } else {
+//                    currentWordsArray.append(word.word)
+//                }
+//            }
+//            
+//            // All moves.
+//            var existingWordsArray = [String]()
+//            for existingWord in existingWords {
+//                existingWordsArray.append(existingWord.word)
+//            }
+//            var apiPublisher: AnyPublisher<[ValidationResponse], Error>
+//            
+//            for word in words {
+//                if (existingWordsArray.firstIndex(of: word.word) != nil) {
+//                    repeatedWords.append(word)
+//                }
+//            }
+//            
+//            if (repeatedWords.count > 0) {
+//                boardViewModel.highlightWords(words: repeatedWords, status: .error)
+//                throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
+//            switch game.lang {
+//            case .ru:
+//                apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseRussian.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
+//            case .en:
+//                apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseEnglish.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
+//            case .es:
+//                apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseSpanish.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
+//            }
+//            
+//            var invalidWords = [WordModel]()
+//            
+//
+//            
+//            for word in words {
+//                var response: ValidationResponse? = wordValidationCache[word.word]
+//            apiValidateSubscription = apiPublisher.sink(receiveCompletion: { completion in
+//                // Do we ever get here?
+//            }, receiveValue: { [weak self] validations in
+//                print("validateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
+//                
+//                if response == nil {
+//                    print("Getting validation response from API", word.word)
+//                    response = await Api.validateWord(word: word.word, lang: game.lang)
+//                } else {
+//                    print("Getting validation response from cache", word.word)
+//                for validation in validations {
+//                    if let word = words.first(where: { $0.word == validation.word }) {
+//                        if !validation.isValid {
+//                            invalidWords.append(word)
+//                        } else {
+//                            self?.wordDefinitionsDict[word.getHash()] = validation.wordDefinition
+//                        }
+//                        self?.wordValidationCache[validation.word] = validation
+//                    }
+//                }
+//                
+//                if (response == nil || !response!.isValid) {
+//                    invalidWords.append(word)
+//                if !invalidWords.isEmpty {
+//                    publisher.send(completion: .failure(.invalidWords(words: invalidWords.map { $0.word })))
+//                } else {
+//                    // Add word definition to dictionary for future use (on submit move).
+//                    wordDefinitionsDict[word.getHash()] = response!.wordDefinition
+//                    publisher.send(validations)
+//                }
+//                
+//                // Add validation response to cache.
+//                wordValidationCache[word.word] = response
+//                
+//                print("DEBUG :: Word definition response", response?.wordDefinition as Any)
+//            }
+//            
+//            if (invalidWords.count > 0) {
+//                boardViewModel.highlightWords(words: invalidWords, status: .error)
+//                throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
+//            }
+//            
+//            // We have a valid move here.
+//            let moveScore = words.reduce(0) { $0 + $1.score }
+//            print("Valid move - score:", moveScore)
+//            
+//            tempScores[game.turn] = moveScore
+//            })
+//            
+//            return publisher
+//        }
+                                                        
+                                                        
+                                                        
     
     func nextTurn(game: GameModel) async throws {
         
@@ -378,21 +496,13 @@ final class CommandViewModel: ObservableObject {
             
             // TODO: We should call validation API in background thread.
             // Only validate words if board words have changed.
-            //            if drop.role == .board || drag.role == .board {
-            //                // Debounce automatic validation.
-            //                let debounce = Debounce(duration: 1)
-            //                debounce.submit {
-            //                    Task {
-            //                        do {
-            //                            try await self.validateMoveWords()
-            //                        } catch {
-            //                            // We swallow exception here, later we may change it...
-            //                            // TODO: this is not OK. We should consume this exception in model in order to update view...
-            //                            print("On-the-fly validation failed", error.localizedDescription)
-            //                        }
-            //                    }
-            //                }
-            //            }
+            if drop.role == .board || drag.role == .board {
+                // Debounce automatic validation.
+                let debounce = Debounce(duration: 1)
+                debounce.submit {
+                    self.submitMove(validateOnly: true)
+                }
+            }
         }
     }
     
