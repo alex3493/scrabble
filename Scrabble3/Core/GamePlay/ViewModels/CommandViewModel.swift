@@ -124,13 +124,13 @@ final class CommandViewModel: ObservableObject {
         }
     }
     
-    func validateMovePublisher() -> PassthroughSubject<[ValidationResponse], ValidationError>? {
+    func validateMovePublisher() -> PassthroughSubject<[String: ValidationResponse], ValidationError>? {
         guard let game else {
             print("PANIC :: game not defined!")
             return nil
         }
         
-        let publisher = PassthroughSubject<[ValidationResponse], ValidationError>()
+        let publisher = PassthroughSubject<[String: ValidationResponse], ValidationError>()
         
         var words: [WordModel] = []
         
@@ -180,7 +180,7 @@ final class CommandViewModel: ObservableObject {
         
         var invalidWords = [WordModel]()
         
-        var apiPublisher: AnyPublisher<[ValidationResponse], Error>
+        var apiPublisher: AnyPublisher<[String: ValidationResponse], Error>
         
         switch game.lang {
         case .ru:
@@ -196,14 +196,16 @@ final class CommandViewModel: ObservableObject {
         }, receiveValue: { [weak self] validations in
             // print("API ValidateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
             
-            for validation in validations {
-                if let word = words.first(where: { $0.word == validation.word }) {
-                    if !validation.isValid {
+            for wordKey in validations.keys {
+                // TODO: for invalid word ("Spanish") we get a fatal error here!
+                
+                if let word = words.first(where: { $0.word == wordKey }) {
+                    if !validations[wordKey]!.isValid {
                         invalidWords.append(word)
                     } else {
-                        self?.wordDefinitionsDict[word.getHash()] = validation.wordDefinition
+                        self?.wordDefinitionsDict[word.getHash()] = validations[wordKey]!.wordDefinition
                     }
-                    self?.wordValidationCache[validation.word] = validation
+                    self?.wordValidationCache[wordKey] = validations[wordKey]!
                 }
             }
             
@@ -258,7 +260,10 @@ final class CommandViewModel: ObservableObject {
                 break
             }
         }, receiveValue: { [weak self] validations in
-            print("Validations", validations.map { ($0.word, $0.isValid) })
+        
+            print("***** Validations", validations.map({ (key, value) in
+                (key, value.wordDefinition as Any)
+            }))
             
             // There are no errors, so we can proceed with submit move...
             self?.tempScores = [:]
@@ -284,129 +289,7 @@ final class CommandViewModel: ObservableObject {
             }
         })
     }
-    
-    
-    
-//    
-//    
-//    func validateMoveWords() async throws {
-//            guard let game else {
-//                print("PANIC :: game not defined!")
-//                return
-//            }
-//            
-//            tempScores = [:]
-//            
-//            let words = try boardViewModel.getMoveWords()
-//            
-//            boardViewModel.resetCellsStatus()
-//            
-//            // Check for hanging words.
-//            let hanging = boardViewModel.checkWordsConnection(words: words)
-//            if (hanging.count > 0) {
-//                boardViewModel.highlightWords(words: hanging, status: .error)
-//                throw ValidationError.hangingWords(words: hanging.map { $0.word })
-//            }
-//            
-//            // Check for repeated words.
-//            var repeatedWords = [WordModel]()
-//            
-//            // Current move.
-//            var currentWordsArray = [String]()
-//            for word in words {
-//                if (currentWordsArray.firstIndex(of: word.word) != nil) {
-//                    repeatedWords.append(word)
-//                } else {
-//                    currentWordsArray.append(word.word)
-//                }
-//            }
-//            
-//            // All moves.
-//            var existingWordsArray = [String]()
-//            for existingWord in existingWords {
-//                existingWordsArray.append(existingWord.word)
-//            }
-//            var apiPublisher: AnyPublisher<[ValidationResponse], Error>
-//            
-//            for word in words {
-//                if (existingWordsArray.firstIndex(of: word.word) != nil) {
-//                    repeatedWords.append(word)
-//                }
-//            }
-//            
-//            if (repeatedWords.count > 0) {
-//                boardViewModel.highlightWords(words: repeatedWords, status: .error)
-//                throw ValidationError.repeatedWords(words: repeatedWords.map { $0.word })
-//            switch game.lang {
-//            case .ru:
-//                apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseRussian.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
-//            case .en:
-//                apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseEnglish.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
-//            case .es:
-//                apiPublisher = Api.shared.validateWordsDataTaskPublisher(as: ValidationResponseSpanish.self, words: words.map { $0.word }, lang: game.lang, cache: wordValidationCache)
-//            }
-//            
-//            var invalidWords = [WordModel]()
-//            
-//
-//            
-//            for word in words {
-//                var response: ValidationResponse? = wordValidationCache[word.word]
-//            apiValidateSubscription = apiPublisher.sink(receiveCompletion: { completion in
-//                // Do we ever get here?
-//            }, receiveValue: { [weak self] validations in
-//                print("validateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
-//                
-//                if response == nil {
-//                    print("Getting validation response from API", word.word)
-//                    response = await Api.validateWord(word: word.word, lang: game.lang)
-//                } else {
-//                    print("Getting validation response from cache", word.word)
-//                for validation in validations {
-//                    if let word = words.first(where: { $0.word == validation.word }) {
-//                        if !validation.isValid {
-//                            invalidWords.append(word)
-//                        } else {
-//                            self?.wordDefinitionsDict[word.getHash()] = validation.wordDefinition
-//                        }
-//                        self?.wordValidationCache[validation.word] = validation
-//                    }
-//                }
-//                
-//                if (response == nil || !response!.isValid) {
-//                    invalidWords.append(word)
-//                if !invalidWords.isEmpty {
-//                    publisher.send(completion: .failure(.invalidWords(words: invalidWords.map { $0.word })))
-//                } else {
-//                    // Add word definition to dictionary for future use (on submit move).
-//                    wordDefinitionsDict[word.getHash()] = response!.wordDefinition
-//                    publisher.send(validations)
-//                }
-//                
-//                // Add validation response to cache.
-//                wordValidationCache[word.word] = response
-//                
-//                print("DEBUG :: Word definition response", response?.wordDefinition as Any)
-//            }
-//            
-//            if (invalidWords.count > 0) {
-//                boardViewModel.highlightWords(words: invalidWords, status: .error)
-//                throw ValidationError.invalidWords(words: invalidWords.map { $0.word })
-//            }
-//            
-//            // We have a valid move here.
-//            let moveScore = words.reduce(0) { $0 + $1.score }
-//            print("Valid move - score:", moveScore)
-//            
-//            tempScores[game.turn] = moveScore
-//            })
-//            
-//            return publisher
-//        }
-                                                        
-                                                        
-                                                        
-    
+
     func nextTurn(game: GameModel) async throws {
         
         var moveScore = boardViewModel.getMoveScore()
