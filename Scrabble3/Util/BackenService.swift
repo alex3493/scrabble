@@ -141,17 +141,6 @@ final class Api {
         return url
     }
     
-//    private func getLocalDictService(lang: GameLanguage) -> LocalDictServiceProtocol {
-//        switch lang {
-//        case .en:
-//            return LocalDictServiceEnglish.self as! LocalDictServiceProtocol
-//        case .ru:
-//            return LocalDictServiceRussian.self as! LocalDictServiceProtocol
-//        case .es:
-//            return LocalDictServiceSpanish.self as! LocalDictServiceProtocol
-//        }
-//    }
-    
     func validateWordsDataTaskPublisher<T: ValidationResponse>(as type: T.Type, words: [String], lang: GameLanguage, cache: [String: ValidationResponse]) -> AnyPublisher<[String: ValidationResponse], Error> {
         
         cancellables = []
@@ -165,6 +154,7 @@ final class Api {
         
         let publishers = words.compactMap {
             // validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            
             validateWordInternalPublisher(as: T.self, word: $0, lang: lang, cache: cache)
         }
         
@@ -221,7 +211,6 @@ final class Api {
         return (word, publisher?.eraseToAnyPublisher())
     }
     
-    // TODO: call overridden func in LocalDictService child classes! Check how?
     func validateWordInternalPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> (String, AnyPublisher<T, Error>?) {
                 
         var publisher: AnyPublisher<T, Error>?
@@ -231,6 +220,7 @@ final class Api {
                 .receive(on: RunLoop.main)
                 .eraseToAnyPublisher()
         } else {
+            // TODO: make it better - how to use generics here?
             switch lang {
             case .en:
                 publisher = CurrentValueSubject<T, Error>(LocalDictServiceEnglish.validateWord(word: word) as! T)

@@ -7,9 +7,7 @@
 
 import Foundation
 
-protocol LocalDictServiceProtocol { }
-
-class LocalDictService: LocalDictServiceProtocol {
+class LocalDictService {
    
     static let languageFiles = [
         "ru": "russian",
