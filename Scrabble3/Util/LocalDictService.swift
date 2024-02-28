@@ -7,19 +7,21 @@
 
 import Foundation
 
-class LocalDictService {
-    
-    static let shared = LocalDictService()
-    private init() { }
-    
-    let languageFiles = [
+protocol LocalDictServiceProtocol { }
+
+class LocalDictService: LocalDictServiceProtocol {
+   
+    static let languageFiles = [
         "ru": "russian",
         "en": "english",
         "es": "espanol",
         "ca": "catalan"
     ]
     
-    func loadDictionary(lang: GameLanguage) {
+    static var lang: GameLanguage? = nil
+    static var dictionary: String = ""
+    
+    static func loadDictionary(lang: GameLanguage) {
 
         let url = Bundle.main.url(forResource: languageFiles[lang.rawValue], withExtension: "dic", subdirectory: "Dic")
         do {
@@ -39,10 +41,7 @@ class LocalDictService {
         }
     }
     
-    var lang: GameLanguage? = nil
-    var dictionary: String = ""
-    
-    func validateWord(word: String, lang: GameLanguage) -> ValidationResponse {
+    static func validateWord(word: String, lang: GameLanguage) -> ValidationResponse {
         
         // If dictionary was not loaded yet or we have changed the language
         // make sure that we init the dictionary.
@@ -50,27 +49,26 @@ class LocalDictService {
             loadDictionary(lang: lang)
         }
         
-        let result = checkWord(word: word)
+        let result = self.checkWord(word: word)
         
         switch lang {
         case .ru:
             return ValidationResponseRussian(result: result ? "yes" : "no", word: word, definitions: nil, usage_rate: nil, imageURL: nil)
         case .en:
-            return ValidationResponseEnglish(name: word, definition: "")
+            return ValidationResponseEnglish(name: word, definition: result ? "" : nil)
         case .es:
-            // TODO: we have to create one definition with "term" property!
-            return ValidationResponseSpanish(def: [WordDefinitionSpanish(text: word, pos: "", gen: "", tr: [])])
+            return ValidationResponseSpanish(def: result ? [WordDefinitionSpanish(text: word, pos: "", gen: nil, tr: [])] : [])
         }
         
     }
     
-    func checkWord(word: String) -> Bool {
-        guard !dictionary.isEmpty else { return false }
+    class func checkWord(word: String) -> Bool {
+        guard !self.dictionary.isEmpty else { return false }
         
         let pattern = "\\s\(word)\\s"
         do {
             let regex = try Regex(pattern)
-            return dictionary.contains(regex)
+            return self.dictionary.contains(regex)
         } catch {
             print("DEBUG :: Error setting up search", error.localizedDescription)
             return false
@@ -79,25 +77,24 @@ class LocalDictService {
 }
 
 class LocalDictServiceRussian: LocalDictService {
-    
-    func validateWord(word: String) -> ValidationResponse {
+    static func validateWord(word: String) -> ValidationResponse {
         return super.validateWord(word: word, lang: .ru)
     }
 }
 
 class LocalDictServiceEnglish: LocalDictService {
-    func validateWord(word: String) -> ValidationResponse {
-        return validateWord(word: word, lang: .en)
+    static func validateWord(word: String) -> ValidationResponse {
+        return super.validateWord(word: word, lang: .en)
     }
     
     // Currently used english dictionary requires custom regex.
-    override func checkWord(word: String) -> Bool {
-        guard !dictionary.isEmpty else { return false }
+    override static func checkWord(word: String) -> Bool {
+        guard !self.dictionary.isEmpty else { return false }
         
         let pattern = "\\s\(word)="
         do {
             let regex = try Regex(pattern)
-            return dictionary.contains(regex)
+            return self.dictionary.contains(regex)
         } catch {
             print("DEBUG :: Error setting up search", error.localizedDescription)
             return false
@@ -106,7 +103,7 @@ class LocalDictServiceEnglish: LocalDictService {
 }
 
 class LocalDictServiceSpanish: LocalDictService {
-    func validateWord(word: String) -> ValidationResponse {
+    static func validateWord(word: String) -> ValidationResponse {
         
         // We have to replace special tiles with numbers as it is required by dictionary.
         /*

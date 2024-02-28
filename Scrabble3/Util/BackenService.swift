@@ -81,13 +81,14 @@ struct ValidationResponseRussian: Codable, ValidationResponse {
 
 struct ValidationResponseEnglish: Codable, ValidationResponse {
     let name: String
-    let definition: String
+    let definition: String?
     
     var isValid: Bool {
-        return true
+        return definition != nil
     }
     
     var wordDefinition: WordDefinition? {
+        guard let definition = definition else { return nil }
         return WordInfo(term: name, definition: definition, imageURL: nil)
     }
 }
@@ -118,10 +119,6 @@ final class Api {
     
     var cancellables = Set<AnyCancellable>()
     
-    // TODO: we have to create local service depending on current language.
-    
-    let localDictService = LocalDictService.shared
-    
     private func prepareURL(word: String, lang: GameLanguage) -> URL? {
         guard var url = Constants.Api.Validation.getUrl(lang: lang) else {
             return nil
@@ -144,6 +141,17 @@ final class Api {
         return url
     }
     
+//    private func getLocalDictService(lang: GameLanguage) -> LocalDictServiceProtocol {
+//        switch lang {
+//        case .en:
+//            return LocalDictServiceEnglish.self as! LocalDictServiceProtocol
+//        case .ru:
+//            return LocalDictServiceRussian.self as! LocalDictServiceProtocol
+//        case .es:
+//            return LocalDictServiceSpanish.self as! LocalDictServiceProtocol
+//        }
+//    }
+    
     func validateWordsDataTaskPublisher<T: ValidationResponse>(as type: T.Type, words: [String], lang: GameLanguage, cache: [String: ValidationResponse]) -> AnyPublisher<[String: ValidationResponse], Error> {
         
         cancellables = []
@@ -156,8 +164,8 @@ final class Api {
         }
         
         let publishers = words.compactMap {
-            validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
-            // validateWordInternalPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            // validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            validateWordInternalPublisher(as: T.self, word: $0, lang: lang, cache: cache)
         }
         
         let publisher = PassthroughSubject<[String: ValidationResponse], Error>()
@@ -213,8 +221,9 @@ final class Api {
         return (word, publisher?.eraseToAnyPublisher())
     }
     
+    // TODO: call overridden func in LocalDictService child classes! Check how?
     func validateWordInternalPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> (String, AnyPublisher<T, Error>?) {
-        
+                
         var publisher: AnyPublisher<T, Error>?
         
         if let cached = cache[word] {
@@ -222,9 +231,20 @@ final class Api {
                 .receive(on: RunLoop.main)
                 .eraseToAnyPublisher()
         } else {
-            publisher = CurrentValueSubject<T, Error>(localDictService.validateWord(word: word, lang: lang) as! T)
-                .receive(on: RunLoop.main)
-                .eraseToAnyPublisher()
+            switch lang {
+            case .en:
+                publisher = CurrentValueSubject<T, Error>(LocalDictServiceEnglish.validateWord(word: word) as! T)
+                    .receive(on: RunLoop.main)
+                    .eraseToAnyPublisher()
+            case .ru:
+                publisher = CurrentValueSubject<T, Error>(LocalDictServiceRussian.validateWord(word: word) as! T)
+                    .receive(on: RunLoop.main)
+                    .eraseToAnyPublisher()
+            case .es:
+                publisher = CurrentValueSubject<T, Error>(LocalDictServiceSpanish.validateWord(word: word) as! T)
+                    .receive(on: RunLoop.main)
+                    .eraseToAnyPublisher()
+            }
         }
         
         return (word, publisher?.eraseToAnyPublisher())
