@@ -153,9 +153,11 @@ final class Api {
         }
         
         let publishers = words.compactMap {
-            // validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
-            
-            validateWordInternalPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            if Constants.Api.Validation.useLocalValidation(lang: lang) {
+                validateWordLocalPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            } else {
+                validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            }
         }
         
         let publisher = PassthroughSubject<[String: ValidationResponse], Error>()
@@ -211,7 +213,7 @@ final class Api {
         return (word, publisher?.eraseToAnyPublisher())
     }
     
-    func validateWordInternalPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> (String, AnyPublisher<T, Error>?) {
+    func validateWordLocalPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> (String, AnyPublisher<T, Error>?) {
                 
         var publisher: AnyPublisher<T, Error>?
         
