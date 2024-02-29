@@ -7,97 +7,142 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E33310BF-4F32-4D60-A6B0-67001CFE6FF2"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Scrabble3/Util/LocalDictService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
-            landmarkName = "validateWord(word:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "57DC8F72-C5AF-4A8D-A1F9-80B162B11CDF"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Scrabble3/Util/LocalDictService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "validateWord(word:lang:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CB0777C0-243A-4684-81F5-9BB0119D0054"
+            uuid = "6FFA4C9E-3816-4907-A4A0-A8E6E9016FCB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Scrabble3/Util/LocalDictService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
-            landmarkName = "checkWord(word:)"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "validateWord(word:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6FFA4C9E-3816-4907-A4A0-A8E6E9016FCB - b066ac4930800d3b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "752">
+               </Location>
+               <Location
+                  uuid = "6FFA4C9E-3816-4907-A4A0-A8E6E9016FCB - fcca3d946996e6f7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (GRDB.Database) throws -&gt; Swift.Optional&lt;Scrabble3.ValidationResponseEnglish&gt; in static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "6FFA4C9E-3816-4907-A4A0-A8E6E9016FCB - b066ac4930800d3b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "1264">
+               </Location>
+               <Location
+                  uuid = "6FFA4C9E-3816-4907-A4A0-A8E6E9016FCB - b066ac4930800d3b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "1412">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5CB9FF0E-586A-4962-8672-350B35CBC4AD"
+            uuid = "00B0039A-EFBC-46C6-9427-A48B743AAC98"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Scrabble3/Util/LocalDictService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "validateWord(word:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1F5AECA7-64F2-403D-AC0E-FE31D6072D5A"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Scrabble3/Util/LocalDictService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "checkWord(word:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "03674742-4C40-4168-8D27-CB0992F44505"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Scrabble3/Util/LocalDictService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "validateWord(word:)"
-            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "00B0039A-EFBC-46C6-9427-A48B743AAC98 - b066ac4930800d86"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "113"
+                  endingLineNumber = "113"
+                  offsetFromSymbolStart = "528">
+               </Location>
+               <Location
+                  uuid = "00B0039A-EFBC-46C6-9427-A48B743AAC98 - b066ac4930800d86"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "113"
+                  endingLineNumber = "113"
+                  offsetFromSymbolStart = "1180">
+               </Location>
+               <Location
+                  uuid = "00B0039A-EFBC-46C6-9427-A48B743AAC98 - b066ac4930800d86"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Scrabble3.LocalDictServiceEnglish.validateWord(word: Swift.String) -&gt; Scrabble3.ValidationResponse"
+                  moduleName = "Scrabble3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/alex/Documents/XCode/Scrabble3/Scrabble3/Util/LocalDictService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "113"
+                  endingLineNumber = "113"
+                  offsetFromSymbolStart = "1196">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

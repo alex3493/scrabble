@@ -76,6 +76,7 @@
 		FAE962212AE56C4300BAAC7B /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962202AE56C4300BAAC7B /* ActionButton.swift */; };
 		FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962242AE5A75200BAAC7B /* GamePlayView.swift */; };
 		FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */; };
+		FAEDE6E82B907C7C003671FA /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = FAEDE6E72B907C7C003671FA /* GRDB */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -175,6 +176,7 @@
 				FAC469EA2AD34BDD00AB3A8E /* FirebaseAuth in Frameworks */,
 				FA4F5E1B2AD2E71C00A39306 /* FirebaseAnalytics in Frameworks */,
 				FAC469F02AD34C7C00AB3A8E /* FirebaseFirestore in Frameworks */,
+				FAEDE6E82B907C7C003671FA /* GRDB in Frameworks */,
 				FAC469EE2AD34BF800AB3A8E /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -492,6 +494,7 @@
 				FAC469ED2AD34BF800AB3A8E /* FirebaseFirestoreSwift */,
 				FAC469EF2AD34C7C00AB3A8E /* FirebaseFirestore */,
 				FAC46A012AD4AB9700AB3A8E /* FirebaseAuthCombine-Community */,
+				FAEDE6E72B907C7C003671FA /* GRDB */,
 			);
 			productName = Scrabble3;
 			productReference = FAB8724B2AA258610015D0FA /* Scrabble3.app */;
@@ -567,6 +570,7 @@
 			mainGroup = FAB872422AA258610015D0FA;
 			packageReferences = (
 				FA4F5E192AD2E71C00A39306 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				FAEDE6E62B907C7C003671FA /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 			);
 			productRefGroup = FAB8724C2AA258610015D0FA /* Products */;
 			projectDirPath = "";
@@ -1008,6 +1012,14 @@
 				minimumVersion = 10.16.0;
 			};
 		};
+		FAEDE6E62B907C7C003671FA /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1040,6 +1052,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA4F5E192AD2E71C00A39306 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseAuthCombine-Community";
+		};
+		FAEDE6E72B907C7C003671FA /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAEDE6E62B907C7C003671FA /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
