@@ -31,11 +31,20 @@ struct Constants {
                     return URL(string: "https://erugame.ru/dictionary/backend.php?mode=new")
                 case .es:
                     return URL(string: "https://dictionary.yandex.net/api/v1/dicservice.json/lookup")
-//                default:
-//                    return nil
                 }
             }
             static let dictKeyYandex = "dict.1.1.20231125T101354Z.02e231dd0878d9ec.4ea53be52aea0fd9b6ecb0b965d7582cfd872539"
+            
+            static func useLocalValidation(lang: GameLanguage) -> Bool {
+                switch lang {
+                case .en:
+                    return false
+                case .ru:
+                    return false
+                case .es:
+                    return false
+                }
+            }
         }
     }
 }

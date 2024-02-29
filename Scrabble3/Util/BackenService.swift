@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Combine
 
-protocol ValidationResponse {
+protocol ValidationResponse: Codable {
     var isValid: Bool { get }
     var wordDefinition: WordDefinition? { get }
 }
@@ -56,7 +57,7 @@ struct WordDefinitionSpanish: Codable, WordDefinition {
     
     let text: String
     let pos: String
-    let gen: String
+    let gen: String?
     let tr: [Translation]
 }
 
@@ -80,13 +81,14 @@ struct ValidationResponseRussian: Codable, ValidationResponse {
 
 struct ValidationResponseEnglish: Codable, ValidationResponse {
     let name: String
-    let definition: String
+    let definition: String?
     
     var isValid: Bool {
-        return true
+        return definition != nil
     }
     
     var wordDefinition: WordDefinition? {
+        guard let definition = definition else { return nil }
         return WordInfo(term: name, definition: definition, imageURL: nil)
     }
 }
@@ -104,93 +106,140 @@ struct ValidationResponseSpanish: Codable, ValidationResponse {
     }
 }
 
-//MARK : API requests.
-struct ApiRussian {
-    @MainActor
-    static func validateWord(word: String) async -> ValidationResponse? {
-        let query = URLQueryItem(name: "word", value: word)
-        guard var url = Constants.Api.Validation.getUrl(lang: .ru) else {
-            return nil
-        }
-        url.append(queryItems: [query])
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return try? JSONDecoder().decode(ValidationResponseRussian.self, from: data)
-        } catch {
-            // TODO: should re-throw?
-            return nil
-        }
-    }
+enum NetworkError: Error {
+    case invalidURL
+    case responseError(errorCode: Int?)
+    case unknown
 }
 
-struct ApiEnglish {
-    @MainActor
-    static func validateWord(word: String) async -> ValidationResponse? {
-        
-        guard var url = Constants.Api.Validation.getUrl(lang: .en) else {
+final class Api {
+    
+    static let shared = Api()
+    private init() { }
+    
+    var cancellables = Set<AnyCancellable>()
+    
+    private func prepareURL(word: String, lang: GameLanguage) -> URL? {
+        guard var url = Constants.Api.Validation.getUrl(lang: lang) else {
             return nil
         }
-        
-        url.append(path: word.lowercased())
-        url.appendPathExtension("json")
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return try? JSONDecoder().decode(ValidationResponseEnglish.self, from: data)
-        } catch {
-            // TODO: should re-throw?
-            return nil
-        }
-    }
-}
-
-struct ApiSpanish {
-    @MainActor
-    static func validateWord(word: String) async -> ValidationResponse? {
-        let query = URLQueryItem(name: "text", value: word)
-        let keyQuery = URLQueryItem(name: "key", value: Constants.Api.Validation.dictKeyYandex)
-        let langQuery = URLQueryItem(name: "lang", value: "es-en")
-        
-        guard var url = Constants.Api.Validation.getUrl(lang: .es) else {
-            return nil
-        }
-        url.append(queryItems: [query, keyQuery, langQuery])
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return try? JSONDecoder().decode(ValidationResponseSpanish.self, from: data)
-        } catch {
-            // TODO: should re-throw?
-            return nil
-        }
-    }
-}
-
-struct Api {
-    @MainActor
-    static func validateWord(word: String, lang: GameLanguage) async -> ValidationResponse? {
-        var response: ValidationResponse?
         
         switch lang {
-        case .ru:
-            response = await ApiRussian.validateWord(word: word)
-            // response = LocalDictServiceRussian.validateWord(word: word)
-            break
         case .en:
-            // response = await ApiEnglish.validateWord(word: word)
-            response = LocalDictServiceEnglish.validateWord(word: word)
-            break
+            url.append(path: word.lowercased())
+            url.appendPathExtension("json")
+        case .ru:
+            let query = URLQueryItem(name: "word", value: word)
+            url.append(queryItems: [query])
         case .es:
-            // response = await ApiSpanish.validateWord(word: word)
-            response = LocalDictServiceSpanish.validateWord(word: word)
-            break
+            let query = URLQueryItem(name: "text", value: word)
+            let keyQuery = URLQueryItem(name: "key", value: Constants.Api.Validation.dictKeyYandex)
+            let langQuery = URLQueryItem(name: "lang", value: "es-en")
+            url.append(queryItems: [query, keyQuery, langQuery])
         }
         
-//        if let response {
-//            print("DEBUG :: Word definition response", response.wordDefinition as Any)
-//        }
-        
-        return response
+        return url
     }
+    
+    func validateWordsDataTaskPublisher<T: ValidationResponse>(as type: T.Type, words: [String], lang: GameLanguage, cache: [String: ValidationResponse]) -> AnyPublisher<[String: ValidationResponse], Error> {
+        
+        cancellables = []
+        
+        if words.isEmpty {
+            // If there are no words in move there is nothing to validate.
+            return CurrentValueSubject<[String: ValidationResponse], Error>([:])
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        }
+        
+        let publishers = words.compactMap {
+            if Constants.Api.Validation.useLocalValidation(lang: lang) {
+                validateWordLocalPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            } else {
+                validateWordDataTaskPublisher(as: T.self, word: $0, lang: lang, cache: cache)
+            }
+        }
+        
+        let publisher = PassthroughSubject<[String: ValidationResponse], Error>()
+        
+        var responses: [String: ValidationResponse] = [:]
+        
+        for element in publishers {
+            let (word, pub) = element
+            pub?.sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let errorCode):
+                    print("Error \(errorCode)")
+                    publisher.send(completion: .failure(errorCode))
+                case .finished:
+                    break
+                }
+            }) { value in
+                responses[word] = value
+                
+                if responses.count == words.count {
+                    publisher.send(responses)
+                }
+            }
+            .store(in: &cancellables)
+        }
+        
+        return publisher.eraseToAnyPublisher()
+    }
+    
+    func validateWordDataTaskPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> (String, AnyPublisher<T, Error>?) {
+        
+        var publisher: AnyPublisher<T, Error>?
+        
+        if let cached = cache[word] {
+            publisher = CurrentValueSubject<T, Error>(cached as! T)
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        } else {
+            guard let url = prepareURL(word: word, lang: lang) else { return (word, nil) }
+            
+            publisher = URLSession.shared.dataTaskPublisher(for: url)
+                .tryMap { (data, response) -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+                        throw NetworkError.responseError(errorCode: (response as? HTTPURLResponse)?.statusCode)
+                    }
+                    return data
+                }
+                .decode(type: T.self, decoder: JSONDecoder())
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        }
+        
+        return (word, publisher?.eraseToAnyPublisher())
+    }
+    
+    func validateWordLocalPublisher<T: ValidationResponse>(as type: T.Type, word: String, lang: GameLanguage, cache: [String: ValidationResponse]) -> (String, AnyPublisher<T, Error>?) {
+                
+        var publisher: AnyPublisher<T, Error>?
+        
+        if let cached = cache[word] {
+            publisher = CurrentValueSubject<T, Error>(cached as! T)
+                .receive(on: RunLoop.main)
+                .eraseToAnyPublisher()
+        } else {
+            // TODO: make it better - how to use generics here?
+            switch lang {
+            case .en:
+                publisher = CurrentValueSubject<T, Error>(LocalDictServiceEnglish.validateWord(word: word) as! T)
+                    .receive(on: RunLoop.main)
+                    .eraseToAnyPublisher()
+            case .ru:
+                publisher = CurrentValueSubject<T, Error>(LocalDictServiceRussian.validateWord(word: word) as! T)
+                    .receive(on: RunLoop.main)
+                    .eraseToAnyPublisher()
+            case .es:
+                publisher = CurrentValueSubject<T, Error>(LocalDictServiceSpanish.validateWord(word: word) as! T)
+                    .receive(on: RunLoop.main)
+                    .eraseToAnyPublisher()
+            }
+        }
+        
+        return (word, publisher?.eraseToAnyPublisher())
+    }
+    
 }

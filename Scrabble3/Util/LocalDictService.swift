@@ -7,24 +7,29 @@
 
 import Foundation
 
-struct LocalDictServiceResponse: ValidationResponse {
-    var isValid: Bool
-    
-    var wordDefinition: WordDefinition? = nil
-}
-
 class LocalDictService {
-    static func loadDictionary(lang: String) {
+   
+    static let languageFiles = [
+        "ru": "russian",
+        "en": "english",
+        "es": "espanol",
+        "ca": "catalan"
+    ]
+    
+    static var lang: GameLanguage? = nil
+    static var dictionary: String = ""
+    
+    static func loadDictionary(lang: GameLanguage) {
 
-        let url = Bundle.main.url(forResource: lang, withExtension: "dic", subdirectory: "Dic")
+        let url = Bundle.main.url(forResource: languageFiles[lang.rawValue], withExtension: "dic", subdirectory: "Dic")
         do {
             if let url = url, try url.checkResourceIsReachable() {
                 print("file exist")
                 if let fileContents = try? String(contentsOf: url) {
                     print("File loaded")
                     
-                    LocalDictService.dictionary = fileContents
-                    LocalDictService.lang = lang
+                    self.dictionary = fileContents
+                    self.lang = lang
                 }
             } else {
                 throw URLError(.fileDoesNotExist)
@@ -34,10 +39,7 @@ class LocalDictService {
         }
     }
     
-    static var lang = ""
-    static var dictionary: String = ""
-    
-    static func validateWord(word: String, lang: String) -> LocalDictServiceResponse {
+    static func validateWord(word: String, lang: GameLanguage) -> ValidationResponse {
         
         // If dictionary was not loaded yet or we have changed the language
         // make sure that we init the dictionary.
@@ -45,18 +47,26 @@ class LocalDictService {
             loadDictionary(lang: lang)
         }
         
-        let result = checkWord(word: word)
+        let result = self.checkWord(word: word)
         
-        return LocalDictServiceResponse(isValid: result)
+        switch lang {
+        case .ru:
+            return ValidationResponseRussian(result: result ? "yes" : "no", word: word, definitions: nil, usage_rate: nil, imageURL: nil)
+        case .en:
+            return ValidationResponseEnglish(name: word, definition: result ? "" : nil)
+        case .es:
+            return ValidationResponseSpanish(def: result ? [WordDefinitionSpanish(text: word, pos: "", gen: nil, tr: [])] : [])
+        }
+        
     }
     
     class func checkWord(word: String) -> Bool {
-        guard !dictionary.isEmpty else { return false }
+        guard !self.dictionary.isEmpty else { return false }
         
         let pattern = "\\s\(word)\\s"
         do {
             let regex = try Regex(pattern)
-            return dictionary.contains(regex)
+            return self.dictionary.contains(regex)
         } catch {
             print("DEBUG :: Error setting up search", error.localizedDescription)
             return false
@@ -65,24 +75,24 @@ class LocalDictService {
 }
 
 class LocalDictServiceRussian: LocalDictService {
-    static func validateWord(word: String) -> LocalDictServiceResponse {
-        return super.validateWord(word: word, lang: "russian")
+    static func validateWord(word: String) -> ValidationResponse {
+        return super.validateWord(word: word, lang: .ru)
     }
 }
 
 class LocalDictServiceEnglish: LocalDictService {
-    static func validateWord(word: String) -> LocalDictServiceResponse {
-        return validateWord(word: word, lang: "english")
+    static func validateWord(word: String) -> ValidationResponse {
+        return super.validateWord(word: word, lang: .en)
     }
     
     // Currently used english dictionary requires custom regex.
     override static func checkWord(word: String) -> Bool {
-        guard !dictionary.isEmpty else { return false }
+        guard !self.dictionary.isEmpty else { return false }
         
         let pattern = "\\s\(word)="
         do {
             let regex = try Regex(pattern)
-            return dictionary.contains(regex)
+            return self.dictionary.contains(regex)
         } catch {
             print("DEBUG :: Error setting up search", error.localizedDescription)
             return false
@@ -91,7 +101,7 @@ class LocalDictServiceEnglish: LocalDictService {
 }
 
 class LocalDictServiceSpanish: LocalDictService {
-    static func validateWord(word: String) -> LocalDictServiceResponse {
+    static func validateWord(word: String) -> ValidationResponse {
         
         // We have to replace special tiles with numbers as it is required by dictionary.
         /*
@@ -105,25 +115,25 @@ class LocalDictServiceSpanish: LocalDictService {
             .replacingOccurrences(of: "LL", with: "2")
             .replacingOccurrences(of: "RR", with: "3")
         
-        return super.validateWord(word: replaced, lang: "espanol")
+        return super.validateWord(word: replaced, lang: .es)
     }
 }
 
-class LocalDictServiceCatalan: LocalDictService {
-    static func validateWord(word: String) -> LocalDictServiceResponse {
-        
-        // We have to replace special tiles with numbers as it is required by dictionary.
-        /*
-         | [Replace]
-         | 1=L·L
-         | 2=NY
-         | 3=QU
-         */
-        let replaced = word
-            .replacingOccurrences(of: "L·L", with: "1")
-            .replacingOccurrences(of: "NY", with: "2")
-            .replacingOccurrences(of: "QU", with: "3")
-        
-        return super.validateWord(word: replaced, lang: "catalan")
-    }
-}
+//class LocalDictServiceCatalan: LocalDictService {
+//    func validateWord(word: String) -> ValidationResponse {
+//        
+//        // We have to replace special tiles with numbers as it is required by dictionary.
+//        /*
+//         | [Replace]
+//         | 1=L·L
+//         | 2=NY
+//         | 3=QU
+//         */
+//        let replaced = word
+//            .replacingOccurrences(of: "L·L", with: "1")
+//            .replacingOccurrences(of: "NY", with: "2")
+//            .replacingOccurrences(of: "QU", with: "3")
+//        
+//        return super.validateWord(word: replaced, lang: .ca)
+//    }
+//}
