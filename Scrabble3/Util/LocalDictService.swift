@@ -137,19 +137,21 @@ class LocalDictServiceEnglish: LocalDictService {
         }
     }
     
+    // TODO: now we use sqlite approach.
+    
     // Currently used english dictionary requires custom regex.
-    //    override static func checkWord(word: String) -> Bool {
-    //        guard !self.dictionary.isEmpty else { return false }
-    //
-    //        let pattern = "\\s\(word)="
-    //        do {
-    //            let regex = try Regex(pattern)
-    //            return self.dictionary.contains(regex)
-    //        } catch {
-    //            print("DEBUG :: Error setting up search", error.localizedDescription)
-    //            return false
-    //        }
-    //    }
+//    override static func checkWord(word: String) -> Bool {
+//        guard !self.dictionary.isEmpty else { return false }
+//
+//        let pattern = "\\s\(word)="
+//        do {
+//            let regex = try Regex(pattern)
+//            return self.dictionary.contains(regex)
+//        } catch {
+//            print("DEBUG :: Error setting up search", error.localizedDescription)
+//            return false
+//        }
+//    }
 }
 
 class LocalDictServiceSpanish: LocalDictService {
