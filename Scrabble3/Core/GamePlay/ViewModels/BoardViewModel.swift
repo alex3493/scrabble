@@ -182,8 +182,6 @@ class BoardViewModel: LetterStoreBase {
                 cellConnected -= 1
             }
             
-            // TODO: issue here - we may have cell with letterTile == nil
-            // Check: somehow currentMoveCells contain tiles without letter!?
             if (cellConnected == 0) {
                 throw ValidationError.invalidLetterTilePosition(cell: cell)
             }

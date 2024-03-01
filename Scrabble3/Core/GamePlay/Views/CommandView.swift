@@ -84,7 +84,7 @@ struct CommandView: View {
                     }
                 }
                 .padding()
-                Text("Letter bank size: \(game.letterBank.count)")
+                // Text("Letter bank size: \(game.letterBank.count)")
             }
         }
         .onAppear() {

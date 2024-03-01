@@ -121,7 +121,7 @@ struct GameInfoView: View {
                         dismiss()
                     } label: {
                         HStack(spacing: 3) {
-                            Text("Все игры")
+                            Text("All games")
                                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                         }
                         .font(.system(size: 14))

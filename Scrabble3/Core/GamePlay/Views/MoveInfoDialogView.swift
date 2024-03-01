@@ -24,7 +24,7 @@ struct MoveInfoDialogView: View {
             List {
                 if let totalScore = score {
                     HStack {
-                        Text("Всего")
+                        Text("Total")
                         Spacer()
                         Text("\(totalScore + (bonus ?? 0))")
                     }
@@ -65,7 +65,7 @@ struct MoveInfoDialogView: View {
                 }
                 if let bonus = bonus {
                     HStack {
-                        Text("Премия")
+                        Text("Bonus")
                         Spacer()
                         Text("\(bonus)")
                     }
@@ -84,7 +84,7 @@ struct MoveInfoDialogView: View {
                             .resizable()
                             .frame(width: 32, height: 32)
                             .scaledToFit()
-                        Text("ВЕРНУТЬСЯ")
+                        Text("Return")
                             .fontWeight(.bold)
                     }
                     .font(.system(size: 24))
@@ -110,7 +110,7 @@ struct MoveInfoDialogView: View {
                                 .resizable()
                                 .frame(width: 32, height: 32)
                                 .scaledToFit()
-                            Text("ОТПРАВИТЬ")
+                            Text("Submit")
                                 .fontWeight(.bold)
                         }
                         .font(.system(size: 24))

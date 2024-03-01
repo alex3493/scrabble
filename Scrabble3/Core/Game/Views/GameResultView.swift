@@ -74,7 +74,7 @@ struct GameResultView: View {
                                             }
                                             if move.hasBonus {
                                                 HStack {
-                                                    Text("Бонус")
+                                                    Text("Bonus")
                                                         .italic()
                                                     Spacer()
                                                     Text("\(Constants.Game.bonusFullRackMove)")
@@ -89,13 +89,13 @@ struct GameResultView: View {
                                     } else {
                                         HStack {
                                             Spacer()
-                                            Text("Ход пропущен")
+                                            Text("Turn passed")
                                                 .italic()
                                         }
                                     }
                                 }
                             } else {
-                                Text("Игрок не сделал ни одного хода")
+                                Text("Player has no moves")
                                     .fontWeight(.bold)
                             }
                         }
@@ -122,7 +122,7 @@ struct GameResultView: View {
                 dismiss()
             } label: {
                 HStack(spacing: 3) {
-                    Text("Все игры")
+                    Text("All games")
                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 }
                 .font(.system(size: 14))

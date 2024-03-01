@@ -194,11 +194,9 @@ final class CommandViewModel: ObservableObject {
         apiValidateSubscription = apiPublisher.sink(receiveCompletion: { completion in
             // Do we ever get here?
         }, receiveValue: { [weak self] validations in
-            // print("API ValidateMovePublisher validations", validations.map { ($0.word, $0.isValid) })
+            // print("API ValidateMovePublisher validations", validations)
             
             for wordKey in validations.keys {
-                // TODO: for invalid word ("Spanish") we get a fatal error here!
-                
                 if let word = words.first(where: { $0.word == wordKey }) {
                     if !validations[wordKey]!.isValid {
                         invalidWords.append(word)
@@ -380,10 +378,16 @@ final class CommandViewModel: ObservableObject {
             // TODO: We should call validation API in background thread.
             // Only validate words if board words have changed.
             if drop.role == .board || drag.role == .board {
+                
+                // TODO: this is @MainActor class, so submitMove is always executed in main thread.
+                // How to process words validation in background?
+                
                 // Debounce automatic validation.
                 let debounce = Debounce(duration: 1)
                 debounce.submit {
-                    self.submitMove(validateOnly: true)
+                    Task {
+                        self.submitMove(validateOnly: true)
+                    }
                 }
             }
         }

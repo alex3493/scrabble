@@ -57,7 +57,7 @@ struct GameListView: View {
                                     .toolbar(.hidden, for: .tabBar)
                             } label: {
                                 HStack {
-                                    Text("Новая игра")
+                                    Text("New game")
                                     Spacer()
                                     Image(systemName: "plus")
                                         .font(.headline)

@@ -44,7 +44,9 @@ struct AsteriskDialogView: View {
                             
                             let debounce = Debounce(duration: 1)
                             debounce.submit {
-                                commandViewModel.submitMove(validateOnly: true)
+                                Task {
+                                    commandViewModel.submitMove(validateOnly: true)
+                                }
                             }
                         }
                     }
