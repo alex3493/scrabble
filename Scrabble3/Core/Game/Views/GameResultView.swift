@@ -33,7 +33,7 @@ struct GameResultView: View {
                     Text("Current game status: \(game.gameStatus.rawValue)")
                 }
                 
-                if let winners = winners, game.gameStatus == .finished {
+                if let winners = game.winners, game.gameStatus == .finished {
                     Section(winners.count > 1 ? "Победители" : "Победитель") {
                         ForEach(winners, id: \.id.self) { item in
                             HStack(spacing: 12) {
@@ -143,25 +143,6 @@ struct GameResultView: View {
     
     var canDeleteGame: Bool {
         return game.creatorUser.userId == currentUser?.userId
-    }
-    
-    var maxScore: Int? {
-        return game.players.max(by: { $0.score < $1.score })?.score
-    }
-    
-    var winners: [Player]? {
-        
-        if let maxScore = game.players.max(by: { $0.score < $1.score })?.score {
-            let winnerPlayers = game.players.sorted { lhs, rhs in
-                return lhs.score < rhs.score
-            }
-            
-            return winnerPlayers.filter { player in
-                return player.score == maxScore
-            }
-        }
-        
-        return nil
     }
     
     func fetchGameMoves() async throws {

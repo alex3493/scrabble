@@ -27,9 +27,16 @@ struct ArchivedGameListView: View {
                         .toolbar(.hidden, for: .tabBar)
                 } label: {
                     HStack {
-                        Text(item.creatorUser.name ?? "")
+                        // Text(item.creatorUser.name ?? "")
+                        // TODO: we can show winners for finished games only. Also check layout (e.g. badges)
+                        if let winners = item.winners {
+                            Text("\(winners.map({ $0.user.name! }).joined(separator: ", "))")
+                        }
+                        
                         Text ("\(Utils.formatTransactionTimestamp(item.createdAt))")
+                        
                         Spacer()
+                        
                         HStack(spacing: 12) {
                             Text(gameStatusLabel(game: item))
                             Image(systemName: gameStatusIcon(game: item))

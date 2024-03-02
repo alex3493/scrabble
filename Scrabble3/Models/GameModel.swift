@@ -139,4 +139,22 @@ struct GameModel: Identifiable, Codable, Equatable {
         
         return Int(numMoves / players.count)
     }
+    
+    var maxScore: Int? {
+        return players.max(by: { $0.score < $1.score })?.score
+    }
+    
+    var winners: [Player]? {
+        if let maxScore = players.max(by: { $0.score < $1.score })?.score {
+            let winnerPlayers = players.sorted { lhs, rhs in
+                return lhs.score < rhs.score
+            }
+            
+            return winnerPlayers.filter { player in
+                return player.score == maxScore
+            }
+        }
+        
+        return nil
+    }
 }
