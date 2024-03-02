@@ -48,7 +48,7 @@ struct GameListView: View {
                             }
                         }
                     }
-                    .navigationTitle("Игры")
+                    .navigationTitle("Games")
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading, content: {
                             NavigationLink {
@@ -76,12 +76,12 @@ struct GameListView: View {
                     }
                 }
                 .tabItem {
-                    Label("Активные", systemImage: "play.fill")
+                    Label("Active games", systemImage: "play.fill")
                 }
                 
                 NavigationStack {
                     ArchivedGameListView(contacts: contacts)
-                        .navigationTitle("Архив")
+                        .navigationTitle("Finished games")
                         .toolbar {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 NavigationLink {
@@ -95,12 +95,12 @@ struct GameListView: View {
                         }
                 }
                 .tabItem {
-                    Label("Оконченные", systemImage: "archivebox")
+                    Label("Finished games", systemImage: "archivebox")
                 }
                 
                 NavigationStack {
                     UserContactsView(viewModel: viewModel.userContactsViewModel)
-                        .navigationTitle("Мои контакты")
+                        .navigationTitle("My contacts")
                         .toolbar {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 NavigationLink {
@@ -114,7 +114,7 @@ struct GameListView: View {
                         }
                 }
                 .tabItem {
-                    Label("Мои контакты", systemImage: "person.2.fill")
+                    Label("My contacts", systemImage: "person.2.fill")
                 }
             }
             .task {
@@ -144,20 +144,20 @@ struct GameListView: View {
         if game.gameStatus == .waiting {
             if isMeGameCreator(game: game) {
                 if game.players.count <= 1 {
-                    return "Ожидание игроков"
+                    return "Waiting for players"
                 } else {
-                    return "Готова к старту"
+                    return "Ready to start"
                 }
             }
             if isMeGamePlayer(game: game) {
-                return "Готова к старту"
+                return "Ready to start"
             } else {
-                return "Доступна для подключения"
+                return "Available for joining"
             }
         } else if game.gameStatus == .running {
-            return "Идет игра"
+            return "Game in progress"
         } else if game.gameStatus == .suspended {
-            return "Приостановлена"
+            return "Suspended"
         }
         return ""
     }

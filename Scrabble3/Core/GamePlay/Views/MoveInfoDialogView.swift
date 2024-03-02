@@ -80,16 +80,13 @@ struct MoveInfoDialogView: View {
                     isPresented = false
                 } label: {
                     HStack(spacing: 8) {
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .frame(width: 32, height: 32)
-                            .scaledToFit()
-                        Text("Return")
-                            .fontWeight(.bold)
+                        Image(systemName: "arrow.left")
+                        Text("CANCEL")
+                            .fontWeight(.semibold)
                     }
-                    .font(.system(size: 24))
                 }
                 .padding()
+                .buttonStyle(.bordered)
                 
                 Spacer()
                 
@@ -106,19 +103,17 @@ struct MoveInfoDialogView: View {
                         }
                     } label: {
                         HStack(spacing: 8) {
-                            Image(systemName: "paperplane.fill")
-                                .resizable()
-                                .frame(width: 32, height: 32)
-                                .scaledToFit()
-                            Text("Submit")
-                                .fontWeight(.bold)
+                            Image(systemName: "checkmark")
+                            Text("SUBMIT")
+                                .fontWeight(.semibold)
                         }
-                        .font(.system(size: 24))
                     }
                     .padding()
+                    .buttonStyle(.borderedProminent)
                 }
             }
         }
+        .padding()
     }
     
     var showSubmitButton: Bool {

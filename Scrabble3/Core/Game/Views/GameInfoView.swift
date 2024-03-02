@@ -51,7 +51,7 @@ struct GameInfoView: View {
                         }
                         
                         if (viewModel.canDeleteGame) {
-                            ActionButton(label: "УДАЛИТЬ ИГРУ", action: {
+                            ActionButton(label: "DELETE GAME", action: {
                                 do {
                                     try await viewModel.deleteGame(gameId: gameId)
                                     dismiss()
@@ -61,7 +61,7 @@ struct GameInfoView: View {
                                 }
                             }, buttonSystemImage: "trash", backGroundColor: Color(.systemRed), maxWidth: true)
                         } else if viewModel.canLeaveGame {
-                            ActionButton(label: "ВЫЙТИ", action: {
+                            ActionButton(label: "LEAVE GAME", action: {
                                 do {
                                     try await viewModel.leaveGame(gameId: gameId)
                                     dismiss()
@@ -71,7 +71,7 @@ struct GameInfoView: View {
                                 }
                             }, buttonSystemImage: "square.and.arrow.up", backGroundColor: Color(.systemOrange), maxWidth: true)
                         } else if viewModel.canJoinGame {
-                            ActionButton(label: "ПРИСОЕДИНИТЬСЯ", action: {
+                            ActionButton(label: "JOIN GAME", action: {
                                 do {
                                     try await viewModel.joinGame(gameId: gameId)
                                 } catch {
@@ -81,7 +81,7 @@ struct GameInfoView: View {
                             }, buttonSystemImage: "square.and.arrow.down", backGroundColor: Color(.systemBlue), maxWidth: true)
                         }
                         if (viewModel.canStartGame) {
-                            ActionButton(label: "НАЧАТЬ ИГРУ", action: {
+                            ActionButton(label: "START GAME", action: {
                                 do {
                                     try await viewModel.startGame(gameId: gameId)
                                 } catch {
@@ -91,7 +91,7 @@ struct GameInfoView: View {
                             }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
                         }
                         if (viewModel.canResumeGame) {
-                            ActionButton(label: "ПРОДОЛЖИТЬ ИГРУ", action: {
+                            ActionButton(label: "RESUME GAME", action: {
                                 do {
                                     try await viewModel.resumeGame(gameId: gameId)
                                 } catch {
@@ -100,7 +100,7 @@ struct GameInfoView: View {
                                 }
                             }, buttonSystemImage: "play", backGroundColor: Color(.systemBlue), maxWidth: true)
                             
-                            ActionButton(label: "ВЫЙТИ ИЗ ИГРЫ", action: {
+                            ActionButton(label: "LEAVE GAME", action: {
                                 do {
                                     try await viewModel.abortGame(gameId: gameId)
                                 } catch {

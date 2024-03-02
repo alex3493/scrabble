@@ -107,7 +107,7 @@ struct GameResultView: View {
             Spacer()
             
             if canDeleteGame {
-                ActionButton(label: "УДАЛИТЬ ИГРУ", action: {
+                ActionButton(label: "DELETE GAME", action: {
                     do {
                         try await viewModel.deleteGame(gameId: game.id)
                         dismiss()
@@ -123,7 +123,7 @@ struct GameResultView: View {
             } label: {
                 HStack(spacing: 3) {
                     Text("All games")
-                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        .fontWeight(.bold)
                 }
                 .font(.system(size: 14))
             }
