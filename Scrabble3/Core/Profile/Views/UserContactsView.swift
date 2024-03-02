@@ -53,7 +53,7 @@ struct UserContactsView: View {
                         .navigationTitle("Добавить контакт")
                 } label: {
                     HStack {
-                        Text("Добавить")
+                        Text("Add contact")
                         Spacer()
                         Image(systemName: "person.badge.plus")
                             .font(.headline)

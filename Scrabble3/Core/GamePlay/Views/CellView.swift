@@ -171,7 +171,6 @@ struct CellView: View {
     private func showWordDefinitions(row: Int, col: Int) {
         print("showWordDefinitions cell and count", row, col, commandViewModel.gameMoves.count)
         
-        // TODO::20 - this is not working in some cases!
         let allWords = commandViewModel.gameMoves.flatMap { $0.words }
         
         let wordsAtCell = allWords.filter { $0.isCellInWord(row: row, col: col) }

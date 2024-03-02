@@ -74,7 +74,7 @@ struct GameResultView: View {
                                             }
                                             if move.hasBonus {
                                                 HStack {
-                                                    Text("Бонус")
+                                                    Text("Bonus")
                                                         .italic()
                                                     Spacer()
                                                     Text("\(Constants.Game.bonusFullRackMove)")
@@ -89,13 +89,13 @@ struct GameResultView: View {
                                     } else {
                                         HStack {
                                             Spacer()
-                                            Text("Ход пропущен")
+                                            Text("Turn passed")
                                                 .italic()
                                         }
                                     }
                                 }
                             } else {
-                                Text("Игрок не сделал ни одного хода")
+                                Text("Player has no moves")
                                     .fontWeight(.bold)
                             }
                         }
@@ -107,7 +107,7 @@ struct GameResultView: View {
             Spacer()
             
             if canDeleteGame {
-                ActionButton(label: "УДАЛИТЬ ИГРУ", action: {
+                ActionButton(label: "DELETE GAME", action: {
                     do {
                         try await viewModel.deleteGame(gameId: game.id)
                         dismiss()
@@ -122,8 +122,8 @@ struct GameResultView: View {
                 dismiss()
             } label: {
                 HStack(spacing: 3) {
-                    Text("Все игры")
-                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    Text("All games")
+                        .fontWeight(.bold)
                 }
                 .font(.system(size: 14))
             }

@@ -38,7 +38,7 @@ struct Constants {
             static func useLocalValidation(lang: GameLanguage) -> Bool {
                 switch lang {
                 case .en:
-                    return false
+                    return true
                 case .ru:
                     return false
                 case .es:

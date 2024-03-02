@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import GRDB
 
 protocol ValidationResponse: Codable {
     var isValid: Bool { get }
@@ -79,7 +80,7 @@ struct ValidationResponseRussian: Codable, ValidationResponse {
     }
 }
 
-struct ValidationResponseEnglish: Codable, ValidationResponse {
+struct ValidationResponseEnglish: Codable, ValidationResponse, FetchableRecord {
     let name: String
     let definition: String?
     

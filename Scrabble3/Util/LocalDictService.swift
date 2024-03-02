@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import GRDB
 
 class LocalDictService {
-   
+    
     static let languageFiles = [
         "ru": "russian",
         "en": "english",
@@ -19,8 +20,9 @@ class LocalDictService {
     static var lang: GameLanguage? = nil
     static var dictionary: String = ""
     
+    static var dbQueue: DatabaseQueue? = nil
+    
     static func loadDictionary(lang: GameLanguage) {
-
         let url = Bundle.main.url(forResource: languageFiles[lang.rawValue], withExtension: "dic", subdirectory: "Dic")
         do {
             if let url = url, try url.checkResourceIsReachable() {
@@ -36,6 +38,15 @@ class LocalDictService {
             }
         } catch {
             print("DEBUG :: Error loading \(lang) dictionary file", error.localizedDescription)
+        }
+    }
+    
+    static func connectSql(filePath: String) {
+        do {
+            self.dbQueue = try DatabaseQueue(path: filePath)
+            print("DB connection success!")
+        } catch {
+            print("DB connection error:", error.localizedDescription)
         }
     }
     
@@ -81,23 +92,66 @@ class LocalDictServiceRussian: LocalDictService {
 }
 
 class LocalDictServiceEnglish: LocalDictService {
-    static func validateWord(word: String) -> ValidationResponse {
-        return super.validateWord(word: word, lang: .en)
-    }
+    //    static func validateWord(word: String) -> ValidationResponse {
+    //        return super.validateWord(word: word, lang: .en)
+    //    }
     
-    // Currently used english dictionary requires custom regex.
-    override static func checkWord(word: String) -> Bool {
-        guard !self.dictionary.isEmpty else { return false }
+    static func validateWord(word: String) -> ValidationResponse {
+        if self.dbQueue == nil {
+            // TODO: make validation better...
+            let path = Bundle.main.url(forResource: "english", withExtension: "sqlite3", subdirectory: "Dic")?.absoluteString
+            
+            guard let path = path else { return ValidationResponseEnglish(name: word, definition: nil) }
+            self.connectSql(filePath: path)
+        }
         
-        let pattern = "\\s\(word)="
+        guard let dbQueue = self.dbQueue else { return ValidationResponseEnglish(name: word, definition: nil) }
+        
         do {
-            let regex = try Regex(pattern)
-            return self.dictionary.contains(regex)
+            let result: ValidationResponseEnglish? = try dbQueue.read { db in
+                if let response = try ValidationResponseEnglish.fetchOne(db, sql: "SELECT word as name, definition FROM entries WHERE word = ?", arguments: [word]) {
+                    
+                    return response
+                } else {
+                    return ValidationResponseEnglish(name: word, definition: nil)
+                }
+                
+                //                let rows = try Row.fetchAll(db, sql: "SELECT * FROM entries WHERE word = ?", arguments: [word])
+                //                for row in rows {
+                //                    print(row["word"] as Any)
+                //                    print(row["definition"] as Any)
+                //                }
+                //
+                //                return ValidationResponseEnglish(name: word, definition: rows.first?["definition"])
+            }
+            
+            if let result = result {
+                return result
+            } else {
+                return ValidationResponseEnglish(name: word, definition: nil)
+            }
         } catch {
-            print("DEBUG :: Error setting up search", error.localizedDescription)
-            return false
+            print("Fetch error: ", error.localizedDescription)
+            
+            return ValidationResponseEnglish(name: word, definition: nil)
         }
     }
+    
+    // TODO: now we use sqlite approach.
+    
+    // Currently used english dictionary requires custom regex.
+//    override static func checkWord(word: String) -> Bool {
+//        guard !self.dictionary.isEmpty else { return false }
+//
+//        let pattern = "\\s\(word)="
+//        do {
+//            let regex = try Regex(pattern)
+//            return self.dictionary.contains(regex)
+//        } catch {
+//            print("DEBUG :: Error setting up search", error.localizedDescription)
+//            return false
+//        }
+//    }
 }
 
 class LocalDictServiceSpanish: LocalDictService {
@@ -121,7 +175,7 @@ class LocalDictServiceSpanish: LocalDictService {
 
 //class LocalDictServiceCatalan: LocalDictService {
 //    func validateWord(word: String) -> ValidationResponse {
-//        
+//
 //        // We have to replace special tiles with numbers as it is required by dictionary.
 //        /*
 //         | [Replace]
@@ -133,7 +187,7 @@ class LocalDictServiceSpanish: LocalDictService {
 //            .replacingOccurrences(of: "L·L", with: "1")
 //            .replacingOccurrences(of: "NY", with: "2")
 //            .replacingOccurrences(of: "QU", with: "3")
-//        
+//
 //        return super.validateWord(word: replaced, lang: .ca)
 //    }
 //}
