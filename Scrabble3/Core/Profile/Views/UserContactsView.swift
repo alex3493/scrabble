@@ -50,7 +50,7 @@ struct UserContactsView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 NavigationLink {
                     UserListView(viewModel: userListViewModel, contacts: viewModel.contactUsers)
-                        .navigationTitle("Добавить контакт")
+                        .navigationTitle("Add contact")
                 } label: {
                     HStack {
                         Text("Add contact")
