@@ -107,15 +107,17 @@ final class UserManager {
         let document = userDocument(userId: user.userId)
         try document.setData(from: user, merge: false)
         try await document.updateData(["lookup_keywords" : user.lookupKeywords])
-        
-        // try userDocument(userId: user.userId).setData(from: user, merge: false)
+    }
+    
+    func updateUser(user: DBUser) async throws {
+        let document = userDocument(userId: user.userId)
+        try document.setData(from: user, merge: true)
+        try await document.updateData(["lookup_keywords" : user.lookupKeywords])
     }
     
     func deleteUser(userId: String) {
         userDocument(userId: userId).delete()
     }
-    
-    // TODO: add function to update db user.
     
     func getUser(userId: String) async throws -> DBUser {
         try await userDocument(userId: userId).getDocument(as: DBUser.self)
