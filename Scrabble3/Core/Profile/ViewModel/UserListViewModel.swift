@@ -25,7 +25,7 @@ class UserListViewModel: ObservableObject {
         print("UserListViewModel INIT")
     }
     
-    func fetchUsers(reload: Bool = false) async throws {
+    func fetchUsers(reload: Bool = false, query: String? = nil) async throws {
         if reload {
             lastDocument = nil
             users = []
@@ -42,7 +42,7 @@ class UserListViewModel: ObservableObject {
             
             excludeEmails.append(currentUser.email ?? "")
             
-            let (newUsers, lastDocument) = try await UserManager.shared.getUsers(limit: 3, excludeEmails: excludeEmails, afterDocument: lastDocument)
+            let (newUsers, lastDocument) = try await UserManager.shared.getUsers(limit: 10, excludeEmails: excludeEmails, lookupQuery: query, afterDocument: lastDocument)
             
             users.append(contentsOf: newUsers)
             

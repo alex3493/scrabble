@@ -60,6 +60,22 @@ struct DBUser: Codable, Hashable, Identifiable {
         return ""
     }
     
+    var lookupKeywords: [String] {
+        [generateLookupKeywords(term: email), generateLookupKeywords(term: name)].flatMap { $0 }
+    }
+    
+    private func generateLookupKeywords(term: String?) -> [String] {
+        guard let term = term, !term.isEmpty else { return [] }
+        
+        var keywords: [String] = []
+        
+        for i in 1...term.count {
+            keywords.append(String(term.prefix(i)))
+        }
+        
+        return keywords
+    }
+    
 }
 
 final class UserManager {
@@ -88,7 +104,11 @@ final class UserManager {
     }
     
     func createNewUser(user: DBUser) async throws {
-        try userDocument(userId: user.userId).setData(from: user, merge: false)
+        let document = userDocument(userId: user.userId)
+        try document.setData(from: user, merge: false)
+        try await document.updateData(["lookup_keywords" : user.lookupKeywords])
+        
+        // try userDocument(userId: user.userId).setData(from: user, merge: false)
     }
     
     func deleteUser(userId: String) {
@@ -101,19 +121,18 @@ final class UserManager {
         try await userDocument(userId: userId).getDocument(as: DBUser.self)
     }
     
-//    func getUsers(limit: Int, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
-//        return try await userCollection
-//            .order(by: DBUser.CodingKeys.name.rawValue, descending: false)
-//            .limit(to: limit)
-//            .startOptionally(afterDocument: afterDocument)
-//            .getDocumentsWithSnapshot(as: DBUser.self)
-//    }
-    
     // We have to order by email, otherwise we cannot exclude contacted users from the query.
-    func getUsers(limit: Int, excludeEmails: [String], afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
-        return try await userCollection
+    func getUsers(limit: Int, excludeEmails: [String], lookupQuery: String?, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
+        
+        let query = userCollection
             .order(by: DBUser.CodingKeys.email.rawValue, descending: false)
             .whereField(DBUser.CodingKeys.email.rawValue, notIn: excludeEmails)
+        
+        if let lookupQuery = lookupQuery {
+            query.whereField("lookup_keywords", arrayContains: lookupQuery)
+        }
+        
+        return try await query
             .limit(to: limit)
             .startOptionally(afterDocument: afterDocument)
             .getDocumentsWithSnapshot(as: DBUser.self)
