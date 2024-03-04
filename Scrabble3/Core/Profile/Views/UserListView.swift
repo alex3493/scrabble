@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct UserListView: View {
     
     @ObservedObject var viewModel: UserListViewModel
@@ -16,6 +17,8 @@ struct UserListView: View {
     @Environment(\.dismiss) var dismiss
     
     let errorStore = ErrorStore.shared
+    
+    @State private var searchIsActive = false
     
     // Here we have current user contacts.
     let contacts: [UserContact]
@@ -49,7 +52,7 @@ struct UserListView: View {
                     ProgressView().onAppear() {
                         Task {
                             do {
-                                try await viewModel.fetchUsers()
+                                try await viewModel.fetchUsers(query: viewModel.searchQuery)
                             } catch {
                                 print("DEBUG:: Error fetching users", error.localizedDescription)
                                 errorStore.showContactSetupAlertView(withMessage: error.localizedDescription)
@@ -57,6 +60,21 @@ struct UserListView: View {
                         }
                     }
                 }
+            }
+        }
+        .searchable(text: $viewModel.searchQuery, isPresented: $searchIsActive, prompt: "Search...")
+        .disableAutocorrection(true)
+        .autocapitalization(.none)
+        .onChange(of: searchIsActive) {
+            if !searchIsActive {
+                Task {
+                    try await viewModel.resetSearch()
+                }
+            }
+        }
+        .onSubmit(of: .search) {
+            Task {
+                try await viewModel.performSearch()
             }
         }
         .task {
@@ -72,10 +90,6 @@ struct UserListView: View {
             viewModel.currentUser = authViewModel.currentUser
             viewModel.contacts = contacts
         }
-        
     }
 }
 
-#Preview {
-    UserListView(viewModel: UserListViewModel(), contacts: [])
-}

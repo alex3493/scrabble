@@ -122,14 +122,14 @@ final class UserManager {
     }
     
     // We have to order by email, otherwise we cannot exclude contacted users from the query.
-    func getUsers(limit: Int, excludeEmails: [String], lookupQuery: String?, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
+    func getUsers(limit: Int, excludeEmails: [String], lookupQuery: String, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
         
-        let query = userCollection
+        var query = userCollection
             .order(by: DBUser.CodingKeys.email.rawValue, descending: false)
             .whereField(DBUser.CodingKeys.email.rawValue, notIn: excludeEmails)
         
-        if let lookupQuery = lookupQuery {
-            query.whereField("lookup_keywords", arrayContains: lookupQuery)
+        if !lookupQuery.isEmpty {
+            query = query.whereField("lookup_keywords", arrayContains: lookupQuery)
         }
         
         return try await query

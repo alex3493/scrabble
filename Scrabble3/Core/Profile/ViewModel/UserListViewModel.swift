@@ -19,13 +19,15 @@ class UserListViewModel: ObservableObject {
     
     var allUsersFetched: Bool = false
     
+    var searchQuery: String = ""
+    
     var currentUser: DBUser? = nil
     
     init() {
         print("UserListViewModel INIT")
     }
     
-    func fetchUsers(reload: Bool = false, query: String? = nil) async throws {
+    func fetchUsers(reload: Bool = false, query: String = "") async throws {
         if reload {
             lastDocument = nil
             users = []
@@ -59,5 +61,16 @@ class UserListViewModel: ObservableObject {
         
         try await UserManager.shared.addContactRequest(initiatorUser: currentUser, counterpartUser: targetUser)
         
+    }
+    
+    public func performSearch() async throws {
+        print("Performing search for: \(searchQuery)")
+        
+        try await fetchUsers(reload: true, query: searchQuery)
+    }
+    
+    public func resetSearch() async throws {
+        searchQuery = ""
+        try await fetchUsers(reload: true, query: "")
     }
 }
