@@ -95,7 +95,7 @@ struct GameResultView: View {
                                     }
                                 }
                             } else {
-                                Text("Player has no moves")
+                                Text("No moves")
                                     .fontWeight(.bold)
                             }
                         }

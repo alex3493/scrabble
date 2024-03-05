@@ -28,21 +28,26 @@ struct GameListView: View {
                                     .navigationBarBackButtonHidden()
                                     .toolbar(.hidden, for: .tabBar)
                             } label: {
-                                HStack {
-                                    Text(item.creatorUser.name ?? "")
-                                    Text("\(Utils.formatTransactionTimestamp(item.createdAt))")
-                                    if item.rules == .express {
-                                        Text("Express")
-                                    } else if item.rules == .full {
-                                        Text("Full")
-                                    } else {
-                                        Text("Up to 200 points")
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Text(item.creatorUser.name ?? "")
+                                        Spacer()
+                                        Text("\(Utils.formatTransactionTimestamp(item.createdAt))")
                                     }
-                                    Spacer()
-                                    HStack(spacing: 12) {
-                                        Text(gameStatusLabel(game: item))
-                                        Image(systemName: gameStatusIcon(game: item))
-                                            .frame(width: 24)
+                                    HStack {
+                                        if item.rules == .express {
+                                            Text("Express")
+                                        } else if item.rules == .full {
+                                            Text("Full")
+                                        } else {
+                                            Text("Up to 200 points")
+                                        }
+                                        Spacer()
+                                        HStack(spacing: 12) {
+                                            Text(gameStatusLabel(game: item))
+                                            Image(systemName: gameStatusIcon(game: item))
+                                                .frame(width: 24)
+                                        }
                                     }
                                 }
                             }
