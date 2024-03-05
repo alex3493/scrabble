@@ -97,6 +97,16 @@ struct ProfileView: View {
         .onAppear() {
             preferredLang = GameLanguage(rawValue: UserDefaults.standard.string(forKey: "PreferredLang") ?? "ru") ?? GameLanguage.ru
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    EditProfileView()
+                        .navigationTitle("Edit profile")
+                } label: {
+                    Text("Edit")
+                }
+            }
+        }
     }
 }
 

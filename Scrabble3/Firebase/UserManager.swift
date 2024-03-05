@@ -51,13 +51,13 @@ struct DBUser: Codable, Hashable, Identifiable {
     }
     
     var initials: String {
-        let formatter = PersonNameComponentsFormatter()
-        if let components = formatter.personNameComponents(from: name ?? "") {
-            formatter.style = .abbreviated
-            return formatter.string(from: components)
-        }
+        guard let name = name else { return "" }
         
-        return ""
+        let parts = name.split(separator: " ")
+            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+            .filter { !$0.isEmpty }
+        
+        return parts.map({ $0.prefix(1) }).joined()
     }
     
     var lookupKeywords: [String] {

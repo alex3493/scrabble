@@ -77,6 +77,7 @@
 		FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962242AE5A75200BAAC7B /* GamePlayView.swift */; };
 		FAE962272AE641F300BAAC7B /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */; };
 		FAEDE6E82B907C7C003671FA /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = FAEDE6E72B907C7C003671FA /* GRDB */; };
+		FAEDE6EA2B967060003671FA /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEDE6E92B967060003671FA /* EditProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,6 +165,7 @@
 		FAE962202AE56C4300BAAC7B /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		FAE962242AE5A75200BAAC7B /* GamePlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePlayView.swift; sourceTree = "<group>"; };
 		FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
+		FAEDE6E92B967060003671FA /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,6 +379,7 @@
 				FAC114B42AD1AA07001152D8 /* LoginView.swift */,
 				FAC114B62AD1AA6C001152D8 /* RegistrationView.swift */,
 				FAE962262AE641F300BAAC7B /* ChangePasswordView.swift */,
+				FAEDE6E92B967060003671FA /* EditProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -667,6 +670,7 @@
 				FAE962252AE5A75200BAAC7B /* GamePlayView.swift in Sources */,
 				FA75458E2AECF23C00B58EFC /* CommandViewModel.swift in Sources */,
 				FA75457F2AEA58AA00B58EFC /* CellModel.swift in Sources */,
+				FAEDE6EA2B967060003671FA /* EditProfileView.swift in Sources */,
 				FAB2A7192B233E7400E5BCD7 /* PlayerListView.swift in Sources */,
 				FA592C592ADA8A1D00BAFF8F /* ErrorStore.swift in Sources */,
 				FA56A06F2B0F40DA0089C405 /* ArchivedGameListView.swift in Sources */,

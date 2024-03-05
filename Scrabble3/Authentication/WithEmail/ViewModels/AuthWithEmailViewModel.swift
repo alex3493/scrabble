@@ -53,6 +53,22 @@ final class AuthWithEmailViewModel: ObservableObject {
         try? await fetchUser()
     }
     
+    func updateUserProfile(name: String) async throws {
+        guard !name.isEmpty else {
+            print("Required data missing.")
+            return
+        }
+        
+        guard let user = currentUser else {
+            print("User must be logged in.")
+            return
+        }
+        
+        let updatedUser = DBUser(userId: user.userId, email: user.email, dateCreated: user.dateCreated, name: name)
+        
+        try await UserManager.shared.updateUser(user: updatedUser)
+    }
+    
     func updatePassword(newPassword: String, currentPassword: String) async -> Bool {
         guard let userSession = userSession else { return false }
         guard let email = userSession.email else { return false }
