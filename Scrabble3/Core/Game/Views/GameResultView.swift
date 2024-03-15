@@ -28,13 +28,13 @@ struct GameResultView: View {
     var body: some View {
         VStack {
             List {
-                Section("Игра") {
+                Section("Game") {
                     Text("\(game.creatorUser.name!): \(Utils.formatTransactionTimestamp(game.createdAt))")
                     Text("Current game status: \(game.gameStatus.rawValue)")
                 }
                 
                 if let winners = game.winners, game.gameStatus == .finished {
-                    Section(winners.count > 1 ? "Победители" : "Победитель") {
+                    Section(winners.count > 1 ? "Winners" : "Winner") {
                         ForEach(winners, id: \.id.self) { item in
                             HStack(spacing: 12) {
                                 Text(item.user.name!)
@@ -49,7 +49,7 @@ struct GameResultView: View {
                     }
                 }
                 
-                Section("Игроки") {
+                Section("Players") {
                     ForEach(Array(game.players.enumerated()), id: \.offset) { index, item in
                         VStack {
                             HStack(spacing: 12) {
@@ -95,7 +95,7 @@ struct GameResultView: View {
                                     }
                                 }
                             } else {
-                                Text("Player has no moves")
+                                Text("No moves")
                                     .fontWeight(.bold)
                             }
                         }

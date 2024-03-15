@@ -51,13 +51,29 @@ struct DBUser: Codable, Hashable, Identifiable {
     }
     
     var initials: String {
-        let formatter = PersonNameComponentsFormatter()
-        if let components = formatter.personNameComponents(from: name ?? "") {
-            formatter.style = .abbreviated
-            return formatter.string(from: components)
+        guard let name = name else { return "" }
+        
+        let parts = name.split(separator: " ")
+            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+            .filter { !$0.isEmpty }
+        
+        return parts.map({ $0.prefix(1) }).joined()
+    }
+    
+    var lookupKeywords: [String] {
+        [generateLookupKeywords(term: email), generateLookupKeywords(term: name)].flatMap { $0 }
+    }
+    
+    private func generateLookupKeywords(term: String?) -> [String] {
+        guard let term = term, !term.isEmpty else { return [] }
+        
+        var keywords: [String] = []
+        
+        for i in 1...term.count {
+            keywords.append(String(term.prefix(i)))
         }
         
-        return ""
+        return keywords
     }
     
 }
@@ -88,32 +104,37 @@ final class UserManager {
     }
     
     func createNewUser(user: DBUser) async throws {
-        try userDocument(userId: user.userId).setData(from: user, merge: false)
+        let document = userDocument(userId: user.userId)
+        try document.setData(from: user, merge: false)
+        try await document.updateData(["lookup_keywords" : user.lookupKeywords])
+    }
+    
+    func updateUser(user: DBUser) async throws {
+        let document = userDocument(userId: user.userId)
+        try document.setData(from: user, merge: true)
+        try await document.updateData(["lookup_keywords" : user.lookupKeywords])
     }
     
     func deleteUser(userId: String) {
         userDocument(userId: userId).delete()
     }
     
-    // TODO: add function to update db user.
-    
     func getUser(userId: String) async throws -> DBUser {
         try await userDocument(userId: userId).getDocument(as: DBUser.self)
     }
     
-//    func getUsers(limit: Int, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
-//        return try await userCollection
-//            .order(by: DBUser.CodingKeys.name.rawValue, descending: false)
-//            .limit(to: limit)
-//            .startOptionally(afterDocument: afterDocument)
-//            .getDocumentsWithSnapshot(as: DBUser.self)
-//    }
-    
     // We have to order by email, otherwise we cannot exclude contacted users from the query.
-    func getUsers(limit: Int, excludeEmails: [String], afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
-        return try await userCollection
+    func getUsers(limit: Int, excludeEmails: [String], lookupQuery: String, afterDocument: DocumentSnapshot?) async throws -> (items: [DBUser], lastDocument: DocumentSnapshot?) {
+        
+        var query = userCollection
             .order(by: DBUser.CodingKeys.email.rawValue, descending: false)
             .whereField(DBUser.CodingKeys.email.rawValue, notIn: excludeEmails)
+        
+        if !lookupQuery.isEmpty {
+            query = query.whereField("lookup_keywords", arrayContains: lookupQuery)
+        }
+        
+        return try await query
             .limit(to: limit)
             .startOptionally(afterDocument: afterDocument)
             .getDocumentsWithSnapshot(as: DBUser.self)

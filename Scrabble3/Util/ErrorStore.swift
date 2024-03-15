@@ -13,6 +13,8 @@ enum AppError: LocalizedError {
     
     case registrationError(message: String?)
     
+    case profileUpdateError(message: String?)
+    
     case gameSetupError(message: String?)
     
     case gamePlayError(message: String?)
@@ -27,6 +29,8 @@ enum AppError: LocalizedError {
             return "Failed logging in account"
         case .registrationError:
             return "Failed registering new account"
+        case .profileUpdateError:
+            return "Failed updating user profile"
         case .gameSetupError:
             return "Error setting up game"
         case .gamePlayError:
@@ -45,6 +49,8 @@ enum AppError: LocalizedError {
             return message ?? "Entered email or password were incorrect"
         case .registrationError(let message):
             return message ?? "Email address is already in use"
+        case .profileUpdateError(let message):
+            return message ?? "Error trying to update user profile"
         case .gameSetupError(let message):
             return message ?? "Error trying to create, join, leave, remove or start game"
         case .gamePlayError(message: let message):
@@ -95,6 +101,10 @@ final class ErrorStore: ObservableObject {
     
     func showRegistrationAlertView(withMessage message: String?) {
         activeError = AppError.registrationError(message: message)
+    }
+    
+    func showProfileUpdateAlertView(withMessage message: String?) {
+        activeError = AppError.profileUpdateError(message: message)
     }
     
     func showGameSetupAlertView(withMessage message: String?) {
