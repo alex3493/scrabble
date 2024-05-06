@@ -28,6 +28,7 @@
 		FA6E7F7D2B01424F00F0C6AC /* GameResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E7F7C2B01424F00F0C6AC /* GameResultView.swift */; };
 		FA7247982B0B6B0100AF3FA1 /* UserContactRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7247972B0B6B0100AF3FA1 /* UserContactRowView.swift */; };
 		FA7249D32BE8E042006D0FB1 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FA7249D22BE8E042006D0FB1 /* .gitignore */; };
+		FA7249D52BE8E0F2006D0FB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA7249D42BE8E0F2006D0FB1 /* GoogleService-Info.plist */; };
 		FA73021D2B1CC9E400AFF43E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA73021C2B1CC9E400AFF43E /* Constants.swift */; };
 		FA7545762AEA549200B58EFC /* MoveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545752AEA549200B58EFC /* MoveManager.swift */; };
 		FA7545792AEA584100B58EFC /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7545782AEA584100B58EFC /* GameModel.swift */; };
@@ -117,6 +118,7 @@
 		FA6E7F7C2B01424F00F0C6AC /* GameResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResultView.swift; sourceTree = "<group>"; };
 		FA7247972B0B6B0100AF3FA1 /* UserContactRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactRowView.swift; sourceTree = "<group>"; };
 		FA7249D22BE8E042006D0FB1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		FA7249D42BE8E0F2006D0FB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA73021C2B1CC9E400AFF43E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FA7545752AEA549200B58EFC /* MoveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveManager.swift; sourceTree = "<group>"; };
 		FA7545782AEA584100B58EFC /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 		FA7249CF2BE8DE5A006D0FB1 /* GoogleService */ = {
 			isa = PBXGroup;
 			children = (
+				FA7249D42BE8E0F2006D0FB1 /* GoogleService-Info.plist */,
 			);
 			path = GoogleService;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 		FAB872422AA258610015D0FA = {
 			isa = PBXGroup;
 			children = (
+				FA7249D22BE8E042006D0FB1 /* .gitignore */,
 				FAB8724D2AA258610015D0FA /* Scrabble3 */,
 				FAB8725E2AA2586C0015D0FA /* Scrabble3Tests */,
 				FAB872682AA2586C0015D0FA /* Scrabble3UITests */,
@@ -341,7 +345,6 @@
 				FAB8724E2AA258610015D0FA /* Scrabble3App.swift */,
 				FAB872522AA2586B0015D0FA /* Assets.xcassets */,
 				FAB872542AA2586B0015D0FA /* Preview Content */,
-				FA7249D22BE8E042006D0FB1 /* .gitignore */,
 			);
 			path = Scrabble3;
 			sourceTree = "<group>";
@@ -601,6 +604,7 @@
 			files = (
 				FA7249D32BE8E042006D0FB1 /* .gitignore in Resources */,
 				FAC5BC4D2AFE28C7009FDD86 /* Dic in Resources */,
+				FA7249D52BE8E0F2006D0FB1 /* GoogleService-Info.plist in Resources */,
 				FAB872562AA2586B0015D0FA /* Preview Assets.xcassets in Resources */,
 				FAB872532AA2586B0015D0FA /* Assets.xcassets in Resources */,
 			);
