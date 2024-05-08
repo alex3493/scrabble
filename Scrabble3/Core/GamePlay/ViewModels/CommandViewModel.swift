@@ -230,35 +230,38 @@ final class CommandViewModel: ObservableObject {
             print("validateMovePublisher completion", completion)
             switch completion {
             case .failure(let error):
-                self?.tempScores = [:]
-                
-                switch error {
-                case .invalidLetterTilePosition(let cell):
-                    if !validateOnly {
-                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: cell))
+                if let game = self?.game {
+                    // Special score value meaning validation error.
+                    self?.tempScores[game.turn] = -1
+                    
+                    switch error {
+                    case .invalidLetterTilePosition(let cell):
+                        if !validateOnly {
+                            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: cell))
+                        }
+                        // self?.boardViewModel.highlightCell(cell: cell)
+                    case .hangingWords(let words):
+                        if !validateOnly {
+                            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
+                        }
+                        // self?.boardViewModel.highlightWords(words: words)
+                    case .repeatedWords(let words):
+                        if !validateOnly {
+                            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
+                        }
+                        // self?.boardViewModel.highlightWords(words: words)
+                    case .invalidWords(let words):
+                        if !validateOnly {
+                            ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
+                        }
+                        // self?.boardViewModel.highlightWords(words: words)
                     }
-                    self?.boardViewModel.highlightCell(cell: cell)
-                case .hangingWords(let words):
-                    if !validateOnly {
-                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
-                    }
-                    self?.boardViewModel.highlightWords(words: words)
-                case .repeatedWords(let words):
-                    if !validateOnly {
-                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
-                    }
-                    self?.boardViewModel.highlightWords(words: words)
-                case .invalidWords(let words):
-                    if !validateOnly {
-                        ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
-                    }
-                    self?.boardViewModel.highlightWords(words: words)
                 }
             default:
                 break
             }
         }, receiveValue: { [weak self] validations in
-        
+            
             print("***** Validations", validations.map({ (key, value) in
                 (key, value.wordDefinition as Any)
             }))
@@ -287,7 +290,7 @@ final class CommandViewModel: ObservableObject {
             }
         })
     }
-
+    
     func nextTurn(game: GameModel) async throws {
         
         var moveScore = boardViewModel.getMoveScore()
