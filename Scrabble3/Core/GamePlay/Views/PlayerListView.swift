@@ -29,8 +29,12 @@ struct PlayerListView: View {
                         Text("\(item.score)")
                         
                         // For current turn player we show provisional score (current move).
-                        if game.turn == index, item.id == authViewModel.currentUser?.userId {
-                            if let tempScore = viewModel.tempScores[index] {
+                        if game.turn == index, item.id == authViewModel.currentUser?.userId, !viewModel.tempScores.isEmpty, let tempScore = viewModel.tempScores[index] {
+                            
+                            if tempScore == -1 {
+                                Image(systemName: "exclamationmark.circle.fill")
+                                    .foregroundStyle(.red)
+                            } else if tempScore > 0 {
                                 Text("+\(tempScore)")
                                     .foregroundStyle(.red)
                             }
