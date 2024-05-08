@@ -220,7 +220,7 @@ final class CommandViewModel: ObservableObject {
     var validateSubscription: AnyCancellable? = nil
     var apiValidateSubscription: AnyCancellable? = nil
     
-    func submitMove(validateOnly: Bool = false) {
+    func submitMove(validateOnly: Bool = false, highlightErrors: Bool = false) {
         
         boardViewModel.resetCellsStatus()
         
@@ -239,22 +239,30 @@ final class CommandViewModel: ObservableObject {
                         if !validateOnly {
                             ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidLetterTilePosition(cell: cell))
                         }
-                        // self?.boardViewModel.highlightCell(cell: cell)
+                        if highlightErrors {
+                            self?.boardViewModel.highlightCell(cell: cell)
+                        }
                     case .hangingWords(let words):
                         if !validateOnly {
                             ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.hangingWords(words: words))
                         }
-                        // self?.boardViewModel.highlightWords(words: words)
+                        if highlightErrors {
+                            self?.boardViewModel.highlightWords(words: words)
+                        }
                     case .repeatedWords(let words):
                         if !validateOnly {
                             ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.repeatedWords(words: words))
                         }
-                        // self?.boardViewModel.highlightWords(words: words)
+                        if highlightErrors {
+                            self?.boardViewModel.highlightWords(words: words)
+                        }
                     case .invalidWords(let words):
                         if !validateOnly {
                             ErrorStore.shared.showMoveValidationErrorAlert(errorType: ValidationError.invalidWords(words: words))
                         }
-                        // self?.boardViewModel.highlightWords(words: words)
+                        if highlightErrors {
+                            self?.boardViewModel.highlightWords(words: words)
+                        }
                     }
                 }
             default:
